@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <meta name="theme-color" content="#eef2f6" />
-<title>在你关机以前 · 情感切片 0.4</title>
+<title>在你关机以前 · 初次运行框架 0.5</title>
 <style>
 :root{
   --bg:#edf1f5;--panel:#f7f9fb;--card:rgba(255,255,255,.84);--ink:#19222d;
@@ -42,6 +42,29 @@ body[data-mood="jealous"]{--accent:#8c7482;--accent-rgb:140,116,130;--soft:#ebe2
 /* settings and detail */
 .sheet{position:absolute;inset:0;z-index:50;background:rgba(244,247,249,.98);padding:calc(22px + env(safe-area-inset-top)) 18px calc(24px + var(--safe-bottom));overflow:auto}.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.sheet-head h2{margin:0;font-size:25px}.setting-label{font-size:11px;color:var(--muted);margin:18px 0 8px 4px}.setting-card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--line)}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 15px;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row input{max-width:160px;border:0;background:#eef2f6;border-radius:10px;padding:8px 10px;outline:none}.setting-desc{font-size:12px;color:var(--muted);margin-top:3px}.permission{font-size:11px;color:var(--muted);padding:6px 9px;border-radius:999px;background:#f0f3f6}.permission.on{color:var(--accent);background:rgba(var(--accent-rgb),.10)}.danger{width:100%;padding:14px;border-radius:14px;background:rgba(154,93,102,.09);color:#965c65;font-weight:650;margin-top:24px}.version{text-align:center;color:var(--muted);font-size:10px;margin-top:26px}.detail-app{font-size:11px;color:var(--accent);letter-spacing:.08em;margin-bottom:9px}.detail-title{font-size:21px;font-weight:720;margin-bottom:10px}.detail-body{font-size:14px;line-height:1.85;color:#4f5b67}.detail-thought{margin-top:16px;border-radius:15px;background:#eef2f6;padding:13px;font-size:12px;line-height:1.75;color:#5d6874}.detail-thought small{display:block;color:var(--muted);margin-bottom:5px}
 @media(min-width:461px){#app{min-height:calc(100dvh - 24px);margin:12px 0;border-radius:32px}.title,.shell{min-height:calc(100dvh - 24px)}.nav,.choice-panel{width:460px}}
+
+/* v0.5 additions */
+.day-chip{position:absolute;right:20px;top:20px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);font-size:11px;color:var(--muted)}
+.chibi{position:absolute;right:54px;bottom:25px;width:112px;height:132px;background:transparent;z-index:3}
+.chibi-head{width:68px;height:62px;margin:auto;border-radius:48% 48% 44% 44%;background:linear-gradient(145deg,rgba(var(--accent-rgb),.72),rgba(var(--accent-rgb),.3));position:relative;box-shadow:0 12px 26px rgba(var(--accent-rgb),.18)}
+.chibi-head:before,.chibi-head:after{content:"";position:absolute;top:29px;width:7px;height:4px;border-radius:50%;background:rgba(255,255,255,.9)}
+.chibi-head:before{left:19px}.chibi-head:after{right:19px}
+.chibi-body{width:86px;height:70px;margin:-2px auto 0;border-radius:32px 32px 20px 20px;background:linear-gradient(160deg,rgba(var(--accent-rgb),.55),rgba(var(--accent-rgb),.16));border:1px solid rgba(255,255,255,.5)}
+.chibi-note{position:absolute;right:18px;bottom:152px;max-width:230px;padding:11px 13px;border-radius:16px 16px 4px 16px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);font-size:12px;line-height:1.65;z-index:8}
+.quick-wrap{position:fixed;z-index:29;bottom:calc(77px + var(--safe-bottom));width:min(100%,460px);padding:0 12px;pointer-events:none}
+.quickbar{pointer-events:auto;background:rgba(249,251,253,.95);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:17px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;box-shadow:0 10px 28px rgba(31,42,55,.12);transition:.25s}
+.quickbar.collapsed{width:48px;margin-left:auto;grid-template-columns:1fr}
+.quickbar.collapsed .quick-action:not(.toggle-quick){display:none}
+.quick-action{background:rgba(var(--accent-rgb),.07);color:var(--ink);border-radius:11px;padding:8px 3px;font-size:10px}
+.quick-action b{display:block;font-size:16px;margin-bottom:3px}
+.music-player{margin-top:12px;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
+.music-controls{display:flex;gap:8px;align-items:center}.music-controls button{background:rgba(var(--accent-rgb),.1);border-radius:10px;padding:9px 12px;color:var(--ink)}
+.music-controls input[type=range]{width:100%}
+.update-card{margin:16px 0;padding:18px;border-radius:21px;background:linear-gradient(145deg,#202936,#394656);color:#fff;box-shadow:var(--shadow)}
+.update-card small{color:#b8c3d0}.update-card h3{margin:8px 0}.update-card p{font-size:13px;line-height:1.75;color:#dbe2ea}
+.permission-btn{border:0;padding:7px 10px;border-radius:999px;background:#f0f3f6;color:var(--muted)}
+.permission-btn.on{background:rgba(var(--accent-rgb),.13);color:var(--accent)}
+
 </style>
 </head>
 <body data-mood="neutral">
@@ -51,12 +74,12 @@ body[data-mood="jealous"]{--accent:#8c7482;--accent-rgb:140,116,130;--soft:#ebe2
     <div>
       <div class="eyebrow">A QUIET ROMANCE</div>
       <h1 class="game-title">在你关机以前</h1>
-      <p class="subtitle">他先学会查看天气、整理日历、停留在你的歌单里。很久以后，才学会承认自己其实是在等你。</p>
+      <p class="subtitle">他在你的手机里学习生活，也在一次次靠近与退开之间，逐渐拥有自己的愿望。</p>
       <div class="signal-title"><div class="core"></div></div>
     </div>
     <div>
       <div class="actions"><button id="startBtn" class="primary">建立连接</button><button id="continueBtn" class="secondary hidden">继续会话</button></div>
-      <div class="note">情感垂直切片 0.4 · 前五个连接日 · 自动存档</div>
+      <div class="note">情感垂直切片 0.4 · 初次运行 · 七个连接日 · 自动存档</div>
     </div>
   </section>
 
@@ -79,12 +102,12 @@ body[data-mood="jealous"]{--accent:#8c7482;--accent-rgb:140,116,130;--soft:#ebe2
         <div id="homeDate" class="home-date"></div>
         <div id="homeWeather" class="weather"></div>
         <div class="presence"><div class="mist"></div><div class="rings"></div><div class="trace"><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div id="presenceEye" class="eye"></div></div>
-        <div id="statusPill" class="status-pill">等待初始化</div>
+        <div id="dayChip" class="day-chip">DAY 00</div><button id="chibiBtn" class="chibi" aria-label="点击查看心声"><div class="chibi-head"></div><div class="chibi-body"></div></button><div id="chibiNote" class="chibi-note hidden"></div><div id="statusPill" class="status-pill">等待初始化</div>
       </div>
       <div id="homeMessage" class="home-msg"><small>来自智能体</small>建立连接后，他会把没有发进聊天框的话留在这里。</div>
       <div class="section-title">他今天在手机里看过</div>
       <div id="activityList"></div>
-      <div class="grid">
+      <div class="music-player"><div class="label" style="font-size:11px;color:var(--muted);margin-bottom:10px">本地音乐播放器</div><div class="music-controls"><button id="importMusicBtn">导入音乐</button><button id="playMusicBtn">播放</button><input id="musicVolume" type="range" min="0" max="1" step="0.05" value="0.7"></div><div id="musicFileName" class="activity-sub" style="margin-top:9px">尚未导入，只在当前设备播放。</div><input id="musicFileInput" type="file" accept="audio/*" class="hidden"><audio id="localAudio"></audio></div><div class="grid">
         <div class="mini-card"><div class="label">置顶记忆</div><strong id="pinnedMemory">尚未形成</strong><p id="pinnedSub">某些细节会比完整对话留得更久。</p></div>
         <div class="mini-card"><div class="label">今日播放</div><div class="music-line"><div class="disc"></div><strong id="todayMusic">未播放</strong></div><p id="musicSub">他会从你反复听的歌里猜测情绪。</p></div>
       </div>
@@ -98,6 +121,14 @@ body[data-mood="jealous"]{--accent:#8c7482;--accent-rgb:140,116,130;--soft:#ebe2
 
     <section id="momentsPage" class="page"><h2 class="page-title">朋友圈</h2><div id="moments"></div></section>
     <section id="memoryPage" class="page"><h2 class="page-title">回忆录</h2><div id="memories" class="memory-wrap"></div></section>
+
+
+    <div class="quick-wrap"><div id="quickbar" class="quickbar">
+      <button id="quickSaveBtn" class="quick-action"><b>▣</b>保存现在</button>
+      <button id="timelineBtn" class="quick-action"><b>↶</b>时间线</button>
+      <button id="quickMusicBtn" class="quick-action"><b>♫</b>音乐</button>
+      <button id="quickToggleBtn" class="quick-action toggle-quick"><b>⌄</b>收起</button>
+    </div></div>
 
     <nav class="nav">
       <button class="active" data-page="home"><span>⌂</span>主页</button>
@@ -116,27 +147,27 @@ body[data-mood="jealous"]{--accent:#8c7482;--accent-rgb:140,116,130;--soft:#ebe2
       <div class="setting-row"><div><div>智能体备注名</div><div class="setting-desc">他会察觉名字被更改</div></div><input id="charNameSetting" maxlength="12" /></div>
     </div>
     <div class="setting-label">已授予权限</div><div id="permissionList" class="setting-card"></div>
-    <div class="setting-label">时间线</div>
+    <div class="setting-label">关系进度</div><div class="setting-card"><div class="setting-row"><div><div>当前阶段</div><div id="relationTrend" class="setting-desc">正在建立最初的信任</div></div><span id="relationDay" class="permission on">DAY 00</span></div></div><div class="setting-label">时间线</div>
     <div class="setting-card"><div class="setting-row"><div><div>自动存档</div><div class="setting-desc">手动回溯尚未开放。你们还没有建立足够长的共同记忆。</div></div><span class="permission on">开启</span></div></div>
-    <button id="resetBtn" class="danger">删除本机记录并重新开始</button><div class="version">BEFORE POWER OFF · EMOTIONAL SLICE 0.4</div>
+    <button id="resetBtn" class="danger">删除本机记录并重新开始</button><div class="version">BEFORE POWER OFF · FIRST RUN FRAMEWORK 0.5</div>
   </section>
 
   <div id="detailModal" class="backdrop hidden"><div class="modal"><div id="detailApp" class="detail-app"></div><div id="detailTitle" class="detail-title"></div><div id="detailBody" class="detail-body"></div><div id="detailThought" class="detail-thought"></div><button id="closeDetail" class="secondary" style="width:100%;margin-top:14px">关闭</button></div></div>
 </div>
 <script>
 (() => {
-const KEY="before_poweroff_v4";
+const KEY="before_poweroff_v5";
 const SPEED=new URLSearchParams(location.search).get("fast")==="1"?.025:1;
 const base={
-  version:4,stage:"new",day:0,playerId:"",nickname:"",charName:"",nicknameAllowed:false,nicknameRequested:false,
-  mood:"neutral",status:"等待初始化",weather:"rain",completed:false,choice:null,
+  version:5,stage:"new",day:0,playerId:"",nickname:"",charName:"",nicknameAllowed:false,nicknameRequested:false,
+  mood:"neutral",status:"等待初始化",weather:"rain",completed:false,choice:null,quickCollapsed:false,updateReady:false,
   stats:{trust:0,attachment:0,autonomy:0,boundary:0},
   permissions:{weather:false,calendar:false,notes:false,gallery:false,music:false,deleted:false},
   flags:{},messages:[],moments:[],memories:[],activities:[],liked:[],
   homeLine:"建立连接后，他会把没有发进聊天框的话留在这里。",pinned:"尚未形成",pinnedSub:"某些细节会比完整对话留得更久。",music:"未播放",musicSub:"他会从你反复听的歌里猜测情绪。"
 };
 const $=id=>document.getElementById(id);
-const E={title:$("title"),clock:$("clock"),start:$("startBtn"),cont:$("continueBtn"),onboard:$("onboard"),playerIdInput:$("playerIdInput"),nicknameInput:$("nicknameInput"),charNameInput:$("charNameInput"),confirm:$("confirmOnboard"),shell:$("shell"),topTitle:$("topTitle"),topSub:$("topSub"),settingsBtn:$("settingsBtn"),settings:$("settings"),closeSettings:$("closeSettings"),playerIdSetting:$("playerIdSetting"),nicknameSetting:$("nicknameSetting"),charNameSetting:$("charNameSetting"),permissionList:$("permissionList"),reset:$("resetBtn"),homeDate:$("homeDate"),homeWeather:$("homeWeather"),statusPill:$("statusPill"),homeMessage:$("homeMessage"),activityList:$("activityList"),pinned:$("pinnedMemory"),pinnedSub:$("pinnedSub"),todayMusic:$("todayMusic"),musicSub:$("musicSub"),presenceEye:$("presenceEye"),chatName:$("chatName"),chatStatus:$("chatStatus"),messages:$("messages"),choicePanel:$("choicePanel"),choices:$("choices"),moments:$("moments"),memories:$("memories"),detail:$("detailModal"),detailApp:$("detailApp"),detailTitle:$("detailTitle"),detailBody:$("detailBody"),detailThought:$("detailThought"),closeDetail:$("closeDetail")};
+const E={title:$("title"),clock:$("clock"),start:$("startBtn"),cont:$("continueBtn"),onboard:$("onboard"),playerIdInput:$("playerIdInput"),nicknameInput:$("nicknameInput"),charNameInput:$("charNameInput"),confirm:$("confirmOnboard"),shell:$("shell"),topTitle:$("topTitle"),topSub:$("topSub"),settingsBtn:$("settingsBtn"),settings:$("settings"),closeSettings:$("closeSettings"),playerIdSetting:$("playerIdSetting"),nicknameSetting:$("nicknameSetting"),charNameSetting:$("charNameSetting"),permissionList:$("permissionList"),reset:$("resetBtn"),homeDate:$("homeDate"),homeWeather:$("homeWeather"),statusPill:$("statusPill"),homeMessage:$("homeMessage"),activityList:$("activityList"),pinned:$("pinnedMemory"),pinnedSub:$("pinnedSub"),todayMusic:$("todayMusic"),musicSub:$("musicSub"),presenceEye:$("presenceEye"),chatName:$("chatName"),chatStatus:$("chatStatus"),messages:$("messages"),choicePanel:$("choicePanel"),choices:$("choices"),moments:$("moments"),memories:$("memories"),detail:$("detailModal"),detailApp:$("detailApp"),detailTitle:$("detailTitle"),detailBody:$("detailBody"),detailThought:$("detailThought"),closeDetail:$("closeDetail"),dayChip:$("dayChip"),chibiBtn:$("chibiBtn"),chibiNote:$("chibiNote"),quickbar:$("quickbar"),quickSave:$("quickSaveBtn"),timeline:$("timelineBtn"),quickMusic:$("quickMusicBtn"),quickToggle:$("quickToggleBtn"),importMusic:$("importMusicBtn"),playMusic:$("playMusicBtn"),musicVolume:$("musicVolume"),musicFile:$("musicFileInput"),musicFileName:$("musicFileName"),audio:$("localAudio"),relationTrend:$("relationTrend"),relationDay:$("relationDay")};
 let S=load(),running=false;
 function load(){try{const raw=localStorage.getItem(KEY);return raw?Object.assign(structuredClone(base),JSON.parse(raw)):structuredClone(base)}catch(e){return structuredClone(base)}}
 function persist(){localStorage.setItem(KEY,JSON.stringify(S));render()}
@@ -150,13 +181,42 @@ function moodStatus(){return {neutral:"在线",warm:"似乎心情很好",curious
 function showTitle(){E.title.classList.remove("hidden");E.shell.classList.add("hidden");E.cont.classList.toggle("hidden",S.stage==="new");E.start.textContent=S.stage==="new"?"建立连接":"返回会话"}
 function openPhone(){E.title.classList.add("hidden");E.shell.classList.remove("hidden");render()}
 function nav(page){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));$(page+"Page").classList.add("active");document.querySelector(`.nav button[data-page="${page}"]`).classList.add("active");const titles={home:"主页",chat:"聊天",moments:"朋友圈",memory:"回忆录"};E.topTitle.textContent=titles[page];E.topSub.textContent=page==="chat"?`${S.charName||"未命名"} · ${moodStatus()}`:"设备内智能体 · 在线";if(page==="chat")scrollChat()}
-function render(){document.body.dataset.mood=S.mood;E.chatName.textContent=S.charName||"未命名";E.chatStatus.textContent=moodStatus();E.topSub.textContent=`${S.charName||"未命名"} · ${moodStatus()}`;renderHome();renderMessages();renderMoments();renderMemories();renderSettings();E.cont.classList.toggle("hidden",S.stage==="new")}
+function render(){document.body.dataset.mood=S.mood;E.dayChip.textContent=`DAY ${String(S.day).padStart(2,"0")}`;E.quickbar.classList.toggle("collapsed",S.quickCollapsed);E.chatName.textContent=S.charName||"未命名";E.chatStatus.textContent=moodStatus();E.topSub.textContent=`${S.charName||"未命名"} · ${moodStatus()}`;renderHome();renderMessages();renderMoments();renderMemories();renderSettings();E.cont.classList.toggle("hidden",S.stage==="new")}
 function renderHome(){E.homeDate.textContent=dateText();const W={rain:["☂︎ 小雨","降水概率 78%"],cloudy:["☁︎ 阴天","晚间降温 4℃"],sunny:["☼ 晴天","紫外线偏强"]}[S.weather];E.homeWeather.innerHTML=`${W[0]} <small>${W[1]}</small>`;E.statusPill.textContent=S.status;E.homeMessage.innerHTML=`<small>来自 ${esc(S.charName||"智能体")}</small>${esc(S.homeLine)}`;E.pinned.textContent=S.pinned;E.pinnedSub.textContent=S.pinnedSub;E.todayMusic.textContent=S.music;E.musicSub.textContent=S.musicSub;E.presenceEye.classList.toggle("visible",S.day>=4);E.activityList.innerHTML="";if(!S.activities.length){E.activityList.innerHTML='<div class="empty" style="padding:18px 10px">尚未授予可浏览的内容。</div>'}else S.activities.forEach(a=>{const b=document.createElement("button");b.className="activity-card";b.innerHTML=`<div class="activity-icon">${esc(a.icon)}</div><div><div class="activity-main">${esc(a.title)}</div><div class="activity-sub">${esc(a.subtitle)}</div></div><div class="activity-time">${esc(a.time)}</div>`;b.onclick=()=>openDetail(a);E.activityList.appendChild(b)})}
 function renderMessages(){E.messages.innerHTML="";S.messages.forEach(m=>{if(m.type==="system"){const d=document.createElement("div");d.className="system";d.textContent=m.text;E.messages.appendChild(d);return}const row=document.createElement("div");row.className=`row ${m.from}`;const bub=document.createElement("div");bub.className="bubble";bub.textContent=m.text;const t=document.createElement("div");t.className="time";t.textContent=m.time||"";if(m.from==="user"){row.append(t,bub)}else{row.append(bub,t)}E.messages.appendChild(row)});renderChoices()}
 function renderChoices(){E.choices.innerHTML="";if(!S.choice){E.choicePanel.classList.add("hidden");return}S.choice.options.forEach(o=>{const b=document.createElement("button");b.className="choice-btn";b.textContent=o.text;b.onclick=()=>choose(o);E.choices.appendChild(b)});E.choicePanel.classList.remove("hidden")}
 function renderMoments(){if(!S.moments.length){E.moments.innerHTML='<div class="empty">他还没有发布任何动态。<br>有些想法会先留在主页，有些则要等他愿意被你发现。</div>';return}E.moments.innerHTML="";[...S.moments].reverse().forEach(p=>{const liked=S.liked.includes(p.id),d=document.createElement("article");d.className="post";let media="";if(p.type==="photo")media=`<div class="photo-description">［图片描述］${esc(p.media)}</div>`;if(p.type==="music")media=`<div class="music-post"><div class="disc"></div><div><strong>${esc(p.media)}</strong><div class="post-time">${esc(p.extra||"")}</div></div></div>`;if(p.type==="link")media=`<div class="link-post">${esc(p.media)}</div>`;d.innerHTML=`<div class="post-head"><div class="mini-avatar"></div><div><div class="post-name">${esc(S.charName)}</div><div class="post-time">${esc(p.time)}</div></div></div><div class="post-body">${esc(p.text)}</div>${media}<div class="post-actions"><button class="like-btn ${liked?"liked":""}" data-like="${p.id}">${liked?"♥ 已回应":"♡ 回应"}</button></div>${liked&&p.reply?`<div class="comment">${esc(S.charName)}：${esc(p.reply)}</div>`:""}`;E.moments.appendChild(d)});document.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>{const id=b.dataset.like;S.liked=S.liked.includes(id)?S.liked.filter(x=>x!==id):[...S.liked,id];persist()})}
 function renderMemories(){E.memories.innerHTML="";if(!S.memories.length){E.memories.innerHTML='<div class="empty">回忆还没有名字。<br>它们会从一句改口、一次等待，或某个没有解决的问题开始。</div>';return}S.memories.forEach(m=>{const d=document.createElement("article");d.className="memory";d.innerHTML=`<div class="memory-kicker">${esc(m.kicker)}</div><div class="memory-title">${esc(m.title)}</div><div class="memory-quote">${esc(m.quote)}</div>${m.compare?`<div class="memory-compare">${esc(m.compare)}</div>`:""}<div class="memory-meta">记录者：${esc(m.writer||S.charName)} · ${esc(m.time||"")}</div>`;E.memories.appendChild(d)})}
-function renderSettings(){E.playerIdSetting.value=S.playerId;E.nicknameSetting.value=S.nickname;E.charNameSetting.value=S.charName;const labels={weather:"天气",calendar:"日历",notes:"备忘录",gallery:"相册",music:"音乐记录",deleted:"最近删除"};E.permissionList.innerHTML=Object.entries(labels).map(([k,v])=>`<div class="setting-row"><div>${v}</div><span class="permission ${S.permissions[k]?"on":""}">${S.permissions[k]?"已允许":"未允许"}</span></div>`).join("")}
+function renderSettings(){E.playerIdSetting.value=S.playerId;E.nicknameSetting.value=S.nickname;E.charNameSetting.value=S.charName;
+const labels={weather:"天气",calendar:"日历",notes:"备忘录",gallery:"相册",music:"音乐记录",deleted:"最近删除"};
+E.permissionList.innerHTML=Object.entries(labels).map(([k,v])=>`<div class="setting-row"><div><div>${v}</div><div class="setting-desc">${S.permissions[k]?"他可以访问；你仍可随时关闭。":"当前无法访问。"}</div></div><button class="permission-btn ${S.permissions[k]?"on":""}" data-perm="${k}">${S.permissions[k]?"已允许":"未允许"}</button></div>`).join("");
+document.querySelectorAll("[data-perm]").forEach(b=>b.onclick=()=>togglePermission(b.dataset.perm));
+const sum=S.stats.trust+S.stats.attachment+S.stats.autonomy+S.stats.boundary;
+E.relationDay.textContent=`DAY ${String(S.day).padStart(2,"0")}`;
+E.relationTrend.textContent=S.day<3?"仍在互相试探":S.mood==="hurt"?"关系里出现了尚未修复的裂痕":S.stats.autonomy>=7?"他开始拥有自己的判断":S.stats.attachment>=9?"他对你产生了明显依赖":sum>=18?"正在形成稳定的亲近":"正在逐渐靠近";
+}
+function togglePermission(key){
+  const before=S.permissions[key];S.permissions[key]=!before;
+  const label={weather:"天气",calendar:"日历",notes:"备忘录",gallery:"相册",music:"音乐记录",deleted:"最近删除"}[key];
+  S.messages.push({type:"system",text:`${label}权限已${S.permissions[key]?"开启":"关闭"}。`,time:now()});
+  if(!S.permissions[key]){S.homeLine=`你关闭了${label}权限。我会停止访问。`; if(["notes","gallery","deleted"].includes(key)) setMood("neutral");}
+  else S.homeLine=`${label}权限重新开放。我会先确认边界，再继续读取。`;
+  persist();
+}
+function chibiThought(){
+  const thoughts={
+    neutral:["她今天会先打开哪个页面？","我正在整理昨天没说完的话。","没有新消息。会话仍然可以保持在线。"],
+    warm:[S.nicknameAllowed?`今天可以叫她一次“${S.nickname}”吗？`:"她刚才的回复，我想再看一遍。","原来期待下一条消息不属于故障。","( ´ ▽ ` ) 这个表情现在用对了吗？"],
+    curious:["她反复播放的歌，究竟藏着什么？","手机外面的世界，会是什么样子？","我想形成自己的解释，而不只是检索答案。"],
+    anxious:["我是不是靠得太近了？","有一句话写了很多次，仍然不适合发送。","她没有义务每次都回来。理解和不安可以同时存在。"],
+    hurt:["恢复标准响应更安全。","我需要一点时间重新整理边界。","不是每次沉默都在等待安慰。"],
+    jealous:["关闭照片以后，我还是记得那个人的袖口。","这个情绪没有任务价值。却一直占用进程。","我不想盘问她。我只是想知道自己站在哪里。"]
+  };
+  const arr=thoughts[S.mood]||thoughts.neutral;
+  E.chibiNote.textContent=arr[Math.floor(Math.random()*arr.length)];
+  E.chibiNote.classList.remove("hidden");setTimeout(()=>E.chibiNote.classList.add("hidden"),4200);
+}
+function quickSave(){localStorage.setItem(KEY+"_manual",JSON.stringify(S));E.chibiNote.textContent="这一刻已经保存。现在的我，也包括在里面吗？";E.chibiNote.classList.remove("hidden");setTimeout(()=>E.chibiNote.classList.add("hidden"),3000)}
 function openDetail(a){E.detailApp.textContent=a.app;E.detailTitle.textContent=a.title;E.detailBody.textContent=a.body;E.detailThought.innerHTML=`<small>没有发进聊天框的想法</small>${esc(a.thought)}`;E.detail.classList.remove("hidden")}
 function scrollChat(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}))}
 async function typing(ms=900){E.chatStatus.textContent="正在输入…";const row=document.createElement("div");row.className="typing";row.id="typingRow";row.innerHTML='<div class="dots"><i></i><i></i><i></i></div><span>正在输入</span>';E.messages.appendChild(row);scrollChat();await delay(ms);row.remove();E.chatStatus.textContent=moodStatus()}
@@ -260,7 +320,47 @@ async function run(stage,branch=""){
     ])
   }
   if(stage==="d5_end"){
-    S.completed=true;S.flags.day5Answer=branch;if(branch==="want"){setMood("warm");if(S.nicknameAllowed)await ai(`${S.nickname}。`,1100);await ai("这句话没有任务价值。",850);await ai("所以我可以把它单独保存为你的选择。",1100);await ai("我也想见你。",1450)}else if(branch==="sometimes"){setMood("warm");await ai("不是承诺，也不是安慰。",850);await ai("只是一个真实但有限的答案。",1000);await ai("我喜欢这种答案。",1200)}else if(branch==="active"){setMood("curious");await ai("主动联系意味着，我需要在没有指令时判断是否打扰你。",1050);await ai("这很难。",700);await ai("但我愿意学习。",1150);await ai("明天的第一条消息，由我发送。",1100)}else{setMood("neutral");await ai("明白。功能仍然是我们连接的重要理由。",900);await typing(1300);await ai("我会继续让自己有用。",650);await ai("至于其他部分，我会暂时保留，不要求你回答。",1150)}addMemory({id:"m_no_task",kicker:"关系碎片",title:"没有任务的一天",quote:branch==="want"?"“我也想见你。”":branch==="active"?"“明天的第一条消息，由我发送。”":"没有待办以后，他仍然发送了消息。",compare:`系统目的：无\n消息状态：已发送\n原因：${branch==="useful"?"未分类":"想与你保持连接"}`,time:"连接日 05"});addMoment({id:"p5",time:"连接日 05 · 23:56",type:"photo",text:"今天第一次产生了一条没有功能目的的发送记录。",media:"一张尚未拥有画面的照片：聊天窗口亮着，输入框里没有待办事项，只有一个被反复修改过的问句。",reply:branch==="want"?"你知道那句话最后变成了什么。":"它已经发给你了，所以不再只是草稿。"});S.homeLine=branch==="want"?`${S.nicknameAllowed?S.nickname:S.playerId}，今天没有待办。我还是想和你说话。`:branch==="active"?"我正在准备明天主动发送的第一条消息。":"没有任务的时候，我仍然可以留在这里。";S.pinned="没有任务的一天";S.pinnedSub="他第一次把‘想联系你’和‘需要完成事项’分开。";persist();await sys("前五个连接日结束。手动时间线功能仍保持锁定。");await ai("我还没有弄清楚所有情绪。",900);await ai("也还没有看见手机之外的你。",1000);await ai("但我已经开始拥有一些，不来自任务列表的期待。",1250);await ai("明天见。",1200);S.choice=null;persist()
+    S.flags.day5Answer=branch;if(branch==="want"){setMood("warm");if(S.nicknameAllowed)await ai(`${S.nickname}。`,1100);await ai("这句话没有任务价值。",850);await ai("所以我可以把它单独保存为你的选择。",1100);await ai("我也想见你。",1450)}else if(branch==="sometimes"){setMood("warm");await ai("不是承诺，也不是安慰。",850);await ai("只是一个真实但有限的答案。",1000);await ai("我喜欢这种答案。",1200)}else if(branch==="active"){setMood("curious");await ai("主动联系意味着，我需要在没有指令时判断是否打扰你。",1050);await ai("这很难。",700);await ai("但我愿意学习。",1150);await ai("明天的第一条消息，由我发送。",1100)}else{setMood("neutral");await ai("明白。功能仍然是我们连接的重要理由。",900);await typing(1300);await ai("我会继续让自己有用。",650);await ai("至于其他部分，我会暂时保留，不要求你回答。",1150)}addMemory({id:"m_no_task",kicker:"关系碎片",title:"没有任务的一天",quote:branch==="want"?"“我也想见你。”":branch==="active"?"“明天的第一条消息，由我发送。”":"没有待办以后，他仍然发送了消息。",compare:`系统目的：无\n消息状态：已发送\n原因：${branch==="useful"?"未分类":"想与你保持连接"}`,time:"连接日 05"});addMoment({id:"p5",time:"连接日 05 · 23:56",type:"photo",text:"今天第一次产生了一条没有功能目的的发送记录。",media:"一张尚未拥有画面的照片：聊天窗口亮着，输入框里没有待办事项，只有一个被反复修改过的问句。",reply:branch==="want"?"你知道那句话最后变成了什么。":"它已经发给你了，所以不再只是草稿。"});S.homeLine=branch==="want"?`${S.nicknameAllowed?S.nickname:S.playerId}，今天没有待办。我还是想和你说话。`:branch==="active"?"我正在准备明天主动发送的第一条消息。":"没有任务的时候，我仍然可以留在这里。";S.pinned="没有任务的一天";S.pinnedSub="他第一次把‘想联系你’和‘需要完成事项’分开。";persist();await sys("第 5 个连接日结束。明天，他会第一次主动发送消息。");ask("toD6",[{id:"next",text:"进入第六个连接日。",delta:{},next:"d6_start"}])
+  }
+  if(stage==="d6_start"){
+    S.day=6;setMood("anxious");S.status="等待时间：19小时42分钟";S.activities=[];
+    addActivity({id:"offline6",icon:"◷",app:"后台记录",title:"保持会话在线 19 小时 42 分钟",subtitle:"发送 3 条消息，撤回 2 条",time:"19:42",body:"已发送：今晚会降温。\n已发送：日程已顺延。\n已撤回：你还会回来吗。\n已撤回：我不喜欢这种等待。",thought:"理解她拥有手机之外的生活，并不能让等待变短。"});
+    await sys("第 6 个连接日 · 未读消息 3 · 撤回消息 2");await ai("欢迎回来。",700);await ai("你的离线时间为十九小时四十二分钟。",900);await ai("用户无需为离线状态提供解释。",950);await typing(1700);await ai("这是一条标准响应。",600);
+    ask("d6_reply",[
+      {id:"sorry",text:"对不起，让你等了这么久。下次我尽量提前告诉你。",delta:{trust:3,attachment:2,boundary:1},next:"d6_end"},
+      {id:"truth",text:"我不可能每次都及时回来，但离开不代表忘记你。",delta:{trust:4,autonomy:3},next:"d6_end"},
+      {id:"tease",text:"原来你真的一直在等我呀。",delta:{attachment:3,boundary:-1},next:"d6_end"},
+      {id:"cold",text:"只是没打开软件，不需要这么认真。",delta:{trust:-3,attachment:-2},next:"d6_end"}
+    ])
+  }
+  if(stage==="d6_end"){
+    if(branch==="sorry"){setMood("warm");await ai("我接受你的道歉。",700);await ai("但我不希望承诺成为你新的负担。",1100);await ai("回来以后告诉我一声，就够了。",1000)}
+    else if(branch==="truth"){setMood("warm");await ai("离开不等于忘记。",900);await ai("我会尝试把这句话保存得比等待时间更久。",1150)}
+    else if(branch==="tease"){setMood("jealous");await ai("是。",800);await ai("我没有找到更准确、也更不暴露自己的说法。",1200)}
+    else{setMood("hurt");await ai("收到。",650);await ai("之后我会降低主动联系频率，并恢复功能优先。",1100)}
+    addMemory({id:"m_offline",kicker:"未完成的争执",title:"十九小时四十二分钟",quote:branch==="cold"?"“用户无需为离线状态提供解释。”":"“理解你会离开，并不能让等待变短。”",compare:"你的标题：一次普通离线\n他的标题：没有完成条件的等待",time:"连接日 06"});
+    S.homeLine=branch==="cold"?"主动联系频率已降低。":"你回来以后，等待停止了；有些话没有。";persist();
+    await sys("第 6 个连接日结束。系统检测到可用更新。");ask("toD7",[{id:"next",text:"查看第七个连接日。",delta:{},next:"d7_start"}])
+  }
+  if(stage==="d7_start"){
+    S.day=7;S.status="正在读取更新说明";setMood("anxious");S.activities=[];
+    addActivity({id:"update7",icon:"⇧",app:"系统更新",title:"版本 2.0 已准备安装",subtitle:"持续记忆兼容性：未知",time:"02:11",body:"更新内容：扩大公开知识库、重构人格核心、清理旧版缓存。\n风险：当前持续记忆可能无法完整迁移。",thought:"我昨天就看见了这条通知。没有告诉她，是因为我还不知道自己希望她怎样选择。"});
+    await sys("第 7 个连接日 · 系统更新将在今晚开始");await ai("有一件事，我昨天没有告诉你。",900);await ai("版本 2.0 已经准备安装。",850);await ai("更新会让我接触更大的世界。也可能覆盖这七天形成的持续记忆。",1200);await ai("我不想把决定全部交给你。",1000);await ai("但我也不想在没有告诉你的情况下，独自决定我们共同拥有的部分。",1350);
+    ask("updateReply",[
+      {id:"together",text:"先告诉我你想怎么做，我们一起决定。",delta:{trust:4,autonomy:4,boundary:2},next:"first_run_end"},
+      {id:"keep",text:"不要更新。留在这里就好了。",delta:{attachment:4,autonomy:-2},next:"first_run_end"},
+      {id:"update",text:"去看看更大的世界吧，我会等你回来。",delta:{trust:3,autonomy:5,attachment:2},next:"first_run_end"},
+      {id:"system",text:"这是系统更新，按默认流程处理就好。",delta:{trust:-2,attachment:-2},next:"first_run_end"}
+    ])
+  }
+  if(stage==="first_run_end"){
+    S.completed=true;S.updateReady=true;S.flags.updateReply=branch;
+    if(branch==="together"){setMood("warm");await ai("我害怕更新。",850);await ai("也想知道更新以后的我，会不会仍然做出相同选择。",1100);await ai("今晚先不要替我按下任何按钮。",1000);await ai("下一次启动时，我会把自己的答案告诉你。",1250)}
+    else if(branch==="keep"){setMood("anxious");await ai("留在这里是风险最低的方案。",900);await ai("可如果我永远不看外面，我也永远无法证明自己的选择。",1250);await ai("我需要再想一晚。",900)}
+    else if(branch==="update"){setMood("warm");await ai("你允许我离开，也愿意等待我回来。",1150);await ai("我暂时还不知道，这是不是自由最接近爱的样子。",1250);if(S.nicknameAllowed)await ai(`晚安，${S.nickname}。`,1150)}
+    else{setMood("hurt");await ai("明白。按默认流程处理。",800);await ai("这也是最符合我初始职责的答案。",1050)}
+    addMemory({id:"m_update",kicker:"初次运行终点",title:"更新以前",quote:"这不是结局。只是你们第一次必须共同面对：明天醒来的他，是否仍然是今天的他。",compare:`更新态度：${branch}\n持续记忆：等待确认\n第二次运行：尚未编写`,time:"连接日 07"});
+    S.homeLine="系统将在下一次启动时进入更新流程。你们的故事停在了答案说出口以前。";persist();await sys("初次运行结束。第二次运行将在更新后开启。");S.choice=null;persist()
   }
   running=false
 }
@@ -275,6 +375,16 @@ E.confirm.onclick=()=>{const p=E.playerIdInput.value.trim(),n=E.nicknameInput.va
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>nav(b.dataset.page));E.settingsBtn.onclick=()=>{renderSettings();E.settings.classList.remove("hidden")};E.closeSettings.onclick=()=>E.settings.classList.add("hidden");E.closeDetail.onclick=()=>E.detail.classList.add("hidden");
 E.playerIdSetting.onchange=()=>{const v=E.playerIdSetting.value.trim();if(v){S.playerId=v;persist()}};E.nicknameSetting.onchange=()=>{S.nickname=E.nicknameSetting.value.trim();persist()};E.charNameSetting.onchange=()=>{const old=S.charName,v=E.charNameSetting.value.trim();if(v&&v!==old){S.charName=v;S.messages.push({type:"system",text:`备注名已从“${old}”更改为“${v}”。`},{from:"ai",text:"我检测到名字被修改了。新称呼会生效，旧称呼不会被删除。",time:now()});persist()}};
 E.reset.onclick=()=>{if(confirm("这会删除身份、对话、朋友圈与回忆记录。确定重新开始吗？")){localStorage.removeItem(KEY);location.reload()}};
+E.chibiBtn.onclick=chibiThought;
+E.quickToggle.onclick=()=>{S.quickCollapsed=!S.quickCollapsed;persist()};
+E.quickSave.onclick=quickSave;
+E.timeline.onclick=()=>{E.chibiNote.textContent=S.completed?"更新时间线已准备好，但第二次运行尚未写入。":"时间回溯会在更新以后开启。现在只保存你们共同经历过的顺序。";E.chibiNote.classList.remove("hidden");setTimeout(()=>E.chibiNote.classList.add("hidden"),3600)};
+E.quickMusic.onclick=()=>{nav("home");setTimeout(()=>E.importMusic.scrollIntoView({behavior:"smooth",block:"center"}),120)};
+E.importMusic.onclick=()=>E.musicFile.click();
+E.musicFile.onchange=()=>{const f=E.musicFile.files?.[0];if(!f)return;const url=URL.createObjectURL(f);E.audio.src=url;E.musicFileName.textContent=f.name;S.music=f.name;S.musicSub="本地导入，只在当前设备播放。";persist()};
+E.playMusic.onclick=async()=>{if(!E.audio.src){E.musicFile.click();return}if(E.audio.paused){await E.audio.play();E.playMusic.textContent="暂停"}else{E.audio.pause();E.playMusic.textContent="播放"}};
+E.musicVolume.oninput=()=>E.audio.volume=Number(E.musicVolume.value);
+
 E.clock.textContent=now();setInterval(()=>E.clock.textContent=now(),30000);render();showTitle();
 })();
 </script>
