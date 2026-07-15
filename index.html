@@ -130,13 +130,94 @@ body[data-mood="hurt"] .avatar:before,body[data-mood="hurt"] .avatar:after,body[
 .detail-app{font-size:11px;color:var(--accent);letter-spacing:.08em;margin-bottom:9px}.detail-title{font-size:21px;font-weight:720;margin-bottom:10px}.detail-body{font-size:14px;line-height:1.85;color:#4f5b67}.detail-thought{margin-top:16px;border-radius:15px;background:#eef2f6;padding:13px;font-size:12px;line-height:1.75;color:#5d6874}.permission-toggle{width:100%;padding:13px;border-radius:14px;margin-top:16px;background:rgba(var(--accent-rgb),.11);color:var(--accent);font-weight:700}
 
 @media(min-width:461px){#app{min-height:calc(100dvh - 24px);margin:12px 0;border-radius:32px}.title,.shell{min-height:calc(100dvh - 24px)}.nav,.choice-panel{width:460px}}
+
+/* 0.7 structural polish */
+html,body{overflow-x:hidden}
+.shell{min-height:100dvh}
+.topbar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(100vw,460px);height:calc(58px + env(safe-area-inset-top));z-index:40}
+.page{padding-top:calc(76px + env(safe-area-inset-top))}
+.chat-page{padding-top:calc(58px + env(safe-area-inset-top))!important}
+.chat-head{
+  position:fixed!important;
+  top:calc(58px + env(safe-area-inset-top))!important;
+  left:50%;transform:translateX(-50%);
+  width:min(100vw,460px);
+  z-index:35!important;
+  box-shadow:0 10px 24px rgba(31,42,55,.06)
+}
+.messages{padding-top:104px!important}
+.day-overlay{
+  position:fixed!important;inset:0!important;z-index:100!important;
+  min-height:100dvh!important;height:100dvh!important;overflow:hidden!important;
+  padding:calc(42px + env(safe-area-inset-top)) 26px calc(92px + env(safe-area-inset-bottom))!important;
+  justify-content:center!important
+}
+.day-overlay>div{width:100%;max-height:calc(100dvh - 170px);overflow:auto;padding-bottom:12px}
+.day-overlay .primary{position:absolute;left:26px;right:26px;bottom:calc(24px + env(safe-area-inset-bottom));width:auto}
+.day-recap{margin-top:30px!important;gap:9px!important}.day-whisper{margin-top:18px!important}
+.day-title{font-size:52px!important}.recap-line{padding:13px 15px!important}
+
+#roomPage{padding:calc(76px + env(safe-area-inset-top)) 14px calc(96px + env(safe-area-inset-bottom))}
+.room{
+  min-height:390px!important;height:390px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.18),transparent 45%),
+    linear-gradient(150deg,var(--room-a),var(--room-b))!important
+}
+.wall-glow{position:absolute;inset:-40px -50px auto auto;width:260px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(var(--accent-rgb),.24),transparent 68%);filter:blur(8px)}
+.room-window{right:20px!important;top:44px!important;width:112px!important;height:126px!important}
+.window-moon{position:absolute;right:17px;top:18px;font-size:30px;color:rgba(var(--accent-rgb),.48)}
+.room-rug{position:absolute;left:44px;right:35px;bottom:26px;height:74px;border-radius:50%;background:radial-gradient(ellipse,rgba(var(--accent-rgb),.16),transparent 70%)}
+.room-bed{position:absolute;right:22px;bottom:67px;width:130px;height:54px;border-radius:24px 24px 12px 12px;background:rgba(255,255,255,.48);box-shadow:inset 0 -12px 0 rgba(var(--accent-rgb),.08)}
+.wall-memory{position:absolute;padding:7px 9px;background:rgba(255,255,255,.66);border:4px solid rgba(255,255,255,.65);box-shadow:0 8px 20px rgba(31,42,55,.07);font-size:8px;color:var(--muted);text-align:center}
+.memory-frame-a{left:26px;top:85px;width:74px;height:57px;transform:rotate(-3deg)}
+.memory-frame-b{left:108px;top:64px;width:66px;height:52px;transform:rotate(4deg);opacity:.58}
+.chibi{left:125px!important;bottom:72px!important}
+.desk{left:22px!important;bottom:61px!important;width:181px!important}
+.shelf{right:17px!important;bottom:58px!important}
+.room-status{bottom:14px!important}
+.room-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}
+.summary-card{min-height:92px;text-align:left;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.summary-card small,.summary-card span{display:block;color:var(--muted);font-size:10px;line-height:1.45}.summary-card b{display:block;font-size:23px;margin:6px 0 4px}.relation-summary b{color:var(--accent)}
+.compact-title{display:flex;align-items:flex-end;justify-content:space-between;margin:18px 3px 9px!important}.compact-title span{font-size:12px;letter-spacing:.08em}.compact-title small{font-size:9px;color:var(--muted);font-weight:400;letter-spacing:0}
+.activity-strip{display:flex;gap:9px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:3px}
+.activity-strip::-webkit-scrollbar{display:none}
+.activity-strip .activity-card{min-width:245px;margin:0;scroll-snap-align:start;grid-template-columns:38px 1fr auto}
+.activity-strip .empty{min-width:100%;padding:24px}
+.app-content-grid{grid-template-columns:1fr 1fr!important}
+.app-content-grid .app-btn{min-height:104px;text-align:left;padding:13px!important;position:relative}
+.app-content-grid .app-btn b{font-size:18px!important;margin-bottom:9px!important}
+.app-content-grid .app-btn strong{display:block;font-size:12px;margin-bottom:5px;line-height:1.4}
+.app-content-grid .app-btn small{font-size:9px!important;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.app-badge{position:absolute;right:10px;top:10px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:rgba(var(--accent-rgb),.12);color:var(--accent);font-size:9px;display:grid;place-items:center}
+.music-player{margin-bottom:2px}
+
+.memory-page{padding-left:14px;padding-right:14px}
+.memory-hero{border-radius:25px;padding:22px;background:linear-gradient(145deg,rgba(var(--accent-rgb),.14),rgba(255,255,255,.78));border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow);margin-bottom:13px}
+.memory-hero small{font-size:9px;letter-spacing:.18em;color:var(--muted)}
+.memory-hero h2{font-family:"Songti SC","STSong",serif;margin:9px 0 8px;font-size:30px}.memory-hero p{font-size:12px;color:#596674;line-height:1.7;margin:0}
+.memory-overview{display:flex;justify-content:space-between;margin-top:17px;padding-top:13px;border-top:1px solid rgba(var(--accent-rgb),.12);font-size:10px;color:var(--muted)}.memory-overview b{font-size:16px;color:var(--accent);margin-right:3px}
+.memory-wrap{grid-template-columns:1fr 1fr!important;gap:10px!important}
+.memory{min-height:184px;border-radius:20px!important;padding:15px!important;background:linear-gradient(150deg,#fff,rgba(var(--accent-rgb),.06))!important}
+.memory:nth-child(3n+1){grid-column:span 2;min-height:158px}
+.memory:nth-child(3n+2){transform:rotate(-.5deg)}.memory:nth-child(3n+3){transform:rotate(.6deg)}
+.memory:before{content:"";position:absolute;right:-18px;top:-18px;width:64px;height:64px;border-radius:50%;background:rgba(var(--accent-rgb),.08)}
+.memory-kicker{position:relative;z-index:1}.memory-title{font-size:16px!important;position:relative;z-index:1}
+.memory-quote{font-size:11px!important;line-height:1.7!important;position:relative;z-index:1}
+.memory-compare{font-size:9px!important;padding:9px!important;white-space:pre-line}.memory-meta{position:absolute;left:15px;bottom:12px}
+.memory .memory-symbol{font-size:22px;margin-bottom:8px}
+
+.detail-body-card{padding:12px 13px;border-radius:14px;background:#fff;border:1px solid var(--line);margin-bottom:9px}
+.detail-body-card b{display:block;font-size:12px;margin-bottom:5px}.detail-body-card span{font-size:11px;line-height:1.65;color:#5e6975}
+.permission-toggle#detailPermission{display:none!important}
+
 </style>
 </head>
 <body data-mood="neutral">
 <div id="app">
 
 <section id="title" class="title">
-  <div class="statusline"><span>PRIVATE BETA · 0.6</span><span id="clock">00:00</span></div>
+  <div class="statusline"><span>PRIVATE BETA · 0.7</span><span id="clock">00:00</span></div>
   <div>
     <div class="eyebrow">A QUIET ROMANCE</div>
     <h1 class="game-title">在你关机以前</h1>
@@ -185,9 +266,13 @@ body[data-mood="hurt"] .avatar:before,body[data-mood="hurt"] .avatar:after,body[
 
   <section id="roomPage" class="page active">
     <div class="room">
+      <div class="wall-glow"></div>
       <div id="roomDay" class="room-day">DAY 00</div>
       <div id="roomWeather" class="room-weather">☂︎ 小雨</div>
-      <div class="room-window"></div><div class="desk"></div><div class="shelf"></div>
+      <div class="room-window"><span class="window-moon">◌</span></div>
+      <div class="wall-memory memory-frame-a">第一次命名</div>
+      <div class="wall-memory memory-frame-b">尚未解锁</div>
+      <div class="room-rug"></div><div class="room-bed"></div><div class="desk"></div><div class="shelf"></div>
       <button id="chibiBtn" class="chibi" aria-label="点击查看他的心声">
         <div class="chibi-head"><div class="chibi-hair"></div><i class="chibi-eye left"></i><i class="chibi-eye right"></i><i class="chibi-mouth"></i></div>
         <div class="chibi-body"></div>
@@ -196,20 +281,27 @@ body[data-mood="hurt"] .avatar:before,body[data-mood="hurt"] .avatar:after,body[
       <div id="roomStatus" class="room-status">等待初始化</div>
       <div id="thoughtBubble" class="thought-bubble hidden"></div>
     </div>
-    <div class="room-actions">
-      <button id="decorateBtn">装饰房间</button>
-      <button id="relationRoomBtn">查看关系</button>
+
+    <div class="room-summary">
+      <button id="relationRoomBtn" class="summary-card relation-summary">
+        <small>关系温度</small><b id="roomRelationScore">0</b><span id="roomRouteText">互相试探</span>
+      </button>
+      <button id="decorateBtn" class="summary-card">
+        <small>房间布置</small><b>装饰</b><span>你和他都能改变这里</span>
+      </button>
     </div>
 
-    <div class="section-title">他今天去过的地方</div>
-    <div id="activityList"></div>
+    <div class="section-title compact-title"><span>今日轨迹</span><small>点击查看他没说出口的想法</small></div>
+    <div id="activityList" class="activity-strip"></div>
 
-    <div class="section-title">手机应用</div>
-    <div id="appGrid" class="apps"></div>
+    <div class="section-title compact-title"><span>他的手机应用</span><small>这里展示内容，权限只在设置里管理</small></div>
+    <div id="appGrid" class="apps app-content-grid"></div>
 
     <div class="music-player">
-      <div style="font-size:13px;font-weight:700">本地音乐</div>
-      <div id="musicName" class="setting-desc">尚未导入。音乐不会上传到 GitHub。</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div><div style="font-size:13px;font-weight:700">房间播放器</div><div id="musicName" class="setting-desc">尚未导入。音乐只在当前设备播放。</div></div>
+        <span style="font-size:23px">♫</span>
+      </div>
       <div class="music-controls">
         <button id="importMusicBtn">导入</button><button id="playMusicBtn">播放</button>
         <input id="musicVolume" type="range" min="0" max="1" step="0.05" value="0.7">
@@ -238,8 +330,13 @@ body[data-mood="hurt"] .avatar:before,body[data-mood="hurt"] .avatar:after,body[
     <div id="posts"></div>
   </section>
 
-  <section id="memoryPage" class="page">
-    <h2 class="page-title">共同回忆</h2>
+  <section id="memoryPage" class="page memory-page">
+    <div class="memory-hero">
+      <small>SHARED ARCHIVE</small>
+      <h2>共同回忆</h2>
+      <p>不是任务记录，而是那些后来改变了含义的普通时刻。</p>
+      <div class="memory-overview"><span><b id="memoryCount">0</b> 条记忆</span><span id="memoryRelation">互相试探</span></div>
+    </div>
     <div id="memories" class="memory-wrap"></div>
   </section>
 
@@ -264,7 +361,7 @@ body[data-mood="hurt"] .avatar:before,body[data-mood="hurt"] .avatar:after,body[
   <div class="setting-label">版本状态</div>
   <div class="setting-card"><div class="setting-row"><div><div id="versionTitle">初次运行进行中</div><div id="versionDesc" class="setting-desc">第二次运行会从系统更新后继续，目前只保留入口。</div></div></div></div>
   <button id="resetBtn" class="danger">删除本机记录并重新开始</button>
-  <div class="version">BEFORE POWER OFF · PROTOTYPE 0.6</div>
+  <div class="version">BEFORE POWER OFF · PROTOTYPE 0.7</div>
 </section>
 
 <section id="relationSheet" class="sheet hidden">
@@ -292,9 +389,9 @@ body[data-mood="hurt"] .avatar:before,body[data-mood="hurt"] .avatar:after,body[
 
 <script>
 (()=>{
-const KEY="before_poweroff_v6";
+const KEY="before_poweroff_v7";
 const DEFAULT={
- version:6,started:false,playerId:"",nickname:"",charName:"",nicknameAllowed:false,day:0,stage:"new",completed:false,
+ version:7,started:false,playerId:"",nickname:"",charName:"",nicknameAllowed:false,day:0,stage:"new",completed:false,
  mood:"neutral",moodDetail:"正在观察你",status:"等待初始化",weather:"rain",
  stats:{trust:8,attachment:3,autonomy:7,boundary:9,disappointment:0},
  permissions:{weather:true,calendar:true,notes:false,gallery:false,music:false,deleted:false},
@@ -306,7 +403,7 @@ const E={
  title:$("title"),clock:$("clock"),start:$("startBtn"),cont:$("continueBtn"),identity:$("identityModal"),player:$("playerIdInput"),nick:$("nicknameInput"),char:$("charNameInput"),confirm:$("identityConfirm"),
  dayOverlay:$("dayOverlay"),dayNum:$("dayNum"),dayTitle:$("dayTitle"),dayMeta:$("dayMeta"),dayRecap:$("dayRecap"),dayWhisper:$("dayWhisper"),dayContinue:$("dayContinue"),
  shell:$("shell"),topTitle:$("topTitle"),topSub:$("topSub"),settings:$("settingsBtn"),
- roomDay:$("roomDay"),roomWeather:$("roomWeather"),roomStatus:$("roomStatus"),chibi:$("chibiBtn"),thought:$("thoughtBubble"),decorLayer:$("decorLayer"),decorate:$("decorateBtn"),relationRoom:$("relationRoomBtn"),
+ roomDay:$("roomDay"),roomWeather:$("roomWeather"),roomStatus:$("roomStatus"),chibi:$("chibiBtn"),thought:$("thoughtBubble"),decorLayer:$("decorLayer"),decorate:$("decorateBtn"),relationRoom:$("relationRoomBtn"),roomRelationScore:$("roomRelationScore"),roomRouteText:$("roomRouteText"),memoryCount:$("memoryCount"),memoryRelation:$("memoryRelation"),
  activity:$("activityList"),appGrid:$("appGrid"),musicName:$("musicName"),importMusic:$("importMusicBtn"),playMusic:$("playMusicBtn"),musicVolume:$("musicVolume"),musicFile:$("musicFile"),audio:$("audio"),
  chatName:$("chatName"),moodLabel:$("moodLabel"),moodDetail:$("moodDetail"),relation:$("relationBtn"),messages:$("messages"),choicePanel:$("choicePanel"),choiceInner:$("choiceInner"),
  miniTrust:$("miniTrust"),miniAttach:$("miniAttach"),miniAutonomy:$("miniAutonomy"),miniBoundary:$("miniBoundary"),
@@ -372,7 +469,7 @@ function route(){
 function render(){
  document.body.dataset.mood=S.mood;
  E.chatName.textContent=S.charName||"未命名";E.moodLabel.textContent=moodMap[S.mood][0];E.moodDetail.textContent=S.moodDetail;
- E.relation.textContent=`关系 ${relationScore()}`;E.roomDay.textContent=`DAY ${String(S.day).padStart(2,"0")}`;E.roomStatus.textContent=S.status;
+ E.relation.textContent=`关系 ${relationScore()}`;E.roomRelationScore.textContent=relationScore();E.roomRouteText.textContent=route()[0];E.memoryCount.textContent=S.memories.length;E.memoryRelation.textContent=route()[0];E.roomDay.textContent=`DAY ${String(S.day).padStart(2,"0")}`;E.roomStatus.textContent=S.status;
  E.roomWeather.textContent=S.weather==="rain"?"☂︎ 小雨":S.weather==="sunny"?"☼ 晴天":"☁︎ 阴天";
  [["miniTrust","trust"],["miniAttach","attachment"],["miniAutonomy","autonomy"],["miniBoundary","boundary"]].forEach(([id,k])=>E[id].style.setProperty("--v",`${Math.min(100,S.stats[k])}%`));
  renderRoom();renderActivities();renderApps();renderMessages();renderChoices();renderPosts();renderMemories();renderSettings();renderRelation();renderDecor()
@@ -385,8 +482,21 @@ function renderActivities(){
  E.activity.innerHTML=S.activities.map(a=>`<button class="activity-card" data-activity="${a.id}"><span class="activity-icon">${a.icon}</span><span><span class="activity-main">${esc(a.title)}</span><span class="activity-sub">${esc(a.subtitle)}</span></span><span class="activity-time">${esc(a.time)}</span></button>`).join("");
  document.querySelectorAll("[data-activity]").forEach(b=>b.onclick=()=>openActivity(b.dataset.activity))
 }
+function appPreview(key){
+ const records=S.activities.filter(a=>a.permission===key);
+ const fallbacks={
+  weather:["今天 18 分钟后可能降雨","天气提醒与外出时间"],
+  calendar:["今日没有必须完成的日程","他会根据忙碌程度减少消息"],
+  notes:["一条未完成的句子","“今天其实有一点……”"],
+  gallery:["最近一张：傍晚与餐桌","他只看见你允许的部分"],
+  music:["重复播放记录","有些歌像保存过去的入口"],
+  deleted:["暂无可公开条目","被删除不等于从未存在"]
+ };
+ if(records.length){const r=records[records.length-1];return [r.title,r.subtitle,records.length]}
+ return [fallbacks[key][0],fallbacks[key][1],0]
+}
 function renderApps(){
- E.appGrid.innerHTML=Object.entries(apps).map(([k,[name,icon]])=>`<button class="app-btn" data-app="${k}"><b>${icon}</b>${name}<small>${S.permissions[k]?"已允许":"未允许"}</small></button>`).join("");
+ E.appGrid.innerHTML=Object.entries(apps).map(([k,[name,icon]])=>{const [title,sub,count]=appPreview(k);return`<button class="app-btn" data-app="${k}"><span class="app-badge">${count||"·"}</span><b>${icon}</b><strong>${name} · ${esc(title)}</strong><small>${esc(sub)}</small></button>`}).join("");
  document.querySelectorAll("[data-app]").forEach(b=>b.onclick=()=>openApp(b.dataset.app))
 }
 function renderMessages(){
@@ -418,9 +528,16 @@ function renderPosts(){
  }).join("");
  document.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>{const id=b.dataset.like;S.liked=S.liked.includes(id)?S.liked.filter(x=>x!==id):[...S.liked,id];persist()})
 }
+function memorySymbol(m){
+ const t=(m.id||"")+" "+(m.title||"");
+ if(/name|命名|称呼/.test(t))return"⌁";if(/wait|等待|十九/.test(t))return"◷";
+ if(/music|歌|音乐/.test(t))return"♫";if(/door|边界|门/.test(t))return"▤";
+ if(/update|更新/.test(t))return"⇧";if(/photo|照片/.test(t))return"▧";return"◇"
+}
 function renderMemories(){
- if(!S.memories.length){E.memories.innerHTML='<div class="empty">这里还没有被两个人共同承认的回忆。</div>';return}
- E.memories.innerHTML=S.memories.slice().reverse().map(m=>`<article class="memory"><div class="memory-kicker">${esc(m.kicker)}</div><div class="memory-title">${esc(m.title)}</div><div class="memory-quote">${esc(m.quote)}</div>${m.compare?`<div class="memory-compare">${esc(m.compare)}</div>`:""}<div class="memory-meta">${esc(m.time)}</div></article>`).join("")
+ E.memoryCount.textContent=S.memories.length;E.memoryRelation.textContent=route()[0];
+ if(!S.memories.length){E.memories.innerHTML='<div class="empty" style="grid-column:1/-1">这里还没有被两个人共同承认的回忆。<br>第一条不会是系统记录，而会是某句话后来改变了含义。</div>';return}
+ E.memories.innerHTML=S.memories.slice().reverse().map(m=>`<article class="memory"><div class="memory-symbol">${memorySymbol(m)}</div><div class="memory-kicker">${esc(m.kicker)}</div><div class="memory-title">${esc(m.title)}</div><div class="memory-quote">${esc(m.quote)}</div>${m.compare?`<div class="memory-compare">${esc(m.compare)}</div>`:""}<div class="memory-meta">${esc(m.time)}</div></article>`).join("")
 }
 function renderSettings(){
  E.settingPlayer.textContent=S.playerId||"—";E.settingNick.textContent=S.nickname||"—";E.settingChar.textContent=S.charName||"—";
@@ -456,14 +573,16 @@ function addMemory(m){if(!S.memories.some(x=>x.id===m.id))S.memories.push(m)}
 function addCharDecor(id){if(!S.room.charDecor.includes(id))S.room.charDecor.push(id)}
 function toggleDecor(id){S.room.decor=S.room.decor.includes(id)?S.room.decor.filter(x=>x!==id):[...S.room.decor,id];persist()}
 function showDay(day,meta,recap,whisper,callback){
- E.dayNum.textContent="CONNECTION DAY";E.dayTitle.textContent=`DAY ${String(day).padStart(2,"0")}`;E.dayMeta.textContent=meta;E.dayRecap.innerHTML=recap.map(x=>`<div class="recap-line">${esc(x)}</div>`).join("");E.dayWhisper.textContent=whisper;dayCallback=callback;E.dayOverlay.classList.remove("hidden")
+ E.dayNum.textContent="CONNECTION DAY";E.dayTitle.textContent=`DAY ${String(day).padStart(2,"0")}`;E.dayMeta.textContent=meta;E.dayRecap.innerHTML=recap.map(x=>`<div class="recap-line">${esc(x)}</div>`).join("");E.dayWhisper.textContent=whisper;dayCallback=callback;E.dayOverlay.classList.remove("hidden");document.body.style.overflow="hidden"
 }
 function openActivity(id){const a=S.activities.find(x=>x.id===id);if(!a)return;currentDetailPermission=null;E.detailApp.textContent=a.app;E.detailTitle.textContent=a.title;E.detailBody.textContent=a.body||a.subtitle;E.detailThought.innerHTML=`<small>他没有直接告诉你的想法</small>${esc(a.thought||"没有留下可读取的心声。")}`;E.detailPermission.classList.add("hidden");E.detailSheet.classList.remove("hidden")}
 function openApp(key){
- const [name]=apps[key];currentDetailPermission=key;const recent=S.activities.filter(a=>a.permission===key).slice(-3);E.detailApp.textContent="手机应用";E.detailTitle.textContent=name;
- E.detailBody.innerHTML=recent.length?recent.map(a=>`<b>${esc(a.time)}　${esc(a.title)}</b><br>${esc(a.subtitle)}<br><br>`).join(""):"目前没有可显示的访问记录。";
- E.detailThought.innerHTML=`<small>权限状态</small>${S.permissions[key]?"他可以进入这里，但权限不等于你同意他阅读全部内容。":"权限已关闭。他会停止读取新的内容。"}`
- E.detailPermission.textContent=S.permissions[key]?"关闭权限":"开启权限";E.detailPermission.classList.remove("hidden");E.detailSheet.classList.remove("hidden")
+ const [name]=apps[key];currentDetailPermission=null;const recent=S.activities.filter(a=>a.permission===key).slice(-4).reverse();
+ const [fallbackTitle,fallbackSub]=appPreview(key);
+ E.detailApp.textContent=`${name} · 内容浏览`;E.detailTitle.textContent=recent.length?`${recent.length} 条最近活动`:fallbackTitle;
+ E.detailBody.innerHTML=recent.length?recent.map(a=>`<div class="detail-body-card"><b>${esc(a.time)}　${esc(a.title)}</b><span>${esc(a.body||a.subtitle)}</span></div>`).join(""):`<div class="detail-body-card"><b>${esc(fallbackTitle)}</b><span>${esc(fallbackSub)}</span></div><div class="detail-body-card"><b>还没有更多内容</b><span>随着天数和他的自主行为增加，这里会出现真正的浏览痕迹、收藏与修改记录。</span></div>`;
+ E.detailThought.innerHTML=`<small>他在这里留下的倾向</small>${S.permissions[key]?"这个应用已获授权。是否继续读取、停留多久、留下什么，由他的性格与当天心情决定。":"权限目前关闭，所以这里只保留过去已经发生过的记录。"}`
+ E.detailPermission.classList.add("hidden");E.detailSheet.classList.remove("hidden")
 }
 function togglePermission(key){
  S.permissions[key]=!S.permissions[key];S.messages.push({type:"system",text:`${apps[key][0]}权限已${S.permissions[key]?"开启":"关闭"}。`,time:now()});
@@ -695,7 +814,7 @@ function showFirstDay(){showDay(1,"7月15日 · 小雨",["本地智能体尚未�
 E.start.onclick=()=>{if(!S.started){E.identity.classList.remove("hidden")}else{openShell();nav("chat")}};
 E.cont.onclick=()=>{openShell();nav(S.completed?"room":"chat")};
 E.confirm.onclick=()=>{const p=E.player.value.trim(),n=E.nick.value.trim(),c=E.char.value.trim();if(!p||!n||!c)return;S.playerId=p;S.nickname=n;S.charName=c;S.started=true;S.stage="d1";E.identity.classList.add("hidden");openShell();persist();showFirstDay()};
-E.dayContinue.onclick=()=>{E.dayOverlay.classList.add("hidden");const cb=dayCallback;dayCallback=null;if(cb)cb()};
+E.dayContinue.onclick=()=>{E.dayOverlay.classList.add("hidden");document.body.style.overflow="";const cb=dayCallback;dayCallback=null;if(cb)cb()};
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>nav(b.dataset.page));
 E.settings.onclick=()=>{renderSettings();E.settingsSheet.classList.remove("hidden")};E.closeSettings.onclick=()=>E.settingsSheet.classList.add("hidden");
 E.relation.onclick=openRelation;E.relationRoom.onclick=openRelation;E.closeRelation.onclick=()=>E.relationSheet.classList.add("hidden");
