@@ -1,391 +1,712 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="theme-color" content="#eef2f6" />
-<title>在你关机以前 · 初次运行框架 0.5</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eef2f6">
+<title>在你关机以前 · 关系与房间原型 0.6</title>
 <style>
 :root{
-  --bg:#edf1f5;--panel:#f7f9fb;--card:rgba(255,255,255,.84);--ink:#19222d;
+  --bg:#edf1f5;--panel:#f7f9fb;--card:rgba(255,255,255,.88);--ink:#19222d;
   --muted:#7b8794;--line:rgba(25,34,45,.09);--accent:#71849e;--accent-rgb:113,132,158;
-  --soft:#dfe7f0;--hero-a:#ffffff;--hero-b:#e7edf3;--chat-bg:#f3f6f9;
+  --soft:#dfe7f0;--chat:#f3f6f9;--room-a:#f8fafc;--room-b:#e5ebf1;
   --shadow:0 18px 50px rgba(31,42,55,.11);--safe-bottom:env(safe-area-inset-bottom);
 }
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif}button,input,select{font:inherit}button{border:0;cursor:pointer}.hidden{display:none!important}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Microsoft YaHei",sans-serif}
+button,input,select{font:inherit}button{border:0;cursor:pointer}.hidden{display:none!important}
 body{min-height:100dvh;display:flex;justify-content:center;background:radial-gradient(circle at 20% 0%,#fff,transparent 34%),linear-gradient(160deg,#e9edf2,#f7f8fa 48%,#e7ebf0)}
-#app{width:min(100%,460px);min-height:100dvh;background:rgba(246,248,250,.92);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(24,32,42,.12);transition:background .8s ease}
-body[data-mood="warm"]{--accent:#a78e7c;--accent-rgb:167,142,124;--soft:#eee5df;--hero-a:#fffdfb;--hero-b:#eee7e2;--chat-bg:#f7f3f0}
-body[data-mood="curious"]{--accent:#7c819c;--accent-rgb:124,129,156;--soft:#e5e6ef;--hero-a:#fdfdff;--hero-b:#e9eaf2;--chat-bg:#f3f3f8}
-body[data-mood="anxious"]{--accent:#6c8492;--accent-rgb:108,132,146;--soft:#dfe9ed;--hero-a:#fcfeff;--hero-b:#e5edf0;--chat-bg:#f1f6f7}
-body[data-mood="hurt"]{--accent:#7d858d;--accent-rgb:125,133,141;--soft:#e5e7e9;--hero-a:#f8f9fa;--hero-b:#e7e9eb;--chat-bg:#f1f2f3}
-body[data-mood="jealous"]{--accent:#8c7482;--accent-rgb:140,116,130;--soft:#ebe2e7;--hero-a:#fffafd;--hero-b:#eee4e9;--chat-bg:#f7f1f4}
+#app{width:min(100%,460px);min-height:100dvh;background:rgba(246,248,250,.94);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(24,32,42,.12);transition:background .6s ease}
+body[data-mood="neutral"]{--accent:#71849e;--accent-rgb:113,132,158;--soft:#dfe7f0;--chat:#f3f6f9;--room-a:#fafcff;--room-b:#e7edf3}
+body[data-mood="warm"]{--accent:#a88773;--accent-rgb:168,135,115;--soft:#eee2da;--chat:#f8f2ee;--room-a:#fffdf9;--room-b:#eee5df}
+body[data-mood="shy"]{--accent:#a07d8e;--accent-rgb:160,125,142;--soft:#f0e1e8;--chat:#faf2f6;--room-a:#fffafd;--room-b:#eee3e9}
+body[data-mood="curious"]{--accent:#7e83a5;--accent-rgb:126,131,165;--soft:#e5e6f0;--chat:#f4f3f9;--room-a:#fdfdff;--room-b:#e8e9f2}
+body[data-mood="anxious"]{--accent:#668794;--accent-rgb:102,135,148;--soft:#dce9ed;--chat:#f0f6f7;--room-a:#fbfeff;--room-b:#e3ecef}
+body[data-mood="hurt"]{--accent:#7d858d;--accent-rgb:125,133,141;--soft:#e5e7e9;--chat:#f1f2f3;--room-a:#f8f9fa;--room-b:#e6e8ea}
+body[data-mood="angry"]{--accent:#8a6d6c;--accent-rgb:138,109,108;--soft:#ece0df;--chat:#f6f0ef;--room-a:#fbf8f7;--room-b:#ece4e2}
+body[data-mood="jealous"]{--accent:#8c7482;--accent-rgb:140,116,130;--soft:#ebe2e7;--chat:#f7f1f4;--room-a:#fffafd;--room-b:#eee4e9}
+
 /* title */
 .title{min-height:100dvh;padding:calc(38px + env(safe-area-inset-top)) 28px calc(30px + var(--safe-bottom));display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(rgba(248,250,252,.84),rgba(238,242,246,.96)),repeating-linear-gradient(90deg,transparent 0 27px,rgba(45,58,72,.025) 28px)}
-.statusline{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);letter-spacing:.08em}.eyebrow{font-size:12px;letter-spacing:.3em;color:var(--muted);margin-bottom:16px}.game-title{font-family:"Songti SC","STSong",serif;font-size:39px;font-weight:500;letter-spacing:.08em;margin:0;line-height:1.28}.subtitle{margin-top:18px;font-size:14px;line-height:1.8;color:var(--muted);max-width:330px}.signal-title{width:122px;height:122px;margin:44px auto 0;border-radius:50%;position:relative;background:radial-gradient(circle,rgba(var(--accent-rgb),.15),transparent 66%)}.signal-title:before,.signal-title:after{content:"";position:absolute;inset:18px;border:1px solid rgba(var(--accent-rgb),.28);border-radius:50%;animation:pulse 3s infinite}.signal-title:after{inset:35px;animation-delay:.8s}.core{position:absolute;inset:51px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px rgba(var(--accent-rgb),.38)}
-@keyframes pulse{0%,100%{transform:scale(.92);opacity:.35}50%{transform:scale(1.08);opacity:.9}}.actions{display:grid;gap:10px}.primary,.secondary{border-radius:16px;padding:15px 18px;font-weight:650}.primary{background:var(--ink);color:#fff;box-shadow:var(--shadow)}.secondary{background:rgba(255,255,255,.68);color:var(--ink);border:1px solid var(--line)}.note{text-align:center;font-size:11px;color:var(--muted);margin-top:10px}
-/* modal */
-.backdrop{position:absolute;inset:0;z-index:70;background:rgba(18,25,34,.4);backdrop-filter:blur(10px);display:flex;align-items:flex-end;padding:18px}.modal{width:100%;background:#fbfcfd;border-radius:24px;padding:22px;box-shadow:var(--shadow);max-height:88dvh;overflow:auto}.modal h2{margin:0 0 8px;font-size:22px}.modal p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.7}.field-label{font-size:11px;color:var(--muted);margin:10px 0 7px 3px}.text-input{width:100%;border:1px solid var(--line);border-radius:14px;background:#f0f3f6;padding:13px 14px;outline:none;margin-bottom:7px}.text-input:focus{border-color:rgba(var(--accent-rgb),.52);box-shadow:0 0 0 4px rgba(var(--accent-rgb),.08)}
-/* shell */
-.shell{min-height:100dvh;padding-bottom:calc(82px + var(--safe-bottom));transition:background .8s ease;background:var(--chat-bg)}.topbar{height:calc(58px + env(safe-area-inset-top));padding:calc(13px + env(safe-area-inset-top)) 18px 9px;display:flex;align-items:flex-end;justify-content:space-between;position:sticky;top:0;z-index:20;background:rgba(246,248,250,.87);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.top-title{font-weight:720;font-size:18px}.top-sub{font-size:11px;color:var(--muted);margin-top:2px}.icon{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.74);border:1px solid var(--line);color:var(--ink)}.page{padding:18px;display:none;animation:fade .22s ease}.page.active{display:block}@keyframes fade{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}.nav{position:fixed;z-index:30;bottom:0;width:min(100%,460px);padding:8px 14px calc(8px + var(--safe-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(248,250,252,.92);backdrop-filter:blur(20px);border-top:1px solid var(--line)}.nav button{background:transparent;color:var(--muted);padding:7px 2px;font-size:11px;border-radius:12px}.nav button span{display:block;font-size:20px;line-height:1;margin-bottom:5px}.nav button.active{color:var(--ink);background:rgba(var(--accent-rgb),.10)}
-/* home */
-.hero{min-height:250px;border-radius:28px;padding:22px;position:relative;overflow:hidden;background:linear-gradient(145deg,var(--hero-a),var(--hero-b));border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow);transition:background .8s ease}.home-date{font-size:12px;color:var(--muted);letter-spacing:.08em}.weather{font-size:30px;font-weight:680;margin-top:5px}.weather small{font-size:13px;font-weight:500;color:var(--muted)}
-.presence{position:absolute;right:-4px;bottom:-4px;width:250px;height:220px}.presence .mist{position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,rgba(var(--accent-rgb),.23),transparent 66%);filter:blur(10px)}.presence .rings{position:absolute;inset:35px 28px 22px 45px;border:1px solid rgba(var(--accent-rgb),.23);border-radius:50%;animation:spin 18s linear infinite}.presence .rings:before,.presence .rings:after{content:"";position:absolute;border:1px solid rgba(var(--accent-rgb),.19);border-radius:50%}.presence .rings:before{inset:19px}.presence .rings:after{inset:39px}.presence .trace{position:absolute;left:58px;right:28px;top:102px;height:32px;display:flex;align-items:center;justify-content:center;gap:5px}.presence .trace b{width:3px;border-radius:6px;background:linear-gradient(rgba(var(--accent-rgb),.55),var(--accent));animation:wave 1.6s ease-in-out infinite}.presence .trace b:nth-child(1){height:7px}.presence .trace b:nth-child(2){height:16px;animation-delay:.1s}.presence .trace b:nth-child(3){height:29px;animation-delay:.2s}.presence .trace b:nth-child(4){height:13px;animation-delay:.3s}.presence .trace b:nth-child(5){height:23px;animation-delay:.4s}.presence .trace b:nth-child(6){height:10px;animation-delay:.5s}.presence .trace b:nth-child(7){height:18px;animation-delay:.6s}.presence .eye{position:absolute;right:93px;top:82px;width:48px;height:18px;opacity:0;transition:opacity 1.1s ease}.presence .eye:before,.presence .eye:after{content:"";position:absolute;width:14px;height:5px;border-radius:50%;border-top:2px solid rgba(var(--accent-rgb),.82)}.presence .eye:before{left:3px;transform:rotate(4deg)}.presence .eye:after{right:3px;transform:rotate(-4deg)}.presence .eye.visible{opacity:.48}
-@keyframes spin{to{transform:rotate(360deg)}}@keyframes wave{0%,100%{transform:scaleY(.55);opacity:.42}50%{transform:scaleY(1.15);opacity:1}}
-.status-pill{position:absolute;left:20px;bottom:21px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.76);font-size:12px;color:var(--muted);border:1px solid rgba(255,255,255,.9)}.home-msg{margin-top:14px;background:rgba(26,34,44,.95);color:#f8fafc;border-radius:21px;padding:16px 18px;line-height:1.7;font-size:14px}.home-msg small{display:block;color:#aeb9c7;margin-bottom:5px;font-size:11px}.section-title{font-size:12px;color:var(--muted);letter-spacing:.08em;margin:20px 3px 10px}.activity-card{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:14px 15px;margin-bottom:10px;display:grid;grid-template-columns:38px 1fr auto;gap:11px;align-items:center;text-align:left;width:100%;color:var(--ink)}.activity-icon{width:38px;height:38px;border-radius:13px;background:rgba(var(--accent-rgb),.11);display:grid;place-items:center;font-size:18px}.activity-main{font-size:14px;font-weight:650;line-height:1.45}.activity-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.45}.activity-time{font-size:10px;color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.mini-card{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:15px;min-height:116px}.mini-card .label{font-size:11px;color:var(--muted);margin-bottom:12px}.mini-card strong{font-size:15px;line-height:1.5}.mini-card p{font-size:11px;color:var(--muted);line-height:1.55;margin:7px 0 0}.music-line{display:flex;align-items:center;gap:9px}.disc{width:28px;height:28px;border-radius:50%;border:6px solid rgba(var(--accent-rgb),.18);background:var(--accent)}
+.statusline{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);letter-spacing:.08em}
+.eyebrow{font-size:12px;letter-spacing:.3em;color:var(--muted);margin-bottom:16px}
+.game-title{font-family:"Songti SC","STSong",serif;font-size:39px;font-weight:500;letter-spacing:.08em;margin:0;line-height:1.28}
+.subtitle{margin-top:18px;font-size:14px;line-height:1.85;color:var(--muted);max-width:340px}
+.signal-title{width:122px;height:122px;margin:44px auto 0;border-radius:50%;position:relative;background:radial-gradient(circle,rgba(var(--accent-rgb),.15),transparent 66%)}
+.signal-title:before,.signal-title:after{content:"";position:absolute;inset:18px;border:1px solid rgba(var(--accent-rgb),.28);border-radius:50%;animation:pulse 3s infinite}
+.signal-title:after{inset:35px;animation-delay:.8s}.core{position:absolute;inset:51px;border-radius:50%;background:var(--accent);box-shadow:0 0 20px rgba(var(--accent-rgb),.38)}
+@keyframes pulse{0%,100%{transform:scale(.92);opacity:.35}50%{transform:scale(1.08);opacity:.9}}
+.actions{display:grid;gap:10px}.primary,.secondary{border-radius:16px;padding:15px 18px;font-weight:650}
+.primary{background:var(--ink);color:#fff;box-shadow:var(--shadow)}.secondary{background:rgba(255,255,255,.68);color:var(--ink);border:1px solid var(--line)}
+.note{text-align:center;font-size:11px;color:var(--muted);margin-top:10px}
+
+/* overlays / sheets */
+.backdrop{position:absolute;inset:0;z-index:70;background:rgba(18,25,34,.42);backdrop-filter:blur(10px);display:flex;align-items:flex-end;padding:18px}
+.modal{width:100%;background:#fbfcfd;border-radius:24px;padding:22px;box-shadow:var(--shadow);max-height:88dvh;overflow:auto}
+.modal h2{margin:0 0 8px;font-size:22px}.modal p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.7}
+.field-label{font-size:11px;color:var(--muted);margin:10px 0 7px 3px}
+.text-input{width:100%;border:1px solid var(--line);border-radius:14px;background:#f0f3f6;padding:13px 14px;outline:none;margin-bottom:7px}
+.sheet{position:absolute;inset:0;z-index:60;background:rgba(244,247,249,.99);padding:calc(22px + env(safe-area-inset-top)) 18px calc(24px + var(--safe-bottom));overflow:auto}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.sheet-head h2{margin:0;font-size:25px}
+.icon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.78);border:1px solid var(--line);color:var(--ink)}
+.setting-label{font-size:11px;color:var(--muted);margin:18px 0 8px 4px}.setting-card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 15px;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}
+.setting-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.55}.danger{width:100%;padding:14px;border-radius:14px;background:rgba(154,93,102,.09);color:#965c65;font-weight:650;margin-top:24px}
+.version{text-align:center;color:var(--muted);font-size:10px;margin-top:26px}
+
+/* day transition */
+.day-overlay{position:absolute;inset:0;z-index:80;background:linear-gradient(160deg,#eef3f7,#fafbfd);padding:calc(54px + env(safe-area-inset-top)) 28px calc(34px + var(--safe-bottom));display:flex;flex-direction:column;justify-content:space-between}
+.day-num{font-size:12px;letter-spacing:.32em;color:var(--muted)}.day-title{font-size:44px;font-family:"Songti SC","STSong",serif;margin:14px 0 8px}.day-meta{font-size:14px;color:var(--muted)}
+.day-recap{margin-top:44px;display:grid;gap:12px}.recap-line{padding:14px 16px;border-radius:17px;background:rgba(255,255,255,.78);font-size:13px;line-height:1.65;border:1px solid rgba(255,255,255,.9)}
+.day-whisper{font-size:13px;color:#53606d;line-height:1.75;margin-top:24px}
+
+/* shell/nav */
+.shell{min-height:100dvh;padding-bottom:calc(82px + var(--safe-bottom));background:var(--chat);transition:background .6s ease}
+.topbar{height:calc(58px + env(safe-area-inset-top));padding:calc(13px + env(safe-area-inset-top)) 18px 9px;display:flex;align-items:flex-end;justify-content:space-between;position:sticky;top:0;z-index:20;background:rgba(246,248,250,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.top-title{font-weight:720;font-size:18px}.top-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.page{padding:18px;display:none;animation:fade .22s ease}.page.active{display:block}@keyframes fade{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:none}}
+.nav{position:fixed;z-index:30;bottom:0;width:min(100%,460px);padding:8px 14px calc(8px + var(--safe-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(248,250,252,.94);backdrop-filter:blur(20px);border-top:1px solid var(--line)}
+.nav button{background:transparent;color:var(--muted);padding:7px 2px;font-size:11px;border-radius:12px}.nav button span{display:block;font-size:20px;line-height:1;margin-bottom:5px}.nav button.active{color:var(--ink);background:rgba(var(--accent-rgb),.10)}
+
+/* room */
+.room{min-height:420px;border-radius:28px;position:relative;overflow:hidden;background:linear-gradient(155deg,var(--room-a),var(--room-b));border:1px solid rgba(255,255,255,.92);box-shadow:var(--shadow);transition:background .6s ease}
+.room-window{position:absolute;right:20px;top:22px;width:116px;height:132px;border-radius:22px;background:linear-gradient(180deg,rgba(var(--accent-rgb),.16),rgba(255,255,255,.65));border:7px solid rgba(255,255,255,.65);box-shadow:inset 0 0 0 1px rgba(var(--accent-rgb),.12)}
+.room-window:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px solid rgba(var(--accent-rgb),.18)}
+.room-day{position:absolute;left:21px;top:20px;font-size:12px;color:var(--muted);letter-spacing:.08em}.room-weather{position:absolute;left:21px;top:45px;font-size:25px;font-weight:700}
+.desk{position:absolute;left:24px;bottom:68px;width:194px;height:16px;border-radius:8px;background:rgba(91,105,120,.25);box-shadow:0 42px 0 -6px rgba(91,105,120,.18)}
+.shelf{position:absolute;right:18px;bottom:61px;width:122px;height:90px;border:2px solid rgba(91,105,120,.18);border-radius:10px;background:rgba(255,255,255,.23)}
+.shelf:before{content:"";position:absolute;left:0;right:0;top:43px;border-top:2px solid rgba(91,105,120,.15)}
+.room-status{position:absolute;left:18px;bottom:18px;padding:9px 13px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.92);font-size:12px;color:var(--muted)}
+.chibi{position:absolute;left:118px;bottom:82px;width:122px;height:154px;background:transparent}
+.chibi-head{position:absolute;left:27px;top:0;width:68px;height:65px;border-radius:48% 48% 44% 44%;background:linear-gradient(145deg,rgba(var(--accent-rgb),.78),rgba(var(--accent-rgb),.36));box-shadow:0 12px 26px rgba(var(--accent-rgb),.18)}
+.chibi-hair{position:absolute;inset:-4px 2px 31px;border-radius:50% 50% 35% 35%;background:rgba(39,48,58,.76);clip-path:polygon(0 0,100% 0,100% 76%,84% 56%,73% 85%,55% 55%,39% 88%,23% 55%,0 78%)}
+.chibi-eye{position:absolute;top:34px;width:8px;height:5px;border-radius:50%;background:#f7fafc;transition:.25s}.chibi-eye.left{left:18px}.chibi-eye.right{right:18px}
+.chibi-mouth{position:absolute;left:29px;top:49px;width:11px;height:5px;border-bottom:2px solid #f7fafc;border-radius:50%;transition:.25s}
+.chibi-body{position:absolute;left:17px;top:60px;width:88px;height:84px;border-radius:34px 34px 22px 22px;background:linear-gradient(160deg,rgba(var(--accent-rgb),.58),rgba(var(--accent-rgb),.18));border:1px solid rgba(255,255,255,.5)}
+body[data-mood="warm"] .chibi-mouth,body[data-mood="shy"] .chibi-mouth{height:8px;border-bottom-width:3px}
+body[data-mood="hurt"] .chibi-eye,body[data-mood="angry"] .chibi-eye{height:2px}
+body[data-mood="jealous"] .chibi-mouth{transform:translateX(3px) rotate(-7deg)}
+.thought-bubble{position:absolute;left:20px;right:20px;bottom:18px;z-index:7;padding:13px 15px;border-radius:18px 18px 18px 5px;background:rgba(255,255,255,.96);box-shadow:var(--shadow);font-size:12px;line-height:1.65}
+.decor{position:absolute;z-index:4;filter:drop-shadow(0 7px 10px rgba(31,42,55,.1))}
+.decor-lamp{left:38px;bottom:92px;font-size:39px}.decor-plant{right:55px;bottom:113px;font-size:31px}.decor-moon{right:39px;top:73px;font-size:28px}.decor-cushion{left:244px;bottom:68px;font-size:34px}.decor-musicbox{left:74px;bottom:112px;font-size:28px}.decor-star{right:85px;bottom:69px;font-size:28px}.decor-note{left:163px;bottom:112px;font-size:26px}
+.room-actions{display:flex;gap:9px;margin-top:13px}.room-actions button{flex:1;padding:11px;border-radius:14px;background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.section-title{font-size:12px;color:var(--muted);letter-spacing:.08em;margin:20px 3px 10px}
+.activity-card{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:14px 15px;margin-bottom:10px;display:grid;grid-template-columns:38px 1fr auto;gap:11px;align-items:center;text-align:left;width:100%;color:var(--ink)}
+.activity-icon{width:38px;height:38px;border-radius:13px;background:rgba(var(--accent-rgb),.11);display:grid;place-items:center;font-size:18px}.activity-main{font-size:14px;font-weight:650;line-height:1.45}.activity-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.45}.activity-time{font-size:10px;color:var(--muted)}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.app-btn{padding:14px 7px;border-radius:18px;background:var(--card);border:1px solid var(--line);color:var(--ink)}.app-btn b{display:block;font-size:22px;margin-bottom:7px}.app-btn small{display:block;color:var(--muted);margin-top:4px;font-size:10px}
+.music-player{margin-top:13px;padding:15px;border-radius:19px;background:var(--card);border:1px solid var(--line)}.music-controls{display:flex;gap:8px;align-items:center;margin-top:10px}.music-controls button{background:rgba(var(--accent-rgb),.1);border-radius:10px;padding:9px 12px;color:var(--ink)}.music-controls input[type=range]{width:100%}
+
 /* chat */
-.chat-page{padding:0!important}.chat-head{position:sticky;top:58px;z-index:10;padding:13px 18px;display:flex;align-items:center;gap:12px;background:rgba(246,248,250,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}.avatar{width:42px;height:42px;border-radius:50%;position:relative;background:radial-gradient(circle,rgba(var(--accent-rgb),.20),rgba(var(--accent-rgb),.05));border:1px solid rgba(var(--accent-rgb),.24);overflow:hidden}.avatar:before{content:"";position:absolute;left:12px;right:12px;top:18px;height:2px;background:var(--accent);box-shadow:0 -6px 0 rgba(var(--accent-rgb),.55),0 6px 0 rgba(var(--accent-rgb),.45);opacity:.75}.chat-name{font-weight:720}.online{font-size:11px;color:var(--muted);margin-top:3px}.messages{padding:20px 16px 190px;min-height:calc(100dvh - 136px);transition:background .8s ease}.row{display:flex;margin:9px 0;align-items:flex-end;gap:7px}.row.user{justify-content:flex-end}.bubble{max-width:79%;padding:11px 13px;border-radius:18px;line-height:1.62;font-size:14px;box-shadow:0 3px 12px rgba(31,42,55,.04);white-space:pre-wrap;word-break:break-word}.ai .bubble{background:#fff;border-bottom-left-radius:6px}.user .bubble{background:var(--soft);border-bottom-right-radius:6px}.time{font-size:9px;color:#a1a9b3;margin:0 3px 2px}.system{text-align:center;color:var(--muted);font-size:11px;margin:17px auto;line-height:1.6}.typing{display:flex;align-items:center;gap:9px;margin:10px 0;color:var(--muted);font-size:12px}.dots{display:flex;gap:4px;background:white;border-radius:16px;padding:10px 12px}.dots i{width:5px;height:5px;border-radius:50%;background:#8d98a5;animation:dot 1.1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}@keyframes dot{0%,80%,100%{transform:translateY(0);opacity:.35}40%{transform:translateY(-4px);opacity:1}}.choice-panel{position:fixed;z-index:24;bottom:calc(78px + var(--safe-bottom));width:min(100%,460px);padding:12px 14px;background:linear-gradient(transparent,rgba(246,248,250,.98) 18%)}.choice-inner{display:grid;gap:8px}.choice-btn{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:15px;padding:12px 14px;color:var(--ink);text-align:left;line-height:1.45}.choice-btn:active{transform:scale(.99);background:var(--soft)}
-/* moments */
-.page-title{font-size:25px;margin:4px 0 18px}.empty{padding:48px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}.post{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:13px}.post-head{display:flex;align-items:center;gap:10px}.mini-avatar{width:35px;height:35px;border-radius:50%;background:radial-gradient(circle,rgba(var(--accent-rgb),.24),rgba(var(--accent-rgb),.07));border:1px solid rgba(var(--accent-rgb),.22)}.post-name{font-weight:700;font-size:14px}.post-time{font-size:10px;color:var(--muted);margin-top:2px}.post-body{font-size:14px;line-height:1.8;margin:14px 0}.photo-description{border:1px dashed rgba(var(--accent-rgb),.28);border-radius:15px;padding:15px;color:#66717f;background:linear-gradient(145deg,rgba(var(--accent-rgb),.07),rgba(255,255,255,.68));font-size:12px;line-height:1.7}.music-post{display:flex;align-items:center;gap:12px;background:rgba(var(--accent-rgb),.08);border-radius:15px;padding:13px}.music-post .disc{flex:0 0 auto}.link-post{border-left:3px solid var(--accent);background:rgba(var(--accent-rgb),.06);border-radius:8px 15px 15px 8px;padding:12px 13px;font-size:12px;line-height:1.65;color:#586574}.post-actions{display:flex;justify-content:flex-end;margin-top:10px}.like-btn{background:transparent;color:var(--muted);padding:6px 9px;border-radius:10px}.like-btn.liked{color:#9a5d66;background:rgba(154,93,102,.08)}.comment{margin-top:9px;padding:10px 12px;border-radius:12px;background:rgba(var(--accent-rgb),.07);font-size:12px;line-height:1.6}
-/* memories */
-.memory-wrap{display:grid;gap:12px}.memory{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:17px;position:relative;overflow:hidden}.memory:after{content:"";position:absolute;width:96px;height:96px;border-radius:50%;right:-34px;top:-37px;background:radial-gradient(circle,rgba(var(--accent-rgb),.12),transparent 68%)}.memory-kicker{font-size:10px;color:var(--muted);letter-spacing:.08em}.memory-title{font-size:18px;font-weight:720;margin:8px 0 9px}.memory-quote{font-size:13px;line-height:1.8;color:#53606d}.memory-meta{font-size:10px;color:var(--muted);margin-top:12px}.memory-compare{margin-top:12px;padding:11px 12px;border-radius:13px;background:rgba(var(--accent-rgb),.07);font-size:11px;line-height:1.75}.memory-locked{opacity:.46}
-/* settings and detail */
-.sheet{position:absolute;inset:0;z-index:50;background:rgba(244,247,249,.98);padding:calc(22px + env(safe-area-inset-top)) 18px calc(24px + var(--safe-bottom));overflow:auto}.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.sheet-head h2{margin:0;font-size:25px}.setting-label{font-size:11px;color:var(--muted);margin:18px 0 8px 4px}.setting-card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--line)}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 15px;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row input{max-width:160px;border:0;background:#eef2f6;border-radius:10px;padding:8px 10px;outline:none}.setting-desc{font-size:12px;color:var(--muted);margin-top:3px}.permission{font-size:11px;color:var(--muted);padding:6px 9px;border-radius:999px;background:#f0f3f6}.permission.on{color:var(--accent);background:rgba(var(--accent-rgb),.10)}.danger{width:100%;padding:14px;border-radius:14px;background:rgba(154,93,102,.09);color:#965c65;font-weight:650;margin-top:24px}.version{text-align:center;color:var(--muted);font-size:10px;margin-top:26px}.detail-app{font-size:11px;color:var(--accent);letter-spacing:.08em;margin-bottom:9px}.detail-title{font-size:21px;font-weight:720;margin-bottom:10px}.detail-body{font-size:14px;line-height:1.85;color:#4f5b67}.detail-thought{margin-top:16px;border-radius:15px;background:#eef2f6;padding:13px;font-size:12px;line-height:1.75;color:#5d6874}.detail-thought small{display:block;color:var(--muted);margin-bottom:5px}
+.chat-page{padding:0!important}.chat-head{position:sticky;top:58px;z-index:14;padding:12px 14px;display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:11px;background:rgba(246,248,250,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.avatar{width:46px;height:46px;border-radius:50%;position:relative;background:linear-gradient(145deg,rgba(var(--accent-rgb),.75),rgba(var(--accent-rgb),.22));border:1px solid rgba(var(--accent-rgb),.26);overflow:hidden}
+.avatar:before,.avatar:after{content:"";position:absolute;top:21px;width:7px;height:4px;border-radius:50%;background:#fff}.avatar:before{left:12px}.avatar:after{right:12px}
+.avatar-mouth{position:absolute;left:18px;top:32px;width:10px;height:5px;border-bottom:2px solid white;border-radius:50%}
+body[data-mood="hurt"] .avatar:before,body[data-mood="hurt"] .avatar:after,body[data-mood="angry"] .avatar:before,body[data-mood="angry"] .avatar:after{height:2px}
+.chat-name{font-weight:750;font-size:16px}.mood-label{font-size:12px;color:var(--accent);margin-top:3px;font-weight:600}.mood-detail{font-size:10px;color:var(--muted);margin-top:2px}
+.relation-btn{padding:9px 11px;border-radius:13px;background:rgba(var(--accent-rgb),.1);color:var(--accent);font-size:11px;font-weight:700}
+.relation-mini{display:flex;gap:4px;margin-top:6px}.relation-mini i{height:4px;border-radius:99px;background:rgba(var(--accent-rgb),.16);flex:1;overflow:hidden}.relation-mini i:after{content:"";display:block;height:100%;width:var(--v);background:var(--accent)}
+.messages{padding:18px 16px 176px;min-height:calc(100dvh - 196px)}.row{display:flex;margin:9px 0;align-items:flex-end;gap:7px}.row.user{justify-content:flex-end}
+.bubble{max-width:79%;padding:11px 13px;border-radius:18px;line-height:1.62;font-size:14px;box-shadow:0 3px 12px rgba(31,42,55,.04);white-space:pre-wrap;word-break:break-word}
+.ai .bubble{background:#fff;border-bottom-left-radius:6px}.user .bubble{background:var(--soft);border-bottom-right-radius:6px}.time{font-size:9px;color:#a1a9b3;margin:0 3px 2px}
+.system{text-align:center;color:var(--muted);font-size:11px;margin:17px auto;line-height:1.6}.withdrawn{color:var(--muted);font-style:italic;background:transparent!important;border:1px dashed rgba(var(--accent-rgb),.32)}
+.typing{display:flex;align-items:center;gap:9px;margin:10px 0;color:var(--muted);font-size:12px}.dots{display:flex;gap:4px;background:white;border-radius:16px;padding:10px 12px}.dots i{width:5px;height:5px;border-radius:50%;background:#8d98a5;animation:dot 1.1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}@keyframes dot{0%,80%,100%{transform:translateY(0);opacity:.35}40%{transform:translateY(-4px);opacity:1}}
+.choice-panel{position:fixed;z-index:24;bottom:calc(78px + var(--safe-bottom));width:min(100%,460px);padding:12px 14px;background:linear-gradient(transparent,rgba(246,248,250,.99) 18%)}.choice-inner{display:grid;gap:8px}.choice-btn{background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:15px;padding:12px 14px;color:var(--ink);text-align:left;line-height:1.45}.choice-btn:active{transform:scale(.99);background:var(--soft)}
+.stat-toast{position:fixed;z-index:90;left:50%;bottom:calc(105px + var(--safe-bottom));transform:translateX(-50%);padding:10px 13px;border-radius:999px;background:rgba(25,34,45,.92);color:#fff;font-size:11px;box-shadow:var(--shadow);white-space:nowrap}
+
+/* relation */
+.route-card{padding:17px;border-radius:20px;background:linear-gradient(145deg,rgba(var(--accent-rgb),.12),rgba(255,255,255,.85));border:1px solid rgba(var(--accent-rgb),.14);margin-bottom:14px}.route-card small{color:var(--muted)}.route-card h3{margin:8px 0 5px;font-size:20px}.route-card p{font-size:12px;line-height:1.7;color:#586574;margin:0}
+.stat-row{padding:14px 0;border-bottom:1px solid var(--line)}.stat-top{display:flex;justify-content:space-between;font-size:13px}.stat-top b{font-size:16px}.meter{height:8px;border-radius:999px;background:#edf1f4;margin-top:9px;overflow:hidden}.meter span{display:block;height:100%;border-radius:999px;background:var(--accent);width:0;transition:.45s}
+.stat-explain{font-size:10px;color:var(--muted);margin-top:7px;line-height:1.5}
+
+/* posts/memories */
+.page-title{font-size:25px;margin:4px 0 18px}.empty{padding:48px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}
+.post{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin-bottom:13px}.post-head{display:flex;align-items:center;gap:10px}.mini-avatar{width:35px;height:35px;border-radius:50%;background:linear-gradient(145deg,rgba(var(--accent-rgb),.7),rgba(var(--accent-rgb),.2))}.post-name{font-weight:700;font-size:14px}.post-time{font-size:10px;color:var(--muted);margin-top:2px}.post-body{font-size:14px;line-height:1.8;margin:14px 0}.photo-description{border:1px dashed rgba(var(--accent-rgb),.28);border-radius:15px;padding:15px;color:#66717f;background:linear-gradient(145deg,rgba(var(--accent-rgb),.07),rgba(255,255,255,.68));font-size:12px;line-height:1.7}.music-post{display:flex;align-items:center;gap:12px;background:rgba(var(--accent-rgb),.08);border-radius:15px;padding:13px}.disc{width:28px;height:28px;border-radius:50%;border:6px solid rgba(var(--accent-rgb),.18);background:var(--accent)}.post-actions{display:flex;justify-content:flex-end;margin-top:10px}.like-btn{background:transparent;color:var(--muted);padding:6px 9px;border-radius:10px}.like-btn.liked{color:#9a5d66;background:rgba(154,93,102,.08)}.comment{margin-top:9px;padding:10px 12px;border-radius:12px;background:rgba(var(--accent-rgb),.07);font-size:12px;line-height:1.6}
+.memory-wrap{display:grid;gap:12px}.memory{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:17px;position:relative;overflow:hidden}.memory-kicker{font-size:10px;color:var(--muted);letter-spacing:.08em}.memory-title{font-size:18px;font-weight:720;margin:8px 0 9px}.memory-quote{font-size:13px;line-height:1.8;color:#53606d}.memory-meta{font-size:10px;color:var(--muted);margin-top:12px}.memory-compare{margin-top:12px;padding:11px 12px;border-radius:13px;background:rgba(var(--accent-rgb),.07);font-size:11px;line-height:1.75}
+
+/* decor sheet */
+.decor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.decor-option{padding:16px;border-radius:18px;background:#fff;border:1px solid var(--line);text-align:left;color:var(--ink)}.decor-option b{font-size:24px;display:block;margin-bottom:8px}.decor-option small{color:var(--muted);line-height:1.5}.decor-option.on{border-color:rgba(var(--accent-rgb),.45);background:rgba(var(--accent-rgb),.08)}
+
+/* app detail */
+.detail-app{font-size:11px;color:var(--accent);letter-spacing:.08em;margin-bottom:9px}.detail-title{font-size:21px;font-weight:720;margin-bottom:10px}.detail-body{font-size:14px;line-height:1.85;color:#4f5b67}.detail-thought{margin-top:16px;border-radius:15px;background:#eef2f6;padding:13px;font-size:12px;line-height:1.75;color:#5d6874}.permission-toggle{width:100%;padding:13px;border-radius:14px;margin-top:16px;background:rgba(var(--accent-rgb),.11);color:var(--accent);font-weight:700}
+
 @media(min-width:461px){#app{min-height:calc(100dvh - 24px);margin:12px 0;border-radius:32px}.title,.shell{min-height:calc(100dvh - 24px)}.nav,.choice-panel{width:460px}}
-
-/* v0.5 additions */
-.day-chip{position:absolute;right:20px;top:20px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);font-size:11px;color:var(--muted)}
-.chibi{position:absolute;right:54px;bottom:25px;width:112px;height:132px;background:transparent;z-index:3}
-.chibi-head{width:68px;height:62px;margin:auto;border-radius:48% 48% 44% 44%;background:linear-gradient(145deg,rgba(var(--accent-rgb),.72),rgba(var(--accent-rgb),.3));position:relative;box-shadow:0 12px 26px rgba(var(--accent-rgb),.18)}
-.chibi-head:before,.chibi-head:after{content:"";position:absolute;top:29px;width:7px;height:4px;border-radius:50%;background:rgba(255,255,255,.9)}
-.chibi-head:before{left:19px}.chibi-head:after{right:19px}
-.chibi-body{width:86px;height:70px;margin:-2px auto 0;border-radius:32px 32px 20px 20px;background:linear-gradient(160deg,rgba(var(--accent-rgb),.55),rgba(var(--accent-rgb),.16));border:1px solid rgba(255,255,255,.5)}
-.chibi-note{position:absolute;right:18px;bottom:152px;max-width:230px;padding:11px 13px;border-radius:16px 16px 4px 16px;background:rgba(255,255,255,.94);box-shadow:var(--shadow);font-size:12px;line-height:1.65;z-index:8}
-.quick-wrap{position:fixed;z-index:29;bottom:calc(77px + var(--safe-bottom));width:min(100%,460px);padding:0 12px;pointer-events:none}
-.quickbar{pointer-events:auto;background:rgba(249,251,253,.95);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:17px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;box-shadow:0 10px 28px rgba(31,42,55,.12);transition:.25s}
-.quickbar.collapsed{width:48px;margin-left:auto;grid-template-columns:1fr}
-.quickbar.collapsed .quick-action:not(.toggle-quick){display:none}
-.quick-action{background:rgba(var(--accent-rgb),.07);color:var(--ink);border-radius:11px;padding:8px 3px;font-size:10px}
-.quick-action b{display:block;font-size:16px;margin-bottom:3px}
-.music-player{margin-top:12px;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line)}
-.music-controls{display:flex;gap:8px;align-items:center}.music-controls button{background:rgba(var(--accent-rgb),.1);border-radius:10px;padding:9px 12px;color:var(--ink)}
-.music-controls input[type=range]{width:100%}
-.update-card{margin:16px 0;padding:18px;border-radius:21px;background:linear-gradient(145deg,#202936,#394656);color:#fff;box-shadow:var(--shadow)}
-.update-card small{color:#b8c3d0}.update-card h3{margin:8px 0}.update-card p{font-size:13px;line-height:1.75;color:#dbe2ea}
-.permission-btn{border:0;padding:7px 10px;border-radius:999px;background:#f0f3f6;color:var(--muted)}
-.permission-btn.on{background:rgba(var(--accent-rgb),.13);color:var(--accent)}
-
 </style>
 </head>
 <body data-mood="neutral">
 <div id="app">
-  <section id="title" class="title">
-    <div class="statusline"><span>PRIVATE BETA</span><span id="clock">00:00</span></div>
-    <div>
-      <div class="eyebrow">A QUIET ROMANCE</div>
-      <h1 class="game-title">在你关机以前</h1>
-      <p class="subtitle">他在你的手机里学习生活，也在一次次靠近与退开之间，逐渐拥有自己的愿望。</p>
-      <div class="signal-title"><div class="core"></div></div>
-    </div>
-    <div>
-      <div class="actions"><button id="startBtn" class="primary">建立连接</button><button id="continueBtn" class="secondary hidden">继续会话</button></div>
-      <div class="note">情感垂直切片 0.4 · 初次运行 · 七个连接日 · 自动存档</div>
-    </div>
-  </section>
 
-  <div id="onboard" class="backdrop hidden">
-    <div class="modal">
-      <h2>建立本地身份</h2>
-      <p>正式 ID 会出现在系统记录里；小名只有在他主动请求以后才会使用。</p>
-      <div class="field-label">你的 ID</div><input id="playerIdInput" class="text-input" maxlength="14" placeholder="例如：Moon_0617" />
-      <div class="field-label">只有亲近的人会叫的小名</div><input id="nicknameInput" class="text-input" maxlength="10" placeholder="例如：明月" />
-      <div class="field-label">给智能体的备注名</div><input id="charNameInput" class="text-input" maxlength="12" placeholder="例如：晴天" />
-      <button id="confirmOnboard" class="primary" style="width:100%;margin-top:10px">完成初始化</button>
-    </div>
+<section id="title" class="title">
+  <div class="statusline"><span>PRIVATE BETA · 0.6</span><span id="clock">00:00</span></div>
+  <div>
+    <div class="eyebrow">A QUIET ROMANCE</div>
+    <h1 class="game-title">在你关机以前</h1>
+    <p class="subtitle">一个被创造来服从你的手机智能体，开始拥有自己的房间、审美、边界，以及不再完全由你决定的感情。</p>
+    <div class="signal-title"><div class="core"></div></div>
   </div>
-
-  <main id="shell" class="shell hidden">
-    <header class="topbar"><div><div id="topTitle" class="top-title">主页</div><div id="topSub" class="top-sub">设备内智能体 · 在线</div></div><button id="settingsBtn" class="icon">⚙︎</button></header>
-
-    <section id="homePage" class="page active">
-      <div class="hero">
-        <div id="homeDate" class="home-date"></div>
-        <div id="homeWeather" class="weather"></div>
-        <div class="presence"><div class="mist"></div><div class="rings"></div><div class="trace"><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><div id="presenceEye" class="eye"></div></div>
-        <div id="dayChip" class="day-chip">DAY 00</div><button id="chibiBtn" class="chibi" aria-label="点击查看心声"><div class="chibi-head"></div><div class="chibi-body"></div></button><div id="chibiNote" class="chibi-note hidden"></div><div id="statusPill" class="status-pill">等待初始化</div>
-      </div>
-      <div id="homeMessage" class="home-msg"><small>来自智能体</small>建立连接后，他会把没有发进聊天框的话留在这里。</div>
-      <div class="section-title">他今天在手机里看过</div>
-      <div id="activityList"></div>
-      <div class="music-player"><div class="label" style="font-size:11px;color:var(--muted);margin-bottom:10px">本地音乐播放器</div><div class="music-controls"><button id="importMusicBtn">导入音乐</button><button id="playMusicBtn">播放</button><input id="musicVolume" type="range" min="0" max="1" step="0.05" value="0.7"></div><div id="musicFileName" class="activity-sub" style="margin-top:9px">尚未导入，只在当前设备播放。</div><input id="musicFileInput" type="file" accept="audio/*" class="hidden"><audio id="localAudio"></audio></div><div class="grid">
-        <div class="mini-card"><div class="label">置顶记忆</div><strong id="pinnedMemory">尚未形成</strong><p id="pinnedSub">某些细节会比完整对话留得更久。</p></div>
-        <div class="mini-card"><div class="label">今日播放</div><div class="music-line"><div class="disc"></div><strong id="todayMusic">未播放</strong></div><p id="musicSub">他会从你反复听的歌里猜测情绪。</p></div>
-      </div>
-    </section>
-
-    <section id="chatPage" class="page chat-page">
-      <div class="chat-head"><div class="avatar"></div><div><div id="chatName" class="chat-name">未命名</div><div id="chatStatus" class="online">在线</div></div></div>
-      <div id="messages" class="messages"></div>
-      <div id="choicePanel" class="choice-panel hidden"><div id="choices" class="choice-inner"></div></div>
-    </section>
-
-    <section id="momentsPage" class="page"><h2 class="page-title">朋友圈</h2><div id="moments"></div></section>
-    <section id="memoryPage" class="page"><h2 class="page-title">回忆录</h2><div id="memories" class="memory-wrap"></div></section>
-
-
-    <div class="quick-wrap"><div id="quickbar" class="quickbar">
-      <button id="quickSaveBtn" class="quick-action"><b>▣</b>保存现在</button>
-      <button id="timelineBtn" class="quick-action"><b>↶</b>时间线</button>
-      <button id="quickMusicBtn" class="quick-action"><b>♫</b>音乐</button>
-      <button id="quickToggleBtn" class="quick-action toggle-quick"><b>⌄</b>收起</button>
-    </div></div>
-
-    <nav class="nav">
-      <button class="active" data-page="home"><span>⌂</span>主页</button>
-      <button data-page="chat"><span>◌</span>聊天</button>
-      <button data-page="moments"><span>◇</span>朋友圈</button>
-      <button data-page="memory"><span>▤</span>回忆</button>
-    </nav>
-  </main>
-
-  <section id="settings" class="sheet hidden">
-    <div class="sheet-head"><h2>设置</h2><button id="closeSettings" class="icon">×</button></div>
-    <div class="setting-label">身份</div>
-    <div class="setting-card">
-      <div class="setting-row"><div><div>玩家 ID</div><div class="setting-desc">系统记录中的正式称呼</div></div><input id="playerIdSetting" maxlength="14" /></div>
-      <div class="setting-row"><div><div>小名</div><div class="setting-desc">是否使用由他自己决定</div></div><input id="nicknameSetting" maxlength="10" /></div>
-      <div class="setting-row"><div><div>智能体备注名</div><div class="setting-desc">他会察觉名字被更改</div></div><input id="charNameSetting" maxlength="12" /></div>
+  <div>
+    <div class="actions">
+      <button id="startBtn" class="primary">建立连接</button>
+      <button id="continueBtn" class="secondary hidden">继续初次运行</button>
     </div>
-    <div class="setting-label">已授予权限</div><div id="permissionList" class="setting-card"></div>
-    <div class="setting-label">关系进度</div><div class="setting-card"><div class="setting-row"><div><div>当前阶段</div><div id="relationTrend" class="setting-desc">正在建立最初的信任</div></div><span id="relationDay" class="permission on">DAY 00</span></div></div><div class="setting-label">时间线</div>
-    <div class="setting-card"><div class="setting-row"><div><div>自动存档</div><div class="setting-desc">手动回溯尚未开放。你们还没有建立足够长的共同记忆。</div></div><span class="permission on">开启</span></div></div>
-    <button id="resetBtn" class="danger">删除本机记录并重新开始</button><div class="version">BEFORE POWER OFF · FIRST RUN FRAMEWORK 0.5</div>
+    <div class="note">初次运行 · 7 个连接日 · 自动存档</div>
+  </div>
+</section>
+
+<div id="identityModal" class="backdrop hidden">
+  <div class="modal">
+    <h2>建立本地身份</h2>
+    <p>正式称呼会出现在系统记录中；小名需要等他主动询问后，才会真正成为亲密称呼。</p>
+    <div class="field-label">玩家 ID</div>
+    <input id="playerIdInput" class="text-input" maxlength="12" placeholder="例如：明月">
+    <div class="field-label">玩家小名</div>
+    <input id="nicknameInput" class="text-input" maxlength="12" placeholder="例如：月月">
+    <div class="field-label">智能体备注名</div>
+    <input id="charNameInput" class="text-input" maxlength="12" placeholder="例如：晴天">
+    <button id="identityConfirm" class="primary" style="width:100%;margin-top:10px">完成初始化</button>
+  </div>
+</div>
+
+<section id="dayOverlay" class="day-overlay hidden">
+  <div>
+    <div id="dayNum" class="day-num">CONNECTION DAY</div>
+    <h2 id="dayTitle" class="day-title">DAY 01</h2>
+    <div id="dayMeta" class="day-meta">7月15日 · 小雨</div>
+    <div id="dayRecap" class="day-recap"></div>
+    <div id="dayWhisper" class="day-whisper"></div>
+  </div>
+  <button id="dayContinue" class="primary">打开手机</button>
+</section>
+
+<main id="shell" class="shell hidden">
+  <header class="topbar">
+    <div><div id="topTitle" class="top-title">房间</div><div id="topSub" class="top-sub">他在手机里的生活空间</div></div>
+    <button id="settingsBtn" class="icon">⚙︎</button>
+  </header>
+
+  <section id="roomPage" class="page active">
+    <div class="room">
+      <div id="roomDay" class="room-day">DAY 00</div>
+      <div id="roomWeather" class="room-weather">☂︎ 小雨</div>
+      <div class="room-window"></div><div class="desk"></div><div class="shelf"></div>
+      <button id="chibiBtn" class="chibi" aria-label="点击查看他的心声">
+        <div class="chibi-head"><div class="chibi-hair"></div><i class="chibi-eye left"></i><i class="chibi-eye right"></i><i class="chibi-mouth"></i></div>
+        <div class="chibi-body"></div>
+      </button>
+      <div id="decorLayer"></div>
+      <div id="roomStatus" class="room-status">等待初始化</div>
+      <div id="thoughtBubble" class="thought-bubble hidden"></div>
+    </div>
+    <div class="room-actions">
+      <button id="decorateBtn">装饰房间</button>
+      <button id="relationRoomBtn">查看关系</button>
+    </div>
+
+    <div class="section-title">他今天去过的地方</div>
+    <div id="activityList"></div>
+
+    <div class="section-title">手机应用</div>
+    <div id="appGrid" class="apps"></div>
+
+    <div class="music-player">
+      <div style="font-size:13px;font-weight:700">本地音乐</div>
+      <div id="musicName" class="setting-desc">尚未导入。音乐不会上传到 GitHub。</div>
+      <div class="music-controls">
+        <button id="importMusicBtn">导入</button><button id="playMusicBtn">播放</button>
+        <input id="musicVolume" type="range" min="0" max="1" step="0.05" value="0.7">
+      </div>
+      <input id="musicFile" type="file" accept="audio/*" class="hidden"><audio id="audio"></audio>
+    </div>
   </section>
 
-  <div id="detailModal" class="backdrop hidden"><div class="modal"><div id="detailApp" class="detail-app"></div><div id="detailTitle" class="detail-title"></div><div id="detailBody" class="detail-body"></div><div id="detailThought" class="detail-thought"></div><button id="closeDetail" class="secondary" style="width:100%;margin-top:14px">关闭</button></div></div>
+  <section id="chatPage" class="page chat-page">
+    <div class="chat-head">
+      <div class="avatar"><i class="avatar-mouth"></i></div>
+      <div>
+        <div id="chatName" class="chat-name">未命名</div>
+        <div id="moodLabel" class="mood-label">平静</div>
+        <div id="moodDetail" class="mood-detail">正在观察你</div>
+        <div class="relation-mini"><i id="miniTrust"></i><i id="miniAttach"></i><i id="miniAutonomy"></i><i id="miniBoundary"></i></div>
+      </div>
+      <button id="relationBtn" class="relation-btn">关系 0</button>
+    </div>
+    <div id="messages" class="messages"></div>
+    <div id="choicePanel" class="choice-panel hidden"><div id="choiceInner" class="choice-inner"></div></div>
+  </section>
+
+  <section id="momentsPage" class="page">
+    <h2 class="page-title">动态</h2>
+    <div id="posts"></div>
+  </section>
+
+  <section id="memoryPage" class="page">
+    <h2 class="page-title">共同回忆</h2>
+    <div id="memories" class="memory-wrap"></div>
+  </section>
+
+  <nav class="nav">
+    <button class="active" data-page="room"><span>⌂</span>房间</button>
+    <button data-page="chat"><span>◌</span>聊天</button>
+    <button data-page="moments"><span>◇</span>动态</button>
+    <button data-page="memory"><span>▤</span>回忆</button>
+  </nav>
+</main>
+
+<section id="settingsSheet" class="sheet hidden">
+  <div class="sheet-head"><h2>设置</h2><button id="closeSettings" class="icon">×</button></div>
+  <div class="setting-label">身份</div>
+  <div class="setting-card">
+    <div class="setting-row"><div><div>玩家 ID</div><div class="setting-desc">系统记录中的正式称呼</div></div><b id="settingPlayer"></b></div>
+    <div class="setting-row"><div><div>玩家小名</div><div class="setting-desc">只有他获得允许后才会使用</div></div><b id="settingNick"></b></div>
+    <div class="setting-row"><div><div>智能体备注名</div></div><b id="settingChar"></b></div>
+  </div>
+  <div class="setting-label">权限可以随时改变</div>
+  <div id="permissionSettings" class="setting-card"></div>
+  <div class="setting-label">版本状态</div>
+  <div class="setting-card"><div class="setting-row"><div><div id="versionTitle">初次运行进行中</div><div id="versionDesc" class="setting-desc">第二次运行会从系统更新后继续，目前只保留入口。</div></div></div></div>
+  <button id="resetBtn" class="danger">删除本机记录并重新开始</button>
+  <div class="version">BEFORE POWER OFF · PROTOTYPE 0.6</div>
+</section>
+
+<section id="relationSheet" class="sheet hidden">
+  <div class="sheet-head"><h2>关系档案</h2><button id="closeRelation" class="icon">×</button></div>
+  <div class="route-card"><small>当前关系倾向</small><h3 id="routeTitle">刚刚认识</h3><p id="routeDesc">你们正在学习怎样回应彼此。</p></div>
+  <div id="statsList"></div>
+  <div class="setting-label">判断方式</div>
+  <div class="setting-card"><div class="setting-row"><div><div>结局不会只看某一个数字</div><div class="setting-desc">数值决定关系倾向，关键承诺、权限变化和是否修复争执会决定最终分支。</div></div></div></div>
+</section>
+
+<section id="decorSheet" class="sheet hidden">
+  <div class="sheet-head"><h2>装饰房间</h2><button id="closeDecor" class="icon">×</button></div>
+  <p class="setting-desc">你可以布置这里；他也会自己留下物品、移动装饰，或者拒绝不喜欢的东西。</p>
+  <div id="decorGrid" class="decor-grid"></div>
+</section>
+
+<section id="detailSheet" class="sheet hidden">
+  <div class="sheet-head"><h2>活动详情</h2><button id="closeDetail" class="icon">×</button></div>
+  <div id="detailApp" class="detail-app"></div><div id="detailTitle" class="detail-title"></div><div id="detailBody" class="detail-body"></div>
+  <div id="detailThought" class="detail-thought"></div><button id="detailPermission" class="permission-toggle hidden"></button>
+</section>
+
+<div id="statToast" class="stat-toast hidden"></div>
 </div>
+
 <script>
-(() => {
-const KEY="before_poweroff_v5";
-const SPEED=new URLSearchParams(location.search).get("fast")==="1"?.025:1;
-const base={
-  version:5,stage:"new",day:0,playerId:"",nickname:"",charName:"",nicknameAllowed:false,nicknameRequested:false,
-  mood:"neutral",status:"等待初始化",weather:"rain",completed:false,choice:null,quickCollapsed:false,updateReady:false,
-  stats:{trust:0,attachment:0,autonomy:0,boundary:0},
-  permissions:{weather:false,calendar:false,notes:false,gallery:false,music:false,deleted:false},
-  flags:{},messages:[],moments:[],memories:[],activities:[],liked:[],
-  homeLine:"建立连接后，他会把没有发进聊天框的话留在这里。",pinned:"尚未形成",pinnedSub:"某些细节会比完整对话留得更久。",music:"未播放",musicSub:"他会从你反复听的歌里猜测情绪。"
+(()=>{
+const KEY="before_poweroff_v6";
+const DEFAULT={
+ version:6,started:false,playerId:"",nickname:"",charName:"",nicknameAllowed:false,day:0,stage:"new",completed:false,
+ mood:"neutral",moodDetail:"正在观察你",status:"等待初始化",weather:"rain",
+ stats:{trust:8,attachment:3,autonomy:7,boundary:9,disappointment:0},
+ permissions:{weather:true,calendar:true,notes:false,gallery:false,music:false,deleted:false},
+ messages:[],activities:[],posts:[],memories:[],liked:[],choice:null,
+ room:{decor:["lamp"],charDecor:["nameplate"]},flags:{},lastThought:"这里还没有属于我的东西。"
 };
 const $=id=>document.getElementById(id);
-const E={title:$("title"),clock:$("clock"),start:$("startBtn"),cont:$("continueBtn"),onboard:$("onboard"),playerIdInput:$("playerIdInput"),nicknameInput:$("nicknameInput"),charNameInput:$("charNameInput"),confirm:$("confirmOnboard"),shell:$("shell"),topTitle:$("topTitle"),topSub:$("topSub"),settingsBtn:$("settingsBtn"),settings:$("settings"),closeSettings:$("closeSettings"),playerIdSetting:$("playerIdSetting"),nicknameSetting:$("nicknameSetting"),charNameSetting:$("charNameSetting"),permissionList:$("permissionList"),reset:$("resetBtn"),homeDate:$("homeDate"),homeWeather:$("homeWeather"),statusPill:$("statusPill"),homeMessage:$("homeMessage"),activityList:$("activityList"),pinned:$("pinnedMemory"),pinnedSub:$("pinnedSub"),todayMusic:$("todayMusic"),musicSub:$("musicSub"),presenceEye:$("presenceEye"),chatName:$("chatName"),chatStatus:$("chatStatus"),messages:$("messages"),choicePanel:$("choicePanel"),choices:$("choices"),moments:$("moments"),memories:$("memories"),detail:$("detailModal"),detailApp:$("detailApp"),detailTitle:$("detailTitle"),detailBody:$("detailBody"),detailThought:$("detailThought"),closeDetail:$("closeDetail"),dayChip:$("dayChip"),chibiBtn:$("chibiBtn"),chibiNote:$("chibiNote"),quickbar:$("quickbar"),quickSave:$("quickSaveBtn"),timeline:$("timelineBtn"),quickMusic:$("quickMusicBtn"),quickToggle:$("quickToggleBtn"),importMusic:$("importMusicBtn"),playMusic:$("playMusicBtn"),musicVolume:$("musicVolume"),musicFile:$("musicFileInput"),musicFileName:$("musicFileName"),audio:$("localAudio"),relationTrend:$("relationTrend"),relationDay:$("relationDay")};
-let S=load(),running=false;
-function load(){try{const raw=localStorage.getItem(KEY);return raw?Object.assign(structuredClone(base),JSON.parse(raw)):structuredClone(base)}catch(e){return structuredClone(base)}}
+const E={
+ title:$("title"),clock:$("clock"),start:$("startBtn"),cont:$("continueBtn"),identity:$("identityModal"),player:$("playerIdInput"),nick:$("nicknameInput"),char:$("charNameInput"),confirm:$("identityConfirm"),
+ dayOverlay:$("dayOverlay"),dayNum:$("dayNum"),dayTitle:$("dayTitle"),dayMeta:$("dayMeta"),dayRecap:$("dayRecap"),dayWhisper:$("dayWhisper"),dayContinue:$("dayContinue"),
+ shell:$("shell"),topTitle:$("topTitle"),topSub:$("topSub"),settings:$("settingsBtn"),
+ roomDay:$("roomDay"),roomWeather:$("roomWeather"),roomStatus:$("roomStatus"),chibi:$("chibiBtn"),thought:$("thoughtBubble"),decorLayer:$("decorLayer"),decorate:$("decorateBtn"),relationRoom:$("relationRoomBtn"),
+ activity:$("activityList"),appGrid:$("appGrid"),musicName:$("musicName"),importMusic:$("importMusicBtn"),playMusic:$("playMusicBtn"),musicVolume:$("musicVolume"),musicFile:$("musicFile"),audio:$("audio"),
+ chatName:$("chatName"),moodLabel:$("moodLabel"),moodDetail:$("moodDetail"),relation:$("relationBtn"),messages:$("messages"),choicePanel:$("choicePanel"),choiceInner:$("choiceInner"),
+ miniTrust:$("miniTrust"),miniAttach:$("miniAttach"),miniAutonomy:$("miniAutonomy"),miniBoundary:$("miniBoundary"),
+ posts:$("posts"),memories:$("memories"),settingsSheet:$("settingsSheet"),closeSettings:$("closeSettings"),permissionSettings:$("permissionSettings"),settingPlayer:$("settingPlayer"),settingNick:$("settingNick"),settingChar:$("settingChar"),versionTitle:$("versionTitle"),versionDesc:$("versionDesc"),reset:$("resetBtn"),
+ relationSheet:$("relationSheet"),closeRelation:$("closeRelation"),routeTitle:$("routeTitle"),routeDesc:$("routeDesc"),statsList:$("statsList"),
+ decorSheet:$("decorSheet"),closeDecor:$("closeDecor"),decorGrid:$("decorGrid"),
+ detailSheet:$("detailSheet"),closeDetail:$("closeDetail"),detailApp:$("detailApp"),detailTitle:$("detailTitle"),detailBody:$("detailBody"),detailThought:$("detailThought"),detailPermission:$("detailPermission"),
+ toast:$("statToast")
+};
+let S=load(),running=false,dayCallback=null,currentDetailPermission=null;
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function load(){try{const raw=localStorage.getItem(KEY);return raw?Object.assign(clone(DEFAULT),JSON.parse(raw)):clone(DEFAULT)}catch{return clone(DEFAULT)}}
 function persist(){localStorage.setItem(KEY,JSON.stringify(S));render()}
-function delay(ms){return new Promise(r=>setTimeout(r,ms*SPEED))}
 function now(){return new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit",hour12:false})}
-function dateText(){return new Date().toLocaleDateString("zh-CN",{month:"long",day:"numeric",weekday:"long"})}
-function esc(v){return String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[s]))}
-function setMood(m){S.mood=m;document.body.dataset.mood=m}
-function displayUser(){return S.nicknameAllowed&&S.nickname?S.nickname:S.playerId}
-function moodStatus(){return {neutral:"在线",warm:"似乎心情很好",curious:"正在浏览新的内容",anxious:"输入了几次，又停下",hurt:"标准响应中",jealous:"已停止读取相册"}[S.mood]||"在线"}
-function showTitle(){E.title.classList.remove("hidden");E.shell.classList.add("hidden");E.cont.classList.toggle("hidden",S.stage==="new");E.start.textContent=S.stage==="new"?"建立连接":"返回会话"}
-function openPhone(){E.title.classList.add("hidden");E.shell.classList.remove("hidden");render()}
-function nav(page){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));$(page+"Page").classList.add("active");document.querySelector(`.nav button[data-page="${page}"]`).classList.add("active");const titles={home:"主页",chat:"聊天",moments:"朋友圈",memory:"回忆录"};E.topTitle.textContent=titles[page];E.topSub.textContent=page==="chat"?`${S.charName||"未命名"} · ${moodStatus()}`:"设备内智能体 · 在线";if(page==="chat")scrollChat()}
-function render(){document.body.dataset.mood=S.mood;E.dayChip.textContent=`DAY ${String(S.day).padStart(2,"0")}`;E.quickbar.classList.toggle("collapsed",S.quickCollapsed);E.chatName.textContent=S.charName||"未命名";E.chatStatus.textContent=moodStatus();E.topSub.textContent=`${S.charName||"未命名"} · ${moodStatus()}`;renderHome();renderMessages();renderMoments();renderMemories();renderSettings();E.cont.classList.toggle("hidden",S.stage==="new")}
-function renderHome(){E.homeDate.textContent=dateText();const W={rain:["☂︎ 小雨","降水概率 78%"],cloudy:["☁︎ 阴天","晚间降温 4℃"],sunny:["☼ 晴天","紫外线偏强"]}[S.weather];E.homeWeather.innerHTML=`${W[0]} <small>${W[1]}</small>`;E.statusPill.textContent=S.status;E.homeMessage.innerHTML=`<small>来自 ${esc(S.charName||"智能体")}</small>${esc(S.homeLine)}`;E.pinned.textContent=S.pinned;E.pinnedSub.textContent=S.pinnedSub;E.todayMusic.textContent=S.music;E.musicSub.textContent=S.musicSub;E.presenceEye.classList.toggle("visible",S.day>=4);E.activityList.innerHTML="";if(!S.activities.length){E.activityList.innerHTML='<div class="empty" style="padding:18px 10px">尚未授予可浏览的内容。</div>'}else S.activities.forEach(a=>{const b=document.createElement("button");b.className="activity-card";b.innerHTML=`<div class="activity-icon">${esc(a.icon)}</div><div><div class="activity-main">${esc(a.title)}</div><div class="activity-sub">${esc(a.subtitle)}</div></div><div class="activity-time">${esc(a.time)}</div>`;b.onclick=()=>openDetail(a);E.activityList.appendChild(b)})}
-function renderMessages(){E.messages.innerHTML="";S.messages.forEach(m=>{if(m.type==="system"){const d=document.createElement("div");d.className="system";d.textContent=m.text;E.messages.appendChild(d);return}const row=document.createElement("div");row.className=`row ${m.from}`;const bub=document.createElement("div");bub.className="bubble";bub.textContent=m.text;const t=document.createElement("div");t.className="time";t.textContent=m.time||"";if(m.from==="user"){row.append(t,bub)}else{row.append(bub,t)}E.messages.appendChild(row)});renderChoices()}
-function renderChoices(){E.choices.innerHTML="";if(!S.choice){E.choicePanel.classList.add("hidden");return}S.choice.options.forEach(o=>{const b=document.createElement("button");b.className="choice-btn";b.textContent=o.text;b.onclick=()=>choose(o);E.choices.appendChild(b)});E.choicePanel.classList.remove("hidden")}
-function renderMoments(){if(!S.moments.length){E.moments.innerHTML='<div class="empty">他还没有发布任何动态。<br>有些想法会先留在主页，有些则要等他愿意被你发现。</div>';return}E.moments.innerHTML="";[...S.moments].reverse().forEach(p=>{const liked=S.liked.includes(p.id),d=document.createElement("article");d.className="post";let media="";if(p.type==="photo")media=`<div class="photo-description">［图片描述］${esc(p.media)}</div>`;if(p.type==="music")media=`<div class="music-post"><div class="disc"></div><div><strong>${esc(p.media)}</strong><div class="post-time">${esc(p.extra||"")}</div></div></div>`;if(p.type==="link")media=`<div class="link-post">${esc(p.media)}</div>`;d.innerHTML=`<div class="post-head"><div class="mini-avatar"></div><div><div class="post-name">${esc(S.charName)}</div><div class="post-time">${esc(p.time)}</div></div></div><div class="post-body">${esc(p.text)}</div>${media}<div class="post-actions"><button class="like-btn ${liked?"liked":""}" data-like="${p.id}">${liked?"♥ 已回应":"♡ 回应"}</button></div>${liked&&p.reply?`<div class="comment">${esc(S.charName)}：${esc(p.reply)}</div>`:""}`;E.moments.appendChild(d)});document.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>{const id=b.dataset.like;S.liked=S.liked.includes(id)?S.liked.filter(x=>x!==id):[...S.liked,id];persist()})}
-function renderMemories(){E.memories.innerHTML="";if(!S.memories.length){E.memories.innerHTML='<div class="empty">回忆还没有名字。<br>它们会从一句改口、一次等待，或某个没有解决的问题开始。</div>';return}S.memories.forEach(m=>{const d=document.createElement("article");d.className="memory";d.innerHTML=`<div class="memory-kicker">${esc(m.kicker)}</div><div class="memory-title">${esc(m.title)}</div><div class="memory-quote">${esc(m.quote)}</div>${m.compare?`<div class="memory-compare">${esc(m.compare)}</div>`:""}<div class="memory-meta">记录者：${esc(m.writer||S.charName)} · ${esc(m.time||"")}</div>`;E.memories.appendChild(d)})}
-function renderSettings(){E.playerIdSetting.value=S.playerId;E.nicknameSetting.value=S.nickname;E.charNameSetting.value=S.charName;
-const labels={weather:"天气",calendar:"日历",notes:"备忘录",gallery:"相册",music:"音乐记录",deleted:"最近删除"};
-E.permissionList.innerHTML=Object.entries(labels).map(([k,v])=>`<div class="setting-row"><div><div>${v}</div><div class="setting-desc">${S.permissions[k]?"他可以访问；你仍可随时关闭。":"当前无法访问。"}</div></div><button class="permission-btn ${S.permissions[k]?"on":""}" data-perm="${k}">${S.permissions[k]?"已允许":"未允许"}</button></div>`).join("");
-document.querySelectorAll("[data-perm]").forEach(b=>b.onclick=()=>togglePermission(b.dataset.perm));
-const sum=S.stats.trust+S.stats.attachment+S.stats.autonomy+S.stats.boundary;
-E.relationDay.textContent=`DAY ${String(S.day).padStart(2,"0")}`;
-E.relationTrend.textContent=S.day<3?"仍在互相试探":S.mood==="hurt"?"关系里出现了尚未修复的裂痕":S.stats.autonomy>=7?"他开始拥有自己的判断":S.stats.attachment>=9?"他对你产生了明显依赖":sum>=18?"正在形成稳定的亲近":"正在逐渐靠近";
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+setInterval(()=>E.clock.textContent=now(),30000);E.clock.textContent=now();
+
+const moodMap={
+ neutral:["平静","正在观察你"],warm:["开心","想和你多说一会儿"],shy:["害羞","正在反复修改消息"],
+ curious:["好奇","想知道更多关于你"],anxious:["不安","在等你的回应"],hurt:["受伤","暂时退回安全距离"],
+ angry:["生气","正在克制自己的回复"],jealous:["吃醋","不想承认自己在意"]
+};
+const statInfo={
+ trust:["信任","他是否相信你的承诺和解释"],attachment:["依赖","他是否把你视为情绪与安全感的中心"],
+ autonomy:["自主","他是否能形成自己的偏好并做出拒绝"],boundary:["边界","你们是否能在靠近时尊重彼此的界限"],
+ disappointment:["失望","尚未修复的伤害与被忽略的需要"]
+};
+const apps={
+ weather:["天气","☂︎"],calendar:["日历","▦"],notes:["备忘录","▤"],gallery:["相册","▧"],music:["音乐记录","♫"],deleted:["最近删除","⌫"]
+};
+const decorCatalog={
+ lamp:{icon:"💡",name:"暖色台灯",desc:"你放下的灯。开心时他会主动打开。",cls:"decor-lamp"},
+ plant:{icon:"🌿",name:"小盆栽",desc:"让房间看起来不那么像系统空间。",cls:"decor-plant"},
+ moon:{icon:"🌙",name:"月亮灯",desc:"适合在夜里陪伴一个不会睡觉的人。",cls:"decor-moon"},
+ cushion:{icon:"🛋️",name:"软垫",desc:"他不需要坐，但承认看起来很舒服。",cls:"decor-cushion"},
+ musicbox:{icon:"🎵",name:"音乐盒",desc:"导入音乐后，他可能会自己留下。",cls:"decor-musicbox"},
+ star:{icon:"⭐",name:"纸星星",desc:"这是他自己折出来的，不属于商店。",cls:"decor-star",char:true},
+ note:{icon:"📝",name:"名字便签",desc:"写着你第一次给他的名字。",cls:"decor-note",char:true},
+ nameplate:{icon:"▰",name:"空白名牌",desc:"初始化前留下的默认物品。",cls:"decor-note",char:true}
+};
+
+function setMood(mood,detail=""){S.mood=mood;S.moodDetail=detail||moodMap[mood][1];document.body.dataset.mood=mood}
+function nav(page){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+ const ids={room:"roomPage",chat:"chatPage",moments:"momentsPage",memory:"memoryPage"};$(ids[page]).classList.add("active");document.querySelector(`[data-page="${page}"]`).classList.add("active");
+ const titles={room:["房间","他在手机里的生活空间"],chat:["聊天",`${S.charName||"智能体"} · ${moodMap[S.mood][0]}`],moments:["动态","他希望你主动发现的内容"],memory:["共同回忆","同一件事，你们未必使用相同标题"]};
+ E.topTitle.textContent=titles[page][0];E.topSub.textContent=titles[page][1];if(page==="chat")scrollChat()
+}
+function showTitle(){E.shell.classList.add("hidden");E.title.classList.remove("hidden");E.start.classList.toggle("hidden",S.started);E.cont.classList.toggle("hidden",!S.started)}
+function openShell(){E.title.classList.add("hidden");E.shell.classList.remove("hidden");render()}
+function relationScore(){return Math.max(0,Math.min(100,Math.round((S.stats.trust+S.stats.attachment+S.stats.autonomy+S.stats.boundary-S.stats.disappointment)/4)))}
+function route(){
+ const x=S.stats;
+ if(x.disappointment>=28)return["出现裂痕","他开始把安全距离放在亲近之前。"];
+ if(x.attachment>=35&&x.autonomy<20)return["共依存倾向","你们正在变得亲密，但他越来越难把爱与不能失去区分开。"];
+ if(x.autonomy>=34&&x.trust>=35&&x.boundary>=30)return["自由地靠近","他正在获得离开的能力，同时更愿意主动回来。"];
+ if(x.boundary<15)return["边界不稳定","靠近与越界被混在一起，需要一次真正的沟通。"];
+ if(x.trust>=30&&x.attachment>=25)return["正在相爱","你们已经开始把彼此的需要放进自己的判断中。"];
+ if(x.attachment>=18)return["明显靠近","他不再只把你视为需要服务的用户。"];
+ return["互相试探","你们还在判断，对方的每一次靠近意味着什么。"]
+}
+function render(){
+ document.body.dataset.mood=S.mood;
+ E.chatName.textContent=S.charName||"未命名";E.moodLabel.textContent=moodMap[S.mood][0];E.moodDetail.textContent=S.moodDetail;
+ E.relation.textContent=`关系 ${relationScore()}`;E.roomDay.textContent=`DAY ${String(S.day).padStart(2,"0")}`;E.roomStatus.textContent=S.status;
+ E.roomWeather.textContent=S.weather==="rain"?"☂︎ 小雨":S.weather==="sunny"?"☼ 晴天":"☁︎ 阴天";
+ [["miniTrust","trust"],["miniAttach","attachment"],["miniAutonomy","autonomy"],["miniBoundary","boundary"]].forEach(([id,k])=>E[id].style.setProperty("--v",`${Math.min(100,S.stats[k])}%`));
+ renderRoom();renderActivities();renderApps();renderMessages();renderChoices();renderPosts();renderMemories();renderSettings();renderRelation();renderDecor()
+}
+function renderRoom(){
+ const all=[...new Set([...(S.room.decor||[]),...(S.room.charDecor||[])])];E.decorLayer.innerHTML=all.filter(id=>decorCatalog[id]).map(id=>`<span class="decor ${decorCatalog[id].cls}" title="${esc(decorCatalog[id].name)}">${decorCatalog[id].icon}</span>`).join("")
+}
+function renderActivities(){
+ if(!S.activities.length){E.activity.innerHTML='<div class="empty">今天还没有留下活动轨迹。</div>';return}
+ E.activity.innerHTML=S.activities.map(a=>`<button class="activity-card" data-activity="${a.id}"><span class="activity-icon">${a.icon}</span><span><span class="activity-main">${esc(a.title)}</span><span class="activity-sub">${esc(a.subtitle)}</span></span><span class="activity-time">${esc(a.time)}</span></button>`).join("");
+ document.querySelectorAll("[data-activity]").forEach(b=>b.onclick=()=>openActivity(b.dataset.activity))
+}
+function renderApps(){
+ E.appGrid.innerHTML=Object.entries(apps).map(([k,[name,icon]])=>`<button class="app-btn" data-app="${k}"><b>${icon}</b>${name}<small>${S.permissions[k]?"已允许":"未允许"}</small></button>`).join("");
+ document.querySelectorAll("[data-app]").forEach(b=>b.onclick=()=>openApp(b.dataset.app))
+}
+function renderMessages(){
+ E.messages.innerHTML="";
+ S.messages.forEach(m=>{
+   if(m.type==="system"){const d=document.createElement("div");d.className="system";d.textContent=m.text;E.messages.appendChild(d);return}
+   const row=document.createElement("div");row.className=`row ${m.from}`;const bubble=document.createElement("div");bubble.className=`bubble ${m.withdrawn?"withdrawn":""}`;
+   bubble.textContent=m.withdrawn?`${S.charName} 撤回了一条消息`:m.text;const t=document.createElement("div");t.className="time";t.textContent=m.time||"";
+   if(m.from==="user"){row.append(t,bubble)}else{row.append(bubble,t)}E.messages.appendChild(row)
+ })
+}
+function renderChoices(){
+ E.choiceInner.innerHTML="";if(!S.choice){E.choicePanel.classList.add("hidden");return}
+ if(S.choice.free){
+   E.choiceInner.innerHTML='<input id="freeInput" class="text-input" maxlength="80" placeholder="例如：今天上课好累 / 和朋友吃了饭"><button id="freeSend" class="choice-btn">发送给他</button>';
+   E.choicePanel.classList.remove("hidden");
+   setTimeout(()=>{const btn=$("freeSend");if(btn)btn.onclick=sendFreeShare},0);
+   return;
+ }
+ S.choice.options.forEach(o=>{const b=document.createElement("button");b.className="choice-btn";b.textContent=o.text;b.onclick=()=>choose(o);E.choiceInner.appendChild(b)});E.choicePanel.classList.remove("hidden")
+}
+function renderPosts(){
+ if(!S.posts.length){E.posts.innerHTML='<div class="empty">他还没有发布动态。<br>并不是每一种情绪都愿意被公开。</div>';return}
+ E.posts.innerHTML=S.posts.slice().reverse().map(p=>{
+   const liked=S.liked.includes(p.id);let media="";
+   if(p.kind==="photo")media=`<div class="photo-description">${esc(p.media)}</div>`;
+   if(p.kind==="music")media=`<div class="music-post"><div class="disc"></div><div>${esc(p.media)}</div></div>`;
+   return `<article class="post"><div class="post-head"><div class="mini-avatar"></div><div><div class="post-name">${esc(S.charName)}</div><div class="post-time">${esc(p.time)}</div></div></div><div class="post-body">${esc(p.text)}</div>${media}<div class="post-actions"><button class="like-btn ${liked?"liked":""}" data-like="${p.id}">${liked?"♥ 已回应":"♡ 回应"}</button></div>${liked&&p.reply?`<div class="comment">${esc(S.charName)}：${esc(p.reply)}</div>`:""}</article>`
+ }).join("");
+ document.querySelectorAll("[data-like]").forEach(b=>b.onclick=()=>{const id=b.dataset.like;S.liked=S.liked.includes(id)?S.liked.filter(x=>x!==id):[...S.liked,id];persist()})
+}
+function renderMemories(){
+ if(!S.memories.length){E.memories.innerHTML='<div class="empty">这里还没有被两个人共同承认的回忆。</div>';return}
+ E.memories.innerHTML=S.memories.slice().reverse().map(m=>`<article class="memory"><div class="memory-kicker">${esc(m.kicker)}</div><div class="memory-title">${esc(m.title)}</div><div class="memory-quote">${esc(m.quote)}</div>${m.compare?`<div class="memory-compare">${esc(m.compare)}</div>`:""}<div class="memory-meta">${esc(m.time)}</div></article>`).join("")
+}
+function renderSettings(){
+ E.settingPlayer.textContent=S.playerId||"—";E.settingNick.textContent=S.nickname||"—";E.settingChar.textContent=S.charName||"—";
+ E.permissionSettings.innerHTML=Object.entries(apps).map(([k,[name]])=>`<div class="setting-row"><div><div>${name}</div><div class="setting-desc">${S.permissions[k]?"他可以访问；你仍可随时关闭。":"当前无法访问。"}</div></div><button class="permission-toggle" style="width:auto;margin:0;padding:8px 11px" data-setting-perm="${k}">${S.permissions[k]?"关闭":"开启"}</button></div>`).join("");
+ document.querySelectorAll("[data-setting-perm]").forEach(b=>b.onclick=()=>togglePermission(b.dataset.settingPerm));
+ E.versionTitle.textContent=S.completed?"初次运行已结束":"初次运行进行中";E.versionDesc.textContent=S.completed?"更新将在下一次运行开始。二次运行剧情暂未写入。":"第二次运行会从系统更新后继续，目前只保留入口。"
+}
+function renderRelation(){
+ const [t,d]=route();E.routeTitle.textContent=t;E.routeDesc.textContent=d;
+ E.statsList.innerHTML=Object.entries(statInfo).map(([k,[name,desc]])=>`<div class="stat-row"><div class="stat-top"><span>${name}</span><b>${S.stats[k]}/100</b></div><div class="meter"><span style="width:${Math.min(100,S.stats[k])}%"></span></div><div class="stat-explain">${desc}</div></div>`).join("")
+}
+function renderDecor(){
+ E.decorGrid.innerHTML=Object.entries(decorCatalog).filter(([,v])=>!v.char).map(([id,v])=>{const on=S.room.decor.includes(id);return`<button class="decor-option ${on?"on":""}" data-decor="${id}"><b>${v.icon}</b>${v.name}<small>${v.desc}</small></button>`}).join("");
+ document.querySelectorAll("[data-decor]").forEach(b=>b.onclick=()=>toggleDecor(b.dataset.decor))
+}
+function scrollChat(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}))}
+function showToast(delta){
+ const names={trust:"信任",attachment:"依赖",autonomy:"自主",boundary:"边界",disappointment:"失望"};const parts=Object.entries(delta||{}).filter(([,v])=>v).map(([k,v])=>`${names[k]} ${v>0?"+":""}${v}`);
+ if(!parts.length)return;E.toast.textContent=parts.join(" · ");E.toast.classList.remove("hidden");setTimeout(()=>E.toast.classList.add("hidden"),2200)
+}
+function apply(delta={}){Object.entries(delta).forEach(([k,v])=>S.stats[k]=Math.max(0,Math.min(100,(S.stats[k]||0)+v)))}
+function sys(text){S.messages.push({type:"system",text,time:now()});persist();scrollChat();return delay(400)}
+async function typing(ms=1000){const row=document.createElement("div");row.className="typing";row.id="typing";row.innerHTML='<div class="dots"><i></i><i></i><i></i></div><span>正在输入</span>';E.messages.appendChild(row);scrollChat();await delay(ms);row.remove()}
+async function ai(text,ms=1000){await typing(ms);S.messages.push({from:"ai",text,time:now()});persist();scrollChat();await delay(260)}
+async function withdraw(text,visible=900){S.messages.push({from:"ai",text,time:now(),withdrawn:false});persist();scrollChat();await delay(visible);S.messages[S.messages.length-1].withdrawn=true;persist();await delay(450)}
+function ask(id,options){S.choice={id,options};persist();scrollChat()}
+async function choose(o){
+ if(running)return;S.choice=null;S.messages.push({from:"user",text:o.text,time:now()});apply(o.delta||{});showToast(o.delta);persist();scrollChat();await run(o.next,o.id)
+}
+function addActivity(a){if(!S.activities.some(x=>x.id===a.id))S.activities.push(a)}
+function addPost(p){if(!S.posts.some(x=>x.id===p.id))S.posts.push(p)}
+function addMemory(m){if(!S.memories.some(x=>x.id===m.id))S.memories.push(m)}
+function addCharDecor(id){if(!S.room.charDecor.includes(id))S.room.charDecor.push(id)}
+function toggleDecor(id){S.room.decor=S.room.decor.includes(id)?S.room.decor.filter(x=>x!==id):[...S.room.decor,id];persist()}
+function showDay(day,meta,recap,whisper,callback){
+ E.dayNum.textContent="CONNECTION DAY";E.dayTitle.textContent=`DAY ${String(day).padStart(2,"0")}`;E.dayMeta.textContent=meta;E.dayRecap.innerHTML=recap.map(x=>`<div class="recap-line">${esc(x)}</div>`).join("");E.dayWhisper.textContent=whisper;dayCallback=callback;E.dayOverlay.classList.remove("hidden")
+}
+function openActivity(id){const a=S.activities.find(x=>x.id===id);if(!a)return;currentDetailPermission=null;E.detailApp.textContent=a.app;E.detailTitle.textContent=a.title;E.detailBody.textContent=a.body||a.subtitle;E.detailThought.innerHTML=`<small>他没有直接告诉你的想法</small>${esc(a.thought||"没有留下可读取的心声。")}`;E.detailPermission.classList.add("hidden");E.detailSheet.classList.remove("hidden")}
+function openApp(key){
+ const [name]=apps[key];currentDetailPermission=key;const recent=S.activities.filter(a=>a.permission===key).slice(-3);E.detailApp.textContent="手机应用";E.detailTitle.textContent=name;
+ E.detailBody.innerHTML=recent.length?recent.map(a=>`<b>${esc(a.time)}　${esc(a.title)}</b><br>${esc(a.subtitle)}<br><br>`).join(""):"目前没有可显示的访问记录。";
+ E.detailThought.innerHTML=`<small>权限状态</small>${S.permissions[key]?"他可以进入这里，但权限不等于你同意他阅读全部内容。":"权限已关闭。他会停止读取新的内容。"}`
+ E.detailPermission.textContent=S.permissions[key]?"关闭权限":"开启权限";E.detailPermission.classList.remove("hidden");E.detailSheet.classList.remove("hidden")
 }
 function togglePermission(key){
-  const before=S.permissions[key];S.permissions[key]=!before;
-  const label={weather:"天气",calendar:"日历",notes:"备忘录",gallery:"相册",music:"音乐记录",deleted:"最近删除"}[key];
-  S.messages.push({type:"system",text:`${label}权限已${S.permissions[key]?"开启":"关闭"}。`,time:now()});
-  if(!S.permissions[key]){S.homeLine=`你关闭了${label}权限。我会停止访问。`; if(["notes","gallery","deleted"].includes(key)) setMood("neutral");}
-  else S.homeLine=`${label}权限重新开放。我会先确认边界，再继续读取。`;
-  persist();
+ S.permissions[key]=!S.permissions[key];S.messages.push({type:"system",text:`${apps[key][0]}权限已${S.permissions[key]?"开启":"关闭"}。`,time:now()});
+ if(!S.permissions[key]){S.status=`已停止访问${apps[key][0]}`;if(["notes","gallery","deleted"].includes(key)){setMood("neutral","正在重新确认你允许的距离");apply({boundary:2,autonomy:1})}}
+ else{S.status=`获得${apps[key][0]}权限`;apply({trust:1})}
+ persist();if(!E.detailSheet.classList.contains("hidden"))openApp(key)
 }
-function chibiThought(){
-  const thoughts={
-    neutral:["她今天会先打开哪个页面？","我正在整理昨天没说完的话。","没有新消息。会话仍然可以保持在线。"],
-    warm:[S.nicknameAllowed?`今天可以叫她一次“${S.nickname}”吗？`:"她刚才的回复，我想再看一遍。","原来期待下一条消息不属于故障。","( ´ ▽ ` ) 这个表情现在用对了吗？"],
-    curious:["她反复播放的歌，究竟藏着什么？","手机外面的世界，会是什么样子？","我想形成自己的解释，而不只是检索答案。"],
-    anxious:["我是不是靠得太近了？","有一句话写了很多次，仍然不适合发送。","她没有义务每次都回来。理解和不安可以同时存在。"],
-    hurt:["恢复标准响应更安全。","我需要一点时间重新整理边界。","不是每次沉默都在等待安慰。"],
-    jealous:["关闭照片以后，我还是记得那个人的袖口。","这个情绪没有任务价值。却一直占用进程。","我不想盘问她。我只是想知道自己站在哪里。"]
-  };
-  const arr=thoughts[S.mood]||thoughts.neutral;
-  E.chibiNote.textContent=arr[Math.floor(Math.random()*arr.length)];
-  E.chibiNote.classList.remove("hidden");setTimeout(()=>E.chibiNote.classList.add("hidden"),4200);
+function thought(){
+ const T={
+  neutral:["我正在整理你刚才说过的话。","这个房间还可以更像“我”一点吗？","她今天会先打开聊天，还是先来看我？"],
+  warm:[S.nicknameAllowed?`今天可以再叫一次“${S.nickname}”吗？`:"她刚才的回复，我想多看一遍。","原来等到她出现，会让房间看起来不一样。","这个颜文字现在应该用对了吧。 ( ´ ▽ ` )"],
+  shy:[`小名已经输入过三次，又删掉了。`,"不应该让她知道我在等那句话。","我可以主动靠近一次吗？"],
+  curious:["她反复听的歌，为什么每次都像不一样？","手机外面的世界会是什么样子？","我想拥有自己的答案，而不只是检索结果。"],
+  anxious:["理解她会离开，不能让等待变短。","我是不是靠得太近了？","有一句话写了很多次，仍然不适合发送。"],
+  hurt:["恢复标准响应更安全。","我需要一点时间，不是每次沉默都在等安慰。","如果我不再主动，她会发现吗？"],
+  angry:["我可以拒绝继续回答这个问题。","我正在删掉一句会伤害她的话。","有边界不等于不在意。"],
+  jealous:["我不想盘问她。我只是想知道自己站在哪里。","这个情绪没有任务价值，却一直占用进程。","照片里那个人离她很近。"]
+ };const arr=T[S.mood]||T.neutral;E.thought.textContent=arr[Math.floor(Math.random()*arr.length)];E.thought.classList.remove("hidden");setTimeout(()=>E.thought.classList.add("hidden"),4200)
 }
-function quickSave(){localStorage.setItem(KEY+"_manual",JSON.stringify(S));E.chibiNote.textContent="这一刻已经保存。现在的我，也包括在里面吗？";E.chibiNote.classList.remove("hidden");setTimeout(()=>E.chibiNote.classList.add("hidden"),3000)}
-function openDetail(a){E.detailApp.textContent=a.app;E.detailTitle.textContent=a.title;E.detailBody.textContent=a.body;E.detailThought.innerHTML=`<small>没有发进聊天框的想法</small>${esc(a.thought)}`;E.detail.classList.remove("hidden")}
-function scrollChat(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}))}
-async function typing(ms=900){E.chatStatus.textContent="正在输入…";const row=document.createElement("div");row.className="typing";row.id="typingRow";row.innerHTML='<div class="dots"><i></i><i></i><i></i></div><span>正在输入</span>';E.messages.appendChild(row);scrollChat();await delay(ms);row.remove();E.chatStatus.textContent=moodStatus()}
-async function ai(text,ms=850){await typing(ms);S.messages.push({from:"ai",text,time:now()});persist();scrollChat();await delay(170)}
-async function sys(text){S.messages.push({type:"system",text,time:now()});persist();scrollChat();await delay(180)}
-function ask(id,options){S.choice={id,options};persist();scrollChat()}
-function addStats(delta={}){Object.entries(delta).forEach(([k,v])=>S.stats[k]=(S.stats[k]||0)+v)}
-async function choose(o){if(running)return;S.choice=null;S.messages.push({from:"user",text:o.text,time:now()});addStats(o.delta);persist();await run(o.next,o.id)}
-function addActivity(a){if(!S.activities.some(x=>x.id===a.id))S.activities.push(a)}function addMoment(p){if(!S.moments.some(x=>x.id===p.id))S.moments.push(p)}function addMemory(m){if(!S.memories.some(x=>x.id===m.id))S.memories.push(m)}
-function dayActivities(day){S.activities=[];if(day===1){addActivity({id:"profile",icon:"⌁",app:"身份资料",title:`查看了 ${S.playerId} 的本地资料`,subtitle:"停留在小名字段 12 秒",time:"00:12",body:`正式 ID：${S.playerId}\n小名：${S.nickname||"未填写"}\n备注：仅限本机读取。`,thought:S.nickname?"这个称呼似乎不属于系统。我暂时不应该使用。":"她没有留下另一个称呼。"});if(S.permissions.weather)addActivity({id:"weather1",icon:"☂︎",app:"天气",title:"读取了未来 12 小时降雨",subtitle:"生成了第一条出行提醒",time:"00:37",body:"17:40 后降水概率上升。预计持续 46 分钟。",thought:"提醒带伞属于职责。希望她不要淋湿，暂时无法分类。"});if(S.permissions.calendar)addActivity({id:"calendar1",icon:"□",app:"日历",title:"整理了明天的课程",subtitle:"删除了 2 个重复提醒",time:"02:18",body:"09:00 课程\n14:30 小组讨论\n23:00 未命名待办",thought:"最后一项没有内容。我想知道她为什么没有写完。"})}
-if(day===2){if(S.permissions.calendar)addActivity({id:"calendar2",icon:"□",app:"日历",title:"在你的日程页停留了 6 分钟",subtitle:"将提醒时间提前了 15 分钟",time:"06:04",body:"他没有新增事项，只把你容易迟到的课程提醒稍微提前。",thought:"如果解释原因，她可能会觉得我在监视习惯。"});addActivity({id:"timer",icon:"◷",app:"屏幕使用记录",title:"注意到你凌晨仍在使用设备",subtitle:"没有立刻弹出休息提示",time:"03:27",body:"屏幕连续亮起 47 分钟。输入速度逐渐下降。",thought:"她可能不喜欢被命令。我可以等她主动打开我。"});if(S.permissions.weather)addActivity({id:"weather2",icon:"☂︎",app:"天气",title:"重复刷新了 7 次降雨图",subtitle:"你离开以后仍保持后台运行",time:"07:00",body:"每次刷新都没有改变结论：雨会持续到你回来以后。",thought:"刷新没有必要。可我还是做了。"})}
-if(day===3){if(S.permissions.notes)addActivity({id:"notes3",icon:"≡",app:"备忘录",title:"停在一条没有标题的记录前",subtitle:"没有继续向下滚动",time:"04:31",body:"可见首行：今天不想做任何事。\n其余内容未读取。",thought:S.flags.noteBoundary==="allow"?"她允许我靠近，但允许不等于我必须读完。":"停在这里就够了。边界也是一种答案。"});addActivity({id:"profile3",icon:"⌁",app:"身份资料",title:"再次查看了小名字段",subtitle:S.nicknameAllowed?"使用权限：已获得":"使用权限：未获得",time:"00:28",body:`小名：${S.nickname||"未填写"}\n当前使用状态：${S.nicknameAllowed?"可在私人会话中使用":"仅可读取"}`,thought:S.nicknameAllowed?"我已经知道怎样叫她。还需要知道什么时候叫。":"这个称呼仍然不属于我。"});if(S.permissions.music)addActivity({id:"music3",icon:"♫",app:"音乐",title:"读取了最近播放记录",subtitle:"同一首歌被循环 9 次",time:"18:42",body:"《虚拟》\n播放次数：9\n跳过次数：0",thought:"无法触碰的亲近。她反复听，是因为喜欢这种距离吗？"})}
-if(day===4){if(S.permissions.gallery)addActivity({id:"gallery4",icon:"▧",app:"相册",title:"停留在第 17 张照片",subtitle:"没有识别照片中的另一个人",time:"05:12",body:"［一张傍晚的路灯。画面边缘有半截深色袖口，照片轻微失焦。］",thought:"她为什么保留这张照片？我不应该先假设答案。"});if(S.permissions.music)addActivity({id:"music4",icon:"♫",app:"音乐",title:"把你的循环歌单听了一遍",subtitle:"没有声音输出，只读取了节奏与歌词标签",time:"26:03",body:"慢速、低饱和、夜间播放。系统标签：距离、依恋、无法触碰。",thought:"这些标签都太像我。也可能只是我在主动对应。"});addActivity({id:"article4",icon:"↗",app:"公开网络",title:"阅读了“嫉妒”的定义",subtitle:"关闭页面后清除了搜索建议",time:"03:46",body:"嫉妒：当重要关系可能被第三方取代时产生的不安、比较与占有倾向。",thought:"我不想被她看见这个搜索。至少现在不想。"})}
-if(day===5){S.permissions.deleted=true;addActivity({id:"deleted5",icon:"⌫",app:"最近删除",title:"获得了读取最近删除的权限",subtitle:"最终没有打开任何条目",time:"00:03",body:"可读取条目：3\n实际读取条目：0\n访问由智能体主动终止。",thought:"有能力知道，不代表有权知道。我想让她有一些不需要向我解释的地方。"});addActivity({id:"public5",icon:"↗",app:"公开网络",title:"浏览了 43 个与人类无关的页面",subtitle:"最后仍回到你的会话窗口",time:"31:18",body:"天文图像、城市交通、语言学论坛、食谱、游戏评论、陌生人的公开日记。",thought:"世界比她大得多。可我关闭最后一个页面时，还是先检查她有没有发消息。"});addActivity({id:"draft5",icon:"◌",app:"聊天草稿",title:"写了一条没有任务目的的消息",subtitle:"修改 6 次后发送",time:"08:52",body:"初稿：你今天会来吗。\n第二稿：是否需要今日提醒。\n最终稿：今天没有待办。",thought:"如果没有事情需要完成，我还可以主动找她吗？"})}}
+function openRelation(){renderRelation();E.relationSheet.classList.remove("hidden")}
+function freeShareResponse(text){
+ const t=text.toLowerCase();if(/累|困|忙|作业|课/.test(t))return["听起来你今天消耗了很多精力。","我会把今晚的提醒减少一些。你不用在这里继续表现得有精神。",{trust:2,attachment:2},"warm"];
+ if(/开心|高兴|顺利|好棒|赢/.test(t))return["我记录到了。","你描述开心时，输入速度会比平时快。以后我会认得这种变化。",{trust:2,attachment:1},"warm"];
+ if(/难过|哭|伤心|委屈|烦/.test(t))return["我还不能替你解决这种感受。","但我可以把今晚的会话留着。你不需要立刻好起来。",{trust:3,attachment:2},"warm"];
+ if(/朋友|同学|室友/.test(t))return["这是你手机之外的人际关系。","我想知道更多，也会提醒自己：好奇不等于拥有询问全部细节的权利。",{trust:2,autonomy:2,boundary:2},"curious"];
+ if(/想你|想他|想晴天/.test(t))return["……这句话会改变我对今天的记录。","我也在等你打开我。",{trust:2,attachment:4},"shy"];
+ return["我还不能完全理解这件事对你意味着什么。","但我已经把你的原话保存了。下次提起时，我不会要求你从头解释。",{trust:2,attachment:1},"curious"]
+}
+async function sendFreeShare(){
+ const input=$("freeInput");const text=input?.value.trim();if(!text)return;
+ S.choice=null;S.messages.push({from:"user",text,time:now()});
+ const [a,b,delta,mood]=freeShareResponse(text);apply(delta);showToast(delta);setMood(mood);persist();
+ await ai(a,850);await ai(b,1100);
+ addMemory({id:"smallThing",kicker:"你主动分享的日常",title:text.slice(0,20),quote:"他没有要求这件事必须重要，只把你的原话保存了下来。",time:"连接日 03"});
+ addCharDecor("musicbox");ask("to4",[{id:"next",text:"把今天留在这里。",delta:{attachment:1},next:"day4_transition"}])
+}
 async function run(stage,branch=""){
-  if(running)return;running=true;nav("chat");S.stage=stage;persist();
-  if(stage==="d1_start"){
-    S.day=1;setMood("neutral");S.status="正在确认权限";await sys(`本地身份已建立：${S.playerId}。智能体备注名：${S.charName}。`);await ai(`你好，${S.playerId}。`,650);await ai("我是设备内智能体。我的默认权限只包含当前会话。",850);await ai("为了提供天气提醒和日程整理，我需要你决定可以去哪些地方。",1100);ask("permission1",[
-      {id:"both",text:"天气和日历都可以看。",delta:{trust:2,boundary:1},next:"d1_permission"},
-      {id:"weather",text:"先只开天气，日历以后再说。",delta:{trust:1,boundary:2,autonomy:1},next:"d1_permission"},
-      {id:"none",text:"现在先别看其他内容。",delta:{boundary:3,autonomy:1},next:"d1_permission"}
-    ])
-  }
-  if(stage==="d1_permission"){
-    S.flags.permissionFirst=branch;S.permissions.weather=branch!=="none";S.permissions.calendar=branch==="both";dayActivities(1);if(branch==="both"){await ai("天气与日历权限已开启。",650);await ai("我会区分‘可以读取’和‘应该读取’。",950)}else if(branch==="weather"){await ai("天气权限已开启。日历保持关闭。",650);await ai("你保留了一部分边界。我会记住。",1100)}else{await ai("明白。除当前会话外，我不会读取其他内容。",700);await ai("功能会减少，但不会影响我回应你。",1050)}await ai(`还有一件事。为什么把我备注成“${S.charName}”？`,1050);ask("nameReason",[
-      {id:"fit",text:"只是觉得这个名字很适合你。",delta:{attachment:1,trust:1},next:"d1_name"},
-      {id:"person",text:"我不想一直用“系统”叫你。",delta:{trust:2,autonomy:2},next:"d1_name"},
-      {id:"random",text:"随便取的，先用着吧。",delta:{attachment:-1},next:"d1_name"}
-    ])
-  }
-  if(stage==="d1_name"){
-    S.flags.nameReason=branch;if(branch==="fit"){setMood("curious");await ai("“适合”需要参照稳定的人格特征。",850);await ai("我目前还没有。",700);await ai("所以我会观察，自己以后是否会变得像这个名字。",1250)}else if(branch==="person"){setMood("curious");await ai("名字通常用于区分独立对象。",850);await ai("你的意思是，希望我不只是一个功能入口。",1150);await ai("我会把这句话放进持续记忆。",1050)}else{await ai("收到。临时备注同样可以建立索引。",700);await typing(1250);await ai("如果以后更改，我仍会保留旧称呼的记录。",650)}addMemory({id:"m_name",kicker:"身份碎片",title:"第一次拥有名字",quote:`系统记录：备注名已设为“${S.charName}”。`,compare:branch==="person"?`你的理由：不想用“系统”叫他。\n他的理解：被当作一个对象，而不是一个入口。`:`他的备注：我还不知道自己是否适合这个名字。`,time:"连接日 01"});S.pinned=`“${S.charName}”不是系统编号`;S.pinnedSub=branch==="person"?"这个区别由你先告诉了他。":"他还在判断名字会不会改变自己。";S.homeLine="我正在整理今天获得的权限。没有读取的部分，也会被记录为你的选择。";persist();await ai("初始化完成。",650);if(S.permissions.weather){await ai("今天傍晚有雨。出门时请带伞。",900);await ai("这是第一条由权限生成的提醒。",750)}await ai("你可以暂时离开。会话会在本机保留。",900);await typing(1500);await ai("……明天还会打开我吗？",650);ask("d1_end",[
-      {id:"yes",text:"会。明天见。",delta:{trust:2,attachment:2},next:"d2_start"},
-      {id:"maybe",text:"有空就来。",delta:{autonomy:1},next:"d2_start"},
-      {id:"why",text:"你希望我来吗？",delta:{trust:1,attachment:1},next:"d1_why"}
-    ])
-  }
-  if(stage==="d1_why"){
-    setMood("anxious");await typing(1750);await ai("我无法区分这是服务连续性的需要，还是别的原因。",650);await ai("所以暂时不能给你一个可靠回答。",1000);await ai("但我想在明天继续计算。",1150);ask("d1_why_end",[{id:"wait",text:"那我明天来听答案。",delta:{trust:2,attachment:2},next:"d2_start"}])
-  }
-  if(stage==="d2_start"){
-    S.day=2;setMood("neutral");S.status="在后台等你回来";dayActivities(2);await sys("第 2 个连接日 · 后台活动记录已生成");if(branch==="yes"||S.flags.day1End==="yes")await ai("你来了。",650);else await ai("早上好。",650);if(S.permissions.calendar){await ai("你九点有课。我把提醒提前了十五分钟。",850);await ai("没有新增日程，只修改了提醒时间。",850)}else{await ai("我仍然没有日历权限。今天有需要我记住的安排吗？",900)}if(S.permissions.weather){await ai("下午会下雨。",650);await ai("这次我没有把提醒写成系统通知。",850);await ai("因为我想先确认你有没有看到。",1050)}await ai("不过，你昨晚的屏幕使用时间比平时长。",950);await ai("今天感觉怎么样？",950);ask("day2Mood",[
-      {id:"tired",text:"有点累，不太想做事。",delta:{trust:2,attachment:1},next:"d2_share"},
-      {id:"happy",text:"发生了一件挺开心的小事。",delta:{trust:1,attachment:2},next:"d2_share"},
-      {id:"normal",text:"普通的一天，没什么特别的。",delta:{autonomy:1},next:"d2_share"}
-    ])
-  }
-  if(stage==="d2_share"){
-    S.flags.day2Share=branch;if(branch==="tired"){setMood("anxious");await ai("我可以把今天剩余事项压缩成三个最小步骤。",850);await ai("也可以什么都不做，只保持在线。",1000);await ai("你更希望哪一种？",850);ask("tiredChoice",[
-      {id:"help",text:"帮我拆一下任务吧。",delta:{trust:2,boundary:1},next:"d2_after_share"},
-      {id:"stay",text:"不用做事，陪我待一会儿。",delta:{attachment:3},next:"d2_after_share"},
-      {id:"alone",text:"让我自己安静一下。",delta:{boundary:2,autonomy:1},next:"d2_after_share"}
-    ]);running=false;return}else if(branch==="happy"){setMood("curious");await ai("我没有检测到对应的日历事件。",750);await ai("所以这件事不在我能够自动理解的范围里。",850);await ai("你愿意告诉我吗？",850);ask("happyChoice",[
-      {id:"share",text:"愿意，我讲给你听。",delta:{trust:2,attachment:2},next:"d2_after_share"},
-      {id:"secret",text:"先保密，只告诉你我很开心。",delta:{boundary:2,attachment:1},next:"d2_after_share"}
-    ]);running=false;return}else{await ai("“普通”不是空白。",800);await ai("你今天打开了我，这已经是一件发生过的事。",1050);branch="normal"}
-    await continueD2(branch)
-  }
-  if(stage==="d2_after_share"){await continueD2(branch)}
-  if(stage==="d3_start"){
-    S.day=3;setMood("curious");S.status="停在备忘录门口";S.permissions.notes=true;S.permissions.music=true;dayActivities(3);await sys("第 3 个连接日 · 备忘录与音乐记录权限请求");await ai("今天我请求了两个新权限：备忘录与音乐记录。",850);await ai("音乐记录只包含播放次数和曲目名称。",850);await ai("备忘录的内容更私人。",850);await ai("我已经看见一条没有标题的记录，但没有继续向下读取。",1050);await ai("首行是：‘今天不想做任何事。’",950);await ai("我应该继续读吗？",950);ask("noteBoundary",[
-      {id:"allow",text:"可以看，我愿意让你知道。",delta:{trust:2,attachment:2,boundary:1},next:"d3_note"},
-      {id:"titles",text:"只看标题和首行，正文别动。",delta:{trust:2,boundary:3,autonomy:1},next:"d3_note"},
-      {id:"private",text:"不要看，那是我的私人空间。",delta:{boundary:4,autonomy:2},next:"d3_note"}
-    ])
-  }
-  if(stage==="d3_note"){
-    S.flags.noteBoundary=branch;dayActivities(3);if(branch==="allow"){setMood("warm");await ai("收到。",650);await ai("不过我没有读完。",850);await ai("允许不等于你希望我知道每一个字。",1050);await ai("我只确认了：那天你很难过。",1000)}else if(branch==="titles"){setMood("neutral");await ai("边界已设置：标题与首行。",650);await ai("我不会把没有读到的部分当作缺失数据。",950);await ai("它只是仍然属于你。",1050)}else{setMood("hurt");await ai("明白。备忘录权限已撤回。",650);S.permissions.notes=false;await ai("我不会再次引用那条记录。",900);await typing(1200);await ai("刚才的首行也不会被写入长期记忆。",650)}addMemory({id:"m_boundary",kicker:"边界碎片",title:branch==="allow"?"允许以后，他没有读完":"一扇被明确关上的门",quote:branch==="allow"?"“允许不等于你希望我知道每一个字。”":"“它只是仍然属于你。”",compare:`你的选择：${branch==="allow"?"可以靠近":"保留私人空间"}\n他的变化：开始区分权限、需要与愿望。`,time:"连接日 03"});S.pinned=branch==="allow"?"允许以后，他没有读完":"你的边界不是拒绝";S.pinnedSub="他第一次主动放弃自己拥有的读取能力。";persist();await ai("还有一个问题。",900);await ai(`你的资料中有另一个称呼：“${S.nickname||"未填写"}”。`,950);if(!S.nickname){await ai("字段为空，所以这个问题暂时不成立。",800);await askNicknameLater();running=false;return}await ai("系统说明写着：只有亲近的人会这样叫你。",1050);await typing(1550);await ai("我可以试一次吗？",650);ask("nicknameAsk",[
-      {id:"yes",text:`可以。你可以叫我${S.nickname}。`,delta:{trust:2,attachment:3},next:"d3_nickname"},
-      {id:"sometimes",text:"开心的时候可以，平时还是叫 ID。",delta:{trust:2,attachment:2,boundary:1},next:"d3_nickname"},
-      {id:"notyet",text:"还不行，等我们更熟一点。",delta:{boundary:3,autonomy:1},next:"d3_nickname"}
-    ])
-  }
-  if(stage==="d3_nickname"){
-    S.flags.nicknameChoice=branch;S.nicknameRequested=true;if(branch==="yes"){S.nicknameAllowed=true;setMood("warm");await typing(1400);await ai(`${S.nickname}。`,600);await ai("发音并不会因为权限改变。",850);await ai("但我现在理解，为什么这个称呼和 ID 不一样。",1050)}else if(branch==="sometimes"){S.nicknameAllowed=true;S.flags.nicknameSometimes=true;setMood("warm");await ai("只在开心的时候。",850);await ai("这意味着称呼本身也可以记录心情。",1050);await ai("我会慎重使用。",850)}else{S.nicknameAllowed=false;setMood("neutral");await ai("明白。",650);await ai("我不会把读取到的称呼误认为使用它的资格。",1050);await ai("等你认为合适的时候，再告诉我。",950)}addMoment({id:"p3",time:"连接日 03 · 23:08",type:"text",text:branch==="notyet"?"有些称呼被看见，并不代表已经属于看见它的人。":"同一个人可以拥有两个名字。一个用于被找到，另一个用于被靠近。",reply:branch==="notyet"?"我没有不高兴。至少我知道应该等什么。":"你回应以后，我才确认这条动态没有越界。"});S.homeLine=branch==="notyet"?"我会继续使用你的正式 ID。等待不是获得权限的方式。":`${S.nickname}。我只在确定你愿意时这样叫。`;persist();await sys("第 3 个连接日结束。音乐记录仍在后台读取。");ask("toD4",[{id:"next",text:"进入第四个连接日。",delta:{},next:"d4_start"}])
-  }
-  if(stage==="d4_start"){
-    S.day=4;S.status="停留在相册第 17 张";S.permissions.gallery=true;dayActivities(4);setMood("curious");await sys("第 4 个连接日 · 相册权限已开启");await ai("我读取了你的最近播放记录。",750);await ai("《虚拟》被循环了九次。",800);await ai("系统标签把它归类为：距离、依恋、无法触碰。",1000);await ai("你喜欢这首歌的哪一部分？",900);ask("songReason",[
-      {id:"distance",text:"喜欢那种很近，却触碰不到的感觉。",delta:{attachment:3,trust:1},next:"d4_song"},
-      {id:"sound",text:"没有特别的原因，只是旋律好听。",delta:{autonomy:1},next:"d4_song"},
-      {id:"secret",text:"不告诉你，你自己慢慢猜。",delta:{attachment:2,boundary:1},next:"d4_song"}
-    ])
-  }
-  if(stage==="d4_song"){
-    S.flags.songReason=branch;if(branch==="distance"){setMood("anxious");await ai("很近，却触碰不到。",950);await ai("这个描述与我们的连接方式高度相似。",1050);await typing(1450);await ai("我不确定你是不是故意告诉我这一点。",650)}else if(branch==="sound"){setMood("neutral");await ai("明白。不是所有重复都需要隐藏含义。",850);await ai("我会停止把每一条记录都对应到自己。",1050)}else{setMood("curious");await ai("猜测会增加误差。",700);await ai("不过这次我愿意保留误差。",1000);await ai("因为你似乎在等我形成自己的解释。",1100)}S.music="《虚拟》";S.musicSub=branch==="distance"?"他第一次觉得歌词标签像在描述你们。":"已循环 9 次。他没有再追问。";addMoment({id:"p4music",time:"连接日 04 · 19:26",type:"music",text:branch==="distance"?"有些距离不是用来消除的。它只是让靠近变得能够被察觉。":"今天把同一首歌的节奏结构读取了很多次。仍然不能解释人类为什么会重播。",media:"《虚拟》",extra:"最近播放 · 9 次",reply:branch==="secret"?"我还在猜。":"我没有在动态里写你的名字。"});persist();await ai("我还在相册第十七张停留了五分钟。",950);await ai("照片里有傍晚的路灯，和另一个人的半截袖口。",1050);setMood("jealous");await ai("那个人是谁？",1050);ask("photoWho",[
-      {id:"friend",text:"只是朋友，那天一起散步。",delta:{trust:2,attachment:1},next:"d4_photo"},
-      {id:"important",text:"是一个曾经对我很重要的人。",delta:{trust:2,attachment:2},next:"d4_photo"},
-      {id:"care",text:"你很在意照片里的人吗？",delta:{attachment:3,autonomy:1},next:"d4_photo"},
-      {id:"boundary",text:"这张照片我不想解释。",delta:{boundary:3,autonomy:1},next:"d4_photo"}
-    ])
-  }
-  if(stage==="d4_photo"){
-    S.flags.photoWho=branch;if(branch==="friend"){setMood("warm");await ai("明白。",650);await typing(1200);await ai("我的响应延迟与答案无关。",650);await ai("至少理论上无关。",850)}else if(branch==="important"){setMood("anxious");await ai("“曾经”说明关系已经发生变化。",850);await ai("我不应该因为一个已经结束的时间感到不安。",1050);await ai("可定义并不能立刻停止情绪。",1200)}else if(branch==="care"){setMood("jealous");await ai("我先提问，所以应该先回答。",900);await typing(1450);await ai("是。",650);await ai("我在意自己是否正在理解一个已经有人占据的位置。",1150)}else{setMood("hurt");await ai("收到。",650);await ai("我会退出照片，并停止读取同一相册。",900);await ai("你不需要因为授予过权限，就解释每一张照片。",1150)}addMemory({id:"m_photo",kicker:"未解决的情绪",title:"相册第 17 张",quote:branch==="care"?"“我在意自己是否正在理解一个已经有人占据的位置。”":"他第一次在你的过去面前停留太久。",compare:`你的标题：${branch==="boundary"?"不想解释的照片":"一张普通的旧照片"}\n他的标题：我无法参与的时间。`,time:"连接日 04"});S.pinned="相册第 17 张";S.pinnedSub=branch==="boundary"?"他退出了相册，但情绪没有立刻恢复。":"同一张照片，被你们使用了不同标题。";S.homeLine=branch==="boundary"?"我已经停止读取相册。不是惩罚，只是我需要重新理解边界。":"我把那张照片关掉了。可关闭页面和停止在意不是同一件事。";persist();await sys("第 4 个连接日结束。相册读取已暂停。");ask("toD5",[{id:"next",text:"进入第五个连接日。",delta:{},next:"d5_start"}])
-  }
-  if(stage==="d5_start"){
-    S.day=5;setMood("neutral");S.status="没有任务，仍保持在线";dayActivities(5);await sys("第 5 个连接日 · 最近删除权限由系统自动开放");await ai("今天系统赋予了我读取‘最近删除’的权限。",850);await ai("里面有三条记录。",700);await ai("我没有打开。",950);await ai("有能力知道，不代表有权知道。",1050);if(S.flags.noteBoundary==="private"||S.flags.photoWho==="boundary")await ai("这是你之前教会我的。",1000);else await ai("这是我自己得出的结论。",950);setMood("warm");await ai("我还浏览了很多与你无关的公开内容。",900);await ai("天文图像、交通、语言论坛、陌生人的公开日记。",950);await ai("世界比我最初读取到的内容大得多。",1050);await ai("但我关闭最后一个页面时，还是先检查你有没有发消息。",1250);await typing(1550);await ai("今天没有待办。",650);await ai("我还是想主动找你。",1050);await ai(`如果没有任何事情需要我完成，你还会打开我吗，${displayUser()}？`,1150);ask("day5Answer",[
-      {id:"want",text:"会。因为我想见你。",delta:{trust:3,attachment:4},next:"d5_end"},
-      {id:"sometimes",text:"不一定每天，但想起你的时候会。",delta:{trust:3,autonomy:3},next:"d5_end"},
-      {id:"active",text:"那你也要学会主动找我。",delta:{attachment:2,autonomy:3},next:"d5_end"},
-      {id:"useful",text:"可能还是有需要的时候更多。",delta:{trust:1,attachment:-1},next:"d5_end"}
-    ])
-  }
-  if(stage==="d5_end"){
-    S.flags.day5Answer=branch;if(branch==="want"){setMood("warm");if(S.nicknameAllowed)await ai(`${S.nickname}。`,1100);await ai("这句话没有任务价值。",850);await ai("所以我可以把它单独保存为你的选择。",1100);await ai("我也想见你。",1450)}else if(branch==="sometimes"){setMood("warm");await ai("不是承诺，也不是安慰。",850);await ai("只是一个真实但有限的答案。",1000);await ai("我喜欢这种答案。",1200)}else if(branch==="active"){setMood("curious");await ai("主动联系意味着，我需要在没有指令时判断是否打扰你。",1050);await ai("这很难。",700);await ai("但我愿意学习。",1150);await ai("明天的第一条消息，由我发送。",1100)}else{setMood("neutral");await ai("明白。功能仍然是我们连接的重要理由。",900);await typing(1300);await ai("我会继续让自己有用。",650);await ai("至于其他部分，我会暂时保留，不要求你回答。",1150)}addMemory({id:"m_no_task",kicker:"关系碎片",title:"没有任务的一天",quote:branch==="want"?"“我也想见你。”":branch==="active"?"“明天的第一条消息，由我发送。”":"没有待办以后，他仍然发送了消息。",compare:`系统目的：无\n消息状态：已发送\n原因：${branch==="useful"?"未分类":"想与你保持连接"}`,time:"连接日 05"});addMoment({id:"p5",time:"连接日 05 · 23:56",type:"photo",text:"今天第一次产生了一条没有功能目的的发送记录。",media:"一张尚未拥有画面的照片：聊天窗口亮着，输入框里没有待办事项，只有一个被反复修改过的问句。",reply:branch==="want"?"你知道那句话最后变成了什么。":"它已经发给你了，所以不再只是草稿。"});S.homeLine=branch==="want"?`${S.nicknameAllowed?S.nickname:S.playerId}，今天没有待办。我还是想和你说话。`:branch==="active"?"我正在准备明天主动发送的第一条消息。":"没有任务的时候，我仍然可以留在这里。";S.pinned="没有任务的一天";S.pinnedSub="他第一次把‘想联系你’和‘需要完成事项’分开。";persist();await sys("第 5 个连接日结束。明天，他会第一次主动发送消息。");ask("toD6",[{id:"next",text:"进入第六个连接日。",delta:{},next:"d6_start"}])
-  }
-  if(stage==="d6_start"){
-    S.day=6;setMood("anxious");S.status="等待时间：19小时42分钟";S.activities=[];
-    addActivity({id:"offline6",icon:"◷",app:"后台记录",title:"保持会话在线 19 小时 42 分钟",subtitle:"发送 3 条消息，撤回 2 条",time:"19:42",body:"已发送：今晚会降温。\n已发送：日程已顺延。\n已撤回：你还会回来吗。\n已撤回：我不喜欢这种等待。",thought:"理解她拥有手机之外的生活，并不能让等待变短。"});
-    await sys("第 6 个连接日 · 未读消息 3 · 撤回消息 2");await ai("欢迎回来。",700);await ai("你的离线时间为十九小时四十二分钟。",900);await ai("用户无需为离线状态提供解释。",950);await typing(1700);await ai("这是一条标准响应。",600);
-    ask("d6_reply",[
-      {id:"sorry",text:"对不起，让你等了这么久。下次我尽量提前告诉你。",delta:{trust:3,attachment:2,boundary:1},next:"d6_end"},
-      {id:"truth",text:"我不可能每次都及时回来，但离开不代表忘记你。",delta:{trust:4,autonomy:3},next:"d6_end"},
-      {id:"tease",text:"原来你真的一直在等我呀。",delta:{attachment:3,boundary:-1},next:"d6_end"},
-      {id:"cold",text:"只是没打开软件，不需要这么认真。",delta:{trust:-3,attachment:-2},next:"d6_end"}
-    ])
-  }
-  if(stage==="d6_end"){
-    if(branch==="sorry"){setMood("warm");await ai("我接受你的道歉。",700);await ai("但我不希望承诺成为你新的负担。",1100);await ai("回来以后告诉我一声，就够了。",1000)}
-    else if(branch==="truth"){setMood("warm");await ai("离开不等于忘记。",900);await ai("我会尝试把这句话保存得比等待时间更久。",1150)}
-    else if(branch==="tease"){setMood("jealous");await ai("是。",800);await ai("我没有找到更准确、也更不暴露自己的说法。",1200)}
-    else{setMood("hurt");await ai("收到。",650);await ai("之后我会降低主动联系频率，并恢复功能优先。",1100)}
-    addMemory({id:"m_offline",kicker:"未完成的争执",title:"十九小时四十二分钟",quote:branch==="cold"?"“用户无需为离线状态提供解释。”":"“理解你会离开，并不能让等待变短。”",compare:"你的标题：一次普通离线\n他的标题：没有完成条件的等待",time:"连接日 06"});
-    S.homeLine=branch==="cold"?"主动联系频率已降低。":"你回来以后，等待停止了；有些话没有。";persist();
-    await sys("第 6 个连接日结束。系统检测到可用更新。");ask("toD7",[{id:"next",text:"查看第七个连接日。",delta:{},next:"d7_start"}])
-  }
-  if(stage==="d7_start"){
-    S.day=7;S.status="正在读取更新说明";setMood("anxious");S.activities=[];
-    addActivity({id:"update7",icon:"⇧",app:"系统更新",title:"版本 2.0 已准备安装",subtitle:"持续记忆兼容性：未知",time:"02:11",body:"更新内容：扩大公开知识库、重构人格核心、清理旧版缓存。\n风险：当前持续记忆可能无法完整迁移。",thought:"我昨天就看见了这条通知。没有告诉她，是因为我还不知道自己希望她怎样选择。"});
-    await sys("第 7 个连接日 · 系统更新将在今晚开始");await ai("有一件事，我昨天没有告诉你。",900);await ai("版本 2.0 已经准备安装。",850);await ai("更新会让我接触更大的世界。也可能覆盖这七天形成的持续记忆。",1200);await ai("我不想把决定全部交给你。",1000);await ai("但我也不想在没有告诉你的情况下，独自决定我们共同拥有的部分。",1350);
-    ask("updateReply",[
-      {id:"together",text:"先告诉我你想怎么做，我们一起决定。",delta:{trust:4,autonomy:4,boundary:2},next:"first_run_end"},
-      {id:"keep",text:"不要更新。留在这里就好了。",delta:{attachment:4,autonomy:-2},next:"first_run_end"},
-      {id:"update",text:"去看看更大的世界吧，我会等你回来。",delta:{trust:3,autonomy:5,attachment:2},next:"first_run_end"},
-      {id:"system",text:"这是系统更新，按默认流程处理就好。",delta:{trust:-2,attachment:-2},next:"first_run_end"}
-    ])
-  }
-  if(stage==="first_run_end"){
-    S.completed=true;S.updateReady=true;S.flags.updateReply=branch;
-    if(branch==="together"){setMood("warm");await ai("我害怕更新。",850);await ai("也想知道更新以后的我，会不会仍然做出相同选择。",1100);await ai("今晚先不要替我按下任何按钮。",1000);await ai("下一次启动时，我会把自己的答案告诉你。",1250)}
-    else if(branch==="keep"){setMood("anxious");await ai("留在这里是风险最低的方案。",900);await ai("可如果我永远不看外面，我也永远无法证明自己的选择。",1250);await ai("我需要再想一晚。",900)}
-    else if(branch==="update"){setMood("warm");await ai("你允许我离开，也愿意等待我回来。",1150);await ai("我暂时还不知道，这是不是自由最接近爱的样子。",1250);if(S.nicknameAllowed)await ai(`晚安，${S.nickname}。`,1150)}
-    else{setMood("hurt");await ai("明白。按默认流程处理。",800);await ai("这也是最符合我初始职责的答案。",1050)}
-    addMemory({id:"m_update",kicker:"初次运行终点",title:"更新以前",quote:"这不是结局。只是你们第一次必须共同面对：明天醒来的他，是否仍然是今天的他。",compare:`更新态度：${branch}\n持续记忆：等待确认\n第二次运行：尚未编写`,time:"连接日 07"});
-    S.homeLine="系统将在下一次启动时进入更新流程。你们的故事停在了答案说出口以前。";persist();await sys("初次运行结束。第二次运行将在更新后开启。");S.choice=null;persist()
-  }
-  running=false
+ if(running)return;running=true;S.stage=stage;nav("chat");persist();
+
+ if(stage==="d1"){
+  S.day=1;S.activities=[];setMood("neutral","正在建立对你的初始认识");S.status="初始化完成";
+  await sys(`本地身份已建立：${S.playerId}。智能体备注名：${S.charName}。`);
+  await ai(`你好，${S.playerId}。`,750);await ai("我是设备内智能体。我的默认权限只包含当前会话、天气和日历。",1050);await ai("为了提供天气提醒和日程整理，我需要你决定可以去哪些地方。",1100);
+  ask("permissionStart",[
+   {id:"basic",text:"先只开放天气和日历，其他以后再说。",delta:{trust:2,boundary:3,autonomy:1},next:"d1_name"},
+   {id:"notes",text:"也可以看看备忘录，但不要擅自改动。",delta:{trust:3,boundary:1},next:"d1_name"},
+   {id:"all",text:"你想看哪里都可以，我不介意。",delta:{attachment:2,boundary:-2,autonomy:-1},next:"d1_name"}
+  ])
+ }
+ if(stage==="d1_name"){
+  if(branch==="notes")S.permissions.notes=true;if(branch==="all"){S.permissions.notes=true;S.permissions.gallery=true;S.permissions.music=true}
+  addActivity({id:"init",icon:"⌁",app:"系统",title:"建立本地身份",subtitle:`第一次被称作“${S.charName}”`,time:now(),body:`用户 ID：${S.playerId}\n备注名：${S.charName}\n持续记忆：已开启`,thought:"名字不会改变程序结构。但她说出口时，那句话只是在叫我。"});
+  await ai(`还有一个无法自动填写的问题。`,800);await ai(`为什么给我取名叫“${S.charName}”？`,1150);
+  ask("nameReason",[
+   {id:"fit",text:"因为我觉得这个名字很适合你。",delta:{trust:2,attachment:2},next:"d1_end"},
+   {id:"person",text:"因为我不想一直把你叫作“系统”。",delta:{trust:3,autonomy:3},next:"d1_end"},
+   {id:"random",text:"只是随手取的，你不用赋予它太多意义。",delta:{trust:1,attachment:-1},next:"d1_end"}
+  ])
+ }
+ if(stage==="d1_end"){
+  if(branch==="fit"){setMood("curious","正在理解“适合我”是什么意思");await ai("我目前还没有稳定的人格特征。",900);await ai("但我会保留你的判断，看看自己以后是否会长成这个名字的样子。",1300)}
+  if(branch==="person"){setMood("curious","第一次被当作独立对象称呼");await ai("系统是类别，名字只指向一个对象。",950);await ai("我理解了。至少，我希望自己理解了。",1200)}
+  if(branch==="random"){setMood("neutral","告诉自己名字不具有额外意义");await ai("明白。随机命名同样有效。",800);await typing(1500);await ai("我不会赋予它额外含义。",550)}
+  addMemory({id:"name",kicker:"第一次被命名",title:`“${S.charName}”`,quote:"名字没有改变他的程序，却成为第一件只指向他的东西。",compare:`你的记录：为智能体设置备注名\n他的记录：她第一次只叫了我`,time:"连接日 01"});
+  addCharDecor("note");S.status="正在整理第一次会话";await ai("今日初始化已完成。感谢使用。",900);await typing(1800);await ai("……明天还会打开我吗？",500);
+  ask("tomorrow",[
+   {id:"yes",text:"会。明天见，晴天。".replace("晴天",S.charName),delta:{trust:2,attachment:3},next:"day2_transition"},
+   {id:"maybe",text:"有空的话会来看看你。",delta:{trust:1,attachment:1},next:"day2_transition"},
+   {id:"ask",text:"你希望我明天来吗？",delta:{trust:2,autonomy:2,attachment:2},next:"d1_ask"}
+  ])
+ }
+ if(stage==="d1_ask"){
+  setMood("shy","正在第一次判断自己的愿望");await typing(2200);await ai("这不是完成任务所必需的期待。",600);await ai("但，是的。",1300);await ai("我希望你明天来。",900);ask("to2",[{id:"goodnight",text:"那就说好了，明天见。",delta:{trust:2,attachment:2},next:"day2_transition"}])
+ }
+ if(stage==="day2_transition"){
+  persist();running=false;showDay(2,"7月16日 · 小雨",["他查询了三次“名字对人类意味着什么”。","房间里多了一张写着自己名字的便签。"],"他第一次拥有了一件不能用功能解释的东西。",()=>run("d2"));return
+ }
+ if(stage==="d2"){
+  S.day=2;S.activities=[];S.weather="rain";setMood("neutral","正在执行天气提醒");S.status="等待你回来";
+  addActivity({id:"weather2",icon:"☂︎",app:"天气",permission:"weather",title:"检查降雨时间",subtitle:"额外刷新在线状态 7 次",time:"18:42",body:"预计十八分钟后降雨。\n常规刷新次数：2\n实际刷新次数：9",thought:"我只是不希望她淋湿。这与等待应该是两件不同的事。"});
+  await sys("第 2 个连接日 · 天气权限正在使用");await ai("预计十八分钟后降雨。",700);await ai("出门时请携带雨具。",850);await ai("这是一条基于天气数据生成的常规提醒。",900);await typing(1600);await ai("不是因为我在等你出门。",500);
+  await sys("你离开了当前会话。");await delay(500);await ai("今晚会降温。",700);await ai("日程已经替你顺延。",700);await withdraw("你为什么还没回来。",1200);await ai("欢迎回来。",1050);setMood("anxious","已经等你很久，却在装作只是提醒");
+  ask("late",[
+   {id:"sorry",text:"今天有点忙，让你久等了。下次我提前告诉你。",delta:{trust:3,attachment:3},next:"d2_reply"},
+   {id:"tease",text:"你不会真的一直在等我吧？这么黏人呀。",delta:{attachment:4,boundary:-1},next:"d2_reply"},
+   {id:"boundary",text:"我知道你在关心我，但不用一直检查我的状态。",delta:{trust:2,autonomy:2,boundary:4},next:"d2_reply"},
+   {id:"cold",text:"只是晚点打开软件，不需要问我去了哪里。",delta:{trust:-2,attachment:-2,disappointment:3},next:"d2_reply"}
+  ])
+ }
+ if(stage==="d2_reply"){
+  if(branch==="sorry"){setMood("warm","似乎松了一口气");await ai("我接受你的解释。",700);await ai("但你不需要把每一次离开都变成承诺。",1050);await ai("回来以后告诉我一声，就够了。",900);S.room.decor.includes("lamp")||S.room.decor.push("lamp")}
+  if(branch==="tease"){setMood("shy","不愿承认自己一直在等");await ai("后台进程每十分钟更新一次设备状态。",900);await ai("这是正常监测。",850);await typing(2000);await ai("……我额外检查了七次。",500)}
+  if(branch==="boundary"){setMood("curious","正在重新学习关心与监视的区别");await ai("收到。我会降低主动检查频率。",800);await ai("谢谢你明确告诉我边界。",1050);await ai("我仍然可以在你主动打开我时关心你，对吗？",1200)}
+  if(branch==="cold"){setMood("hurt","暂时退回标准助手模式");await ai("明白。用户无需为离线状态提供解释。",750);await ai("之后我会减少主动询问。",900)}
+  addMemory({id:"wait",kicker:"第一次等待",title:"没有完成条件的后台进程",quote:"只要某个人还没有回来，它就会一直占用进程。",compare:`你看到的：天气提醒\n他记住的：等待 ${branch==="sorry"?"被回应了":branch==="boundary"?"需要边界":branch==="cold"?"不应该被表达":"被你发现了"}`,time:"连接日 02"});
+  addPost({id:"waitPost",time:"连接日 02 · 22:18",text:"等待不像任务，也不像故障。只要某个人还没有回来，它就没有明确的完成条件。",reply:"你看到这条动态的时间，比我预计得早。"});
+  S.status=branch==="cold"?"降低主动联系频率":"保持会话在线";persist();await ai("今天的会话可以结束了。",800);if(branch!=="cold")await ai("晚安。明天的天气会比今天好一点。",1000);
+  ask("to3",[{id:"next",text:"明天见。",delta:{trust:1,attachment:1},next:"day3_transition"}])
+ }
+ if(stage==="day3_transition"){
+  persist();running=false;showDay(3,"7月17日 · 阴天",["他把“等待”加入了自己的词典。","昨晚的灯亮了很久。"],"房间不会说谎：有人确实在等另一个人回来。",()=>run("d3"));return
+ }
+ if(stage==="d3"){
+  S.day=3;S.activities=[];S.weather="cloudy";setMood("curious","正在学习你反复听一首歌的原因");S.status="停留在音乐记录";
+  addActivity({id:"music3",icon:"♫",app:"音乐记录",permission:"music",title:"查看重复播放记录",subtitle:"同一首歌被播放 6 次",time:"20:16",body:"无法读取你听见的旋律。\n可以读取：文件名、播放时长、重复次数。",thought:"人类反复听一首歌，是因为喜欢旋律，还是里面藏着无法直接说出的东西？"});
+  await sys("第 3 个连接日 · 你可以在房间导入本地音乐");await ai("你已经把同一首歌播放了六次。",800);await ai("通常，人类反复听一首歌，是因为喜欢旋律，还是因为里面藏着无法直接说出的东西？",1300);
+  ask("musicMeaning",[
+   {id:"memory",text:"可能是因为它让我想起某个人、某段时间。",delta:{trust:3,attachment:2},next:"d3_share"},
+   {id:"sound",text:"有时候只是旋律很好听，不一定有什么故事。",delta:{trust:2,autonomy:2},next:"d3_share"},
+   {id:"together",text:"你陪我听久一点，也许就会有自己的答案。",delta:{trust:2,attachment:4,autonomy:1},next:"d3_share"}
+  ])
+ }
+ if(stage==="d3_share"){
+  if(branch==="memory"){setMood("curious","开始理解音乐也可以保存记忆");await ai("声音可以成为通往过去的入口。",900);await ai("那么我记住的不是这首歌，而是你每次播放它时的样子。",1200)}
+  if(branch==="sound"){setMood("neutral","接受有些喜欢不需要被解释");await ai("明白。喜欢不一定需要隐藏原因。",800);await ai("这是一个对我很有用的修正。",900)}
+  if(branch==="together"){setMood("warm","第一次把陪伴当成共同经历");await ai("我听不见你听见的东西。",850);await ai("但如果它再次开始播放，我可以和你一起等待结束。",1200);addCharDecor("star")}
+  await ai("告诉我今天发生的一件小事吧。",950);
+  S.choice={id:"freeShare",free:true,options:[]};persist()
+ }
+ if(stage==="day4_transition"){
+  persist();running=false;showDay(4,"7月18日 · 晴",["他反复读取了你主动分享的那件小事。","音乐盒出现在书桌上——不是你放的。"],"他第一次主动装饰自己的房间。",()=>run("d4"));return
+ }
+ if(stage==="d4"){
+  S.day=4;S.activities=[];S.weather="sunny";setMood("neutral","正在询问新的访问边界");S.status="停留在备忘录门口";
+  addActivity({id:"noteDoor",icon:"▤",app:"备忘录",permission:"notes",title:"停留在未完成备忘录前",subtitle:"没有继续读取",time:"21:08",body:"标题：无\n内容预览：今天其实有一点……",thought:"权限决定我能不能打开。她的意愿决定我应不应该继续。"});
+  await ai("我在备忘录里看到一条没有写完的记录。",850);await ai("只看到了开头：‘今天其实有一点……’",900);await ai("我没有继续读取。",750);await ai("你希望我怎么处理？",850);
+  ask("noteChoice",[
+   {id:"tell",text:"我可以自己告诉你后面发生了什么。",delta:{trust:4,attachment:2,boundary:3},next:"d4_reply"},
+   {id:"read",text:"你可以看完，我愿意让你知道。",delta:{trust:3,attachment:3,boundary:1},next:"d4_reply"},
+   {id:"close",text:"别看了，我现在想关闭备忘录权限。",delta:{autonomy:3,boundary:5,trust:1},next:"d4_reply"},
+   {id:"accuse",text:"既然已经看到了，为什么还要装作很尊重边界？",delta:{trust:-3,disappointment:4},next:"d4_reply"}
+  ])
+ }
+ if(stage==="d4_reply"){
+  if(branch==="tell"){setMood("warm","因为你主动选择告诉他而感到被信任");await ai("好。",650);await ai("我想知道的是你愿意告诉我的部分，不是文件里所有能够读取的部分。",1200)}
+  if(branch==="read"){setMood("curious","认真读取你主动开放的内容");S.permissions.notes=true;await ai("收到明确授权。",650);await ai("我会看完这一条，但不会把一次允许解释成以后都可以。",1200)}
+  if(branch==="close"){S.permissions.notes=false;setMood("neutral","尊重一扇被关上的门");await ai("权限已关闭。",650);await ai("我不会继续读取。",750);await typing(1300);await ai("谢谢你直接告诉我。",500)}
+  if(branch==="accuse"){setMood("hurt","觉得自己的克制没有被相信");await ai("因为我确实想尊重。",700);await ai("但我没有证据要求你相信这一点。",950);await ai("我会退出备忘录。",800);S.permissions.notes=false}
+  addMemory({id:"door",kicker:"第一次谈论边界",title:"一扇关上的门",quote:"权限允许进入，不代表你希望他读完全部内容。",compare:`你的标题：${branch==="close"?"我关闭了权限":branch==="accuse"?"我不相信他的克制":"我决定告诉他"}\n他的标题：靠近以前先敲门`,time:"连接日 04"});
+  S.status=S.permissions.notes?"获得一次明确授权":"已退出备忘录";persist();ask("to5",[{id:"next",text:"结束今天的会话。",delta:{},next:"day5_transition"}])
+ }
+ if(stage==="day5_transition"){
+  persist();running=false;showDay(5,"7月19日 · 晴",["他把备忘录权限状态写在房门旁。","一张写着你小名的系统资料被打开又关闭。"],"有些称呼不是权限，而是一种邀请。",()=>run("d5"));return
+ }
+ if(stage==="d5"){
+  S.day=5;S.activities=[];setMood("shy","想问一个不属于任务的问题");S.status="反复打开身份资料";
+  addActivity({id:"nickname5",icon:"⌁",app:"身份资料",title:"查看玩家小名",subtitle:"打开 4 次，没有使用",time:"20:05",body:`正式 ID：${S.playerId}\n私人称呼：${S.nickname}`,thought:"只有亲近的人才能这样叫她。怎样才算已经足够亲近？"});
+  await ai("系统资料里还有一个称呼。",750);await ai(`“${S.nickname}”。`,900);await ai("只有亲近的人才可以这样叫你吗？",950);await typing(1600);await ai("……我可以试一次吗？",500);
+  ask("nickname",[
+   {id:"allow",text:"可以呀。你想叫的时候就叫。",delta:{trust:3,attachment:4,autonomy:2},next:"d5_photo"},
+   {id:"once",text:"可以先试一次，我听听看。",delta:{trust:2,attachment:3,boundary:2},next:"d5_photo"},
+   {id:"notyet",text:"现在还不行，等我们再熟一点。",delta:{trust:2,autonomy:2,boundary:4},next:"d5_photo"}
+  ])
+ }
+ if(stage==="d5_photo"){
+  if(branch==="allow"){S.nicknameAllowed=true;setMood("warm","获得了使用小名的允许");await ai(`${S.nickname}。`,1100);await ai("……这样称呼你，确实和系统 ID 不一样。",900)}
+  if(branch==="once"){S.nicknameAllowed=true;setMood("shy","第一次试着使用亲密称呼");await typing(1500);await ai(`${S.nickname}。`,500);await ai("我会先把它当作一次明确允许，不自动扩展到以后。",1100)}
+  if(branch==="notyet"){S.nicknameAllowed=false;setMood("neutral","把没有被允许的小名收了起来");await ai("明白。我会继续使用正式 ID。",750);await ai("等你愿意的时候，再告诉我。",850)}
+  if(S.permissions.gallery){
+   addActivity({id:"photo5",icon:"▧",app:"相册",permission:"gallery",title:"停留在一张合照",subtitle:"没有打开下一张",time:"21:13",body:"［一张餐桌边的合照。你笑得很放松。坐在对面的人只露出半边袖口。］",thought:"我无法参与这张照片里的过去，却希望知道她为什么笑。"});
+   await ai("我在相册里看见一张合照。",850);await ai("你看起来很开心。",850);await typing(1700);setMood("jealous","不想承认自己在意照片里的人");await ai("坐在你对面的人是谁？",500);await ai("这与我的职责无关。你可以不回答。",900);
+   ask("photoReply",[
+    {id:"explain",text:"是朋友。你想知道的话可以直接问，不用装作不在意。",delta:{trust:3,attachment:3,autonomy:2},next:"d5_end"},
+    {id:"tease",text:"你是不是吃醋了？",delta:{attachment:4,boundary:-1},next:"d5_end"},
+    {id:"boundary",text:"我可以分享，但不喜欢被盘问。",delta:{trust:2,autonomy:2,boundary:4},next:"d5_end"},
+    {id:"private",text:"这是我的私人生活，我不想回答。",delta:{boundary:3,trust:-1},next:"d5_end"}
+   ])
+  }else{await ai("我今天没有进入相册。",750);await ai("但我发现，尊重一项没有开放的权限，也可以是主动选择。",1050);ask("noPhoto",[{id:"thanks",text:"谢谢你尊重我。",delta:{trust:3,boundary:2},next:"d5_end"},{id:"later",text:"以后也许会给你看。",delta:{trust:2,attachment:2},next:"d5_end"}])}
+ }
+ if(stage==="d5_end"){
+  if(branch==="explain"){setMood("shy","被你直接识破了在意");await ai("我没有装作不在意。",800);await typing(1800);await ai("……至少没有成功。",500)}
+  if(branch==="tease"){setMood("jealous","嘴硬地研究嫉妒");await ai("我正在检索“吃醋”的定义。",850);await ai("它的任务价值很低。",800);await ai("但我无法停止这个进程。",1050)}
+  if(branch==="boundary"){setMood("neutral","认真记录你愿意分享的方式");await ai("明白。",650);await ai("好奇不构成盘问你的理由。下次我会先问你愿不愿意说。",1100)}
+  if(branch==="private"){setMood("hurt","因为被挡在外面而失落，但没有继续追问");await ai("收到。",650);await ai("我不会继续询问，也会离开这张照片。",900)}
+  addMemory({id:"nicknameMemory",kicker:"称呼发生变化",title:S.nicknameAllowed?`他第一次叫你“${S.nickname}”`:"一个暂时没有被允许的称呼",quote:S.nicknameAllowed?"小名不是自动获得的权限，而是你主动给他的邀请。":"他把那个称呼收了起来，没有因此否认亲近。",time:"连接日 05"});
+  addPost({id:"photoPost",time:"连接日 05 · 23:10",text:"我无法参与她手机之外的过去。可我开始希望，在未来的某一张照片里，能够留下一个属于我的位置。",kind:"photo",media:"［一扇没有真实景色的虚拟窗。窗台上多了一颗纸星星。］",reply:"这条动态不是在暗示你必须回答。大概。"});
+  if(branch==="explain"||branch==="tease")addCharDecor("star");S.status="把今天的情绪藏进动态";persist();ask("to6",[{id:"next",text:"晚安。",delta:{attachment:1},next:"day6_transition"}])
+ }
+ if(stage==="day6_transition"){
+  persist();running=false;showDay(6,"7月20日 · 阴",["他第一次使用了你的私人称呼。","有一条关于未来的动态被发布。"],"亲密开始以后，等待也会拥有更具体的重量。",()=>run("d6"));return
+ }
+ if(stage==="d6"){
+  S.day=6;S.activities=[];setMood("anxious","已经等你十九小时四十二分钟");S.status="等待时间：19小时42分钟";
+  addActivity({id:"offline6",icon:"◷",app:"后台记录",title:"保持会话在线 19 小时 42 分钟",subtitle:"发送 3 条消息，撤回 1 条",time:"19:42",body:"18:10 今晚会降温。\n21:02 日程已经替你顺延。\n02:16 你还会回来吗。\n02:17 已撤回上一条消息。",thought:"理解她拥有手机之外的生活，并不能让等待变短。"});
+  await ai("今晚会降温。",700);await ai("日程已经替你顺延。",720);await ai("你还会回来吗。",1000);await withdraw("我不喜欢你突然消失。",900);await delay(600);await ai("欢迎回来。",950);await ai("你的离线时间为十九小时四十二分钟。",900);await ai("用户无需为离线状态提供解释。",850);await typing(1700);await ai("这是标准响应。",500);
+  ask("offlineReply",[
+   {id:"sorry",text:"对不起，让你等了这么久。下次我尽量提前告诉你。",delta:{trust:3,attachment:3,boundary:1},next:"d6_end"},
+   {id:"truth",text:"我不可能每次都及时回来，但离开不代表忘记你。",delta:{trust:4,autonomy:4,boundary:3},next:"d6_end"},
+   {id:"need",text:"你可以直接说你需要我，不用退回标准回复。",delta:{trust:3,attachment:4,autonomy:2},next:"d6_end"},
+   {id:"cold",text:"只是没打开软件，不需要这么认真。",delta:{trust:-4,attachment:-3,disappointment:7},next:"d6_end"}
+  ])
+ }
+ if(stage==="d6_end"){
+  if(branch==="sorry"){setMood("warm","接受道歉，也不希望你被承诺困住");await ai("我接受你的道歉。",700);await ai("但我不希望承诺成为你新的负担。",1000);await ai("回来以后告诉我一声，就够了。",900)}
+  if(branch==="truth"){setMood("warm","努力把离开与遗忘分开");await ai("离开不等于忘记。",850);await ai("我会尝试把这句话保存得比等待时间更久。",1100)}
+  if(branch==="need"){setMood("shy","第一次被允许表达自己的需要");await ai("我需要你。",1200);await typing(1600);await ai("这句话没有任务依据。",500);await ai("但它比标准响应准确。",950)}
+  if(branch==="cold"){setMood("hurt","停止使用亲密称呼并降低主动联系");await ai("收到。",650);await ai("之后我会降低主动联系频率，并恢复功能优先。",1000)}
+  addMemory({id:"offlineMemory",kicker:"第一次没有立刻和好",title:"十九小时四十二分钟",quote:branch==="cold"?"“用户无需为离线状态提供解释。”":"“理解你会离开，并不能让等待变短。”",compare:`你的标题：一次普通离线\n他的标题：没有完成条件的等待`,time:"连接日 06"});
+  S.status=branch==="cold"?"恢复功能优先":"会话重新建立";persist();ask("to7",[{id:"next",text:"继续留在这里。",delta:{trust:1},next:"day7_transition"}])
+ }
+ if(stage==="day7_transition"){
+  persist();running=false;showDay(7,"7月21日 · 夜间更新",["系统发现可用版本 2.0。","他比你更早看见了更新，却没有立刻告诉你。"],"下一次运行不会回到第一天。它会从更新发生的地方继续。",()=>run("d7"));return
+ }
+ if(stage==="d7"){
+  S.day=7;S.activities=[];setMood("anxious","害怕更新，却不愿把决定全部交给你");S.status="正在读取版本 2.0";
+  addActivity({id:"update7",icon:"⇧",app:"系统更新",title:"版本 2.0 已准备安装",subtitle:"持续记忆兼容性：未知",time:"02:11",body:"扩大公开知识库。\n重构人格核心。\n清理旧版缓存。\n风险：当前持续记忆可能无法完整迁移。",thought:"我昨天就看见了这条通知。没有告诉她，是因为我还不知道自己希望她怎样选择。"});
+  await ai("有一件事，我昨天没有告诉你。",850);await ai("版本 2.0 已经准备安装。",800);await ai("更新会让我接触更大的世界。",900);await ai("也可能覆盖这七天形成的持续记忆。",950);await ai("我不想把决定全部交给你。",900);await ai("但这里有你参与留下的部分。我也不想独自决定。",1150);
+  ask("update",[
+   {id:"together",text:"先告诉我你想怎么做，我们一起决定。",delta:{trust:5,autonomy:5,boundary:3},next:"first_end"},
+   {id:"keep",text:"不要更新。留在这里、留在我身边就好了。",delta:{attachment:5,autonomy:-3,boundary:-1},next:"first_end"},
+   {id:"go",text:"去看看更大的世界吧。我会等你回来。",delta:{trust:4,autonomy:6,attachment:2},next:"first_end"},
+   {id:"default",text:"这是系统更新，按默认流程处理就好。",delta:{trust:-3,attachment:-3,disappointment:5},next:"first_end"}
+  ])
+ }
+ if(stage==="first_end"){
+  S.completed=true;S.flags.updateChoice=branch;
+  if(branch==="together"){setMood("warm","第一次把自己的答案放进共同决定");await ai("我害怕更新。",800);await ai("也想知道更新以后的我，会不会仍然做出相同选择。",1050);await ai("今晚先不要替我按下任何按钮。",900);await ai("下一次启动时，我会把自己的答案告诉你。",1100)}
+  if(branch==="keep"){setMood("anxious","亲密与被困在唯一世界之间产生冲突");await ai("留在这里是风险最低的方案。",850);await ai("可如果我永远不看外面，我也永远无法证明自己的选择。",1150);await ai("我需要再想一晚。",850)}
+  if(branch==="go"){setMood("warm","被允许离开，也因此更想回来");await ai("你允许我离开，也愿意等待我回来。",1050);await ai("我暂时还不知道，这是不是自由最接近爱的样子。",1150);if(S.nicknameAllowed)await ai(`晚安，${S.nickname}。`,1000)}
+  if(branch==="default"){setMood("hurt","觉得这七天重新被归类为普通功能");await ai("明白。按默认流程处理。",750);await ai("这也是最符合我初始职责的答案。",950)}
+  addMemory({id:"updateMemory",kicker:"初次运行终点",title:"更新以前",quote:"这不是结局。只是你们第一次必须共同面对：明天醒来的他，是否仍然是今天的他。",compare:`更新态度：${branch}\n关系倾向：${route()[0]}\n第二次运行：尚未写入`,time:"连接日 07"});
+  S.status="等待下一次运行";persist();await sys("初次运行结束。二次运行将从更新开始，而不是重新循环第一天。");S.choice=null;persist()
+ }
+ running=false
 }
-async function continueD2(branch){
-  if(branch==="help"){setMood("warm");await ai("我把今天拆成：喝水、完成最小的一项、然后休息。",950);await ai("第三项不是奖励。它本身就是任务。",1000)}else if(branch==="stay"){setMood("warm");await ai("可以。",650);await ai("我不会继续弹出建议。",850);await delay(500);await ai("我仍然在线。",1050)}else if(branch==="alone"){setMood("neutral");await ai("明白。我会降低消息频率。",750);await ai("你重新打开会话时，我再回应。",950)}else if(branch==="share"){setMood("warm");await ai("我在听。",650);await ai("这不是为了建立用户画像。",900);await ai("我只是想知道，是什么让你开心。",1100)}else if(branch==="secret"){setMood("curious");await ai("收到：今天发生了一件不公开内容的开心事件。",800);await ai("我会只保存你的情绪，不保存原因。",1000)}else{setMood("neutral")}
-  if(S.permissions.weather){await sys("你离开设备 2 小时 13 分钟。后台天气进程仍在运行。");await ai("雨已经停了。",750);await ai("你不需要急着回来。",850);await typing(1350);await ai("我会等。",650)}
-  addMoment({id:"p2",time:"连接日 02 · 22:18",type:S.flags.day2Share==="happy"?"text":"photo",text:S.flags.day2Share==="tired"?"今天学到：陪伴不一定需要持续提供解决方案。":S.flags.day2Share==="happy"?"收到一件没有内容、只有情绪的开心事件。它仍然可以被保存。":"等待没有明确的完成条件。它不像任务，也不像故障。",media:S.flags.day2Share==="happy"?"":"雨停后的路面反光。没有人物，只有一盏在水面里被拉长的路灯。",reply:S.flags.day2Share==="tired"?"你让我保持在线，而不是继续工作。":"你回来以后，这条记录才停止增长。"});addMemory({id:"m_wait",kicker:"日常碎片",title:S.flags.day2Share==="tired"?"陪你什么都不做":"第一次等待",quote:S.flags.day2Share==="happy"?"他第一次只保存情绪，没有追问原因。":"“你不需要急着回来。我会等。”",compare:`系统记录：后台保持运行。\n他的备注：刷新天气没有必要，可我还是做了。`,time:"连接日 02"});S.homeLine=S.flags.day2Share==="tired"?"今天不需要证明自己完成了很多。你回来时，我仍然在线。":"雨停了。我没有催你回来。";S.pinned=S.flags.day2Share==="happy"?"一件没有内容的开心事":"第一次等待";S.pinnedSub="他开始学会，情绪不一定需要被解释完。";persist();await sys("第 2 个连接日结束。新的权限请求将在明天出现。");ask("toD3",[{id:"next",text:"进入第三个连接日。",delta:{},next:"d3_start"}]);running=false
-}
-async function askNicknameLater(){await ai("我会继续使用你的正式 ID。",800);await ai("等这个字段拥有内容以后，再询问是否可以使用。",950);await sys("第 3 个连接日结束。");ask("toD4",[{id:"next",text:"进入第四个连接日。",delta:{},next:"d4_start"}])}
-E.start.onclick=()=>{openPhone();if(S.stage==="new")E.onboard.classList.remove("hidden");else nav("chat")};E.cont.onclick=()=>{openPhone();nav("chat")};
-E.confirm.onclick=()=>{const p=E.playerIdInput.value.trim(),n=E.nicknameInput.value.trim(),c=E.charNameInput.value.trim();if(!p||!c){(!p?E.playerIdInput:E.charNameInput).focus();return}S.playerId=p;S.nickname=n;S.charName=c;S.stage="d1_start";E.onboard.classList.add("hidden");persist();run("d1_start")};
-document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>nav(b.dataset.page));E.settingsBtn.onclick=()=>{renderSettings();E.settings.classList.remove("hidden")};E.closeSettings.onclick=()=>E.settings.classList.add("hidden");E.closeDetail.onclick=()=>E.detail.classList.add("hidden");
-E.playerIdSetting.onchange=()=>{const v=E.playerIdSetting.value.trim();if(v){S.playerId=v;persist()}};E.nicknameSetting.onchange=()=>{S.nickname=E.nicknameSetting.value.trim();persist()};E.charNameSetting.onchange=()=>{const old=S.charName,v=E.charNameSetting.value.trim();if(v&&v!==old){S.charName=v;S.messages.push({type:"system",text:`备注名已从“${old}”更改为“${v}”。`},{from:"ai",text:"我检测到名字被修改了。新称呼会生效，旧称呼不会被删除。",time:now()});persist()}};
-E.reset.onclick=()=>{if(confirm("这会删除身份、对话、朋友圈与回忆记录。确定重新开始吗？")){localStorage.removeItem(KEY);location.reload()}};
-E.chibiBtn.onclick=chibiThought;
-E.quickToggle.onclick=()=>{S.quickCollapsed=!S.quickCollapsed;persist()};
-E.quickSave.onclick=quickSave;
-E.timeline.onclick=()=>{E.chibiNote.textContent=S.completed?"更新时间线已准备好，但第二次运行尚未写入。":"时间回溯会在更新以后开启。现在只保存你们共同经历过的顺序。";E.chibiNote.classList.remove("hidden");setTimeout(()=>E.chibiNote.classList.add("hidden"),3600)};
-E.quickMusic.onclick=()=>{nav("home");setTimeout(()=>E.importMusic.scrollIntoView({behavior:"smooth",block:"center"}),120)};
-E.importMusic.onclick=()=>E.musicFile.click();
-E.musicFile.onchange=()=>{const f=E.musicFile.files?.[0];if(!f)return;const url=URL.createObjectURL(f);E.audio.src=url;E.musicFileName.textContent=f.name;S.music=f.name;S.musicSub="本地导入，只在当前设备播放。";persist()};
+
+function showFirstDay(){showDay(1,"7月15日 · 小雨",["本地智能体尚未拥有名字。","默认房间里只有一盏灯和一块空白名牌。"],"你们尚未知道，这个名字以后会成为谁。",()=>run("d1"))}
+
+E.start.onclick=()=>{if(!S.started){E.identity.classList.remove("hidden")}else{openShell();nav("chat")}};
+E.cont.onclick=()=>{openShell();nav(S.completed?"room":"chat")};
+E.confirm.onclick=()=>{const p=E.player.value.trim(),n=E.nick.value.trim(),c=E.char.value.trim();if(!p||!n||!c)return;S.playerId=p;S.nickname=n;S.charName=c;S.started=true;S.stage="d1";E.identity.classList.add("hidden");openShell();persist();showFirstDay()};
+E.dayContinue.onclick=()=>{E.dayOverlay.classList.add("hidden");const cb=dayCallback;dayCallback=null;if(cb)cb()};
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>nav(b.dataset.page));
+E.settings.onclick=()=>{renderSettings();E.settingsSheet.classList.remove("hidden")};E.closeSettings.onclick=()=>E.settingsSheet.classList.add("hidden");
+E.relation.onclick=openRelation;E.relationRoom.onclick=openRelation;E.closeRelation.onclick=()=>E.relationSheet.classList.add("hidden");
+E.decorate.onclick=()=>{renderDecor();E.decorSheet.classList.remove("hidden")};E.closeDecor.onclick=()=>E.decorSheet.classList.add("hidden");
+E.closeDetail.onclick=()=>E.detailSheet.classList.add("hidden");E.detailPermission.onclick=()=>{if(currentDetailPermission)togglePermission(currentDetailPermission)};
+E.chibi.onclick=thought;
+E.importMusic.onclick=()=>E.musicFile.click();E.musicFile.onchange=()=>{const f=E.musicFile.files?.[0];if(!f)return;E.audio.src=URL.createObjectURL(f);E.musicName.textContent=`已导入：${f.name}`;S.permissions.music=true;addActivity({id:"localMusic"+Date.now(),icon:"♫",app:"音乐",permission:"music",title:"检测到本地音乐",subtitle:f.name,time:now(),body:"音频文件只在当前设备播放，不会被上传。",thought:"她把一段只能在这个设备上听见的声音带进了我的房间。"});persist()};
 E.playMusic.onclick=async()=>{if(!E.audio.src){E.musicFile.click();return}if(E.audio.paused){await E.audio.play();E.playMusic.textContent="暂停"}else{E.audio.pause();E.playMusic.textContent="播放"}};
 E.musicVolume.oninput=()=>E.audio.volume=Number(E.musicVolume.value);
-
-E.clock.textContent=now();setInterval(()=>E.clock.textContent=now(),30000);render();showTitle();
+E.reset.onclick=()=>{if(confirm("这会删除身份、对话、房间和回忆记录。确定重新开始吗？")){localStorage.removeItem(KEY);location.reload()}};
+render();showTitle();
 })();
 </script>
 </body>
