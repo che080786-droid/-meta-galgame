@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1115" />
+  <title>在你关机以前</title>
+  <style>
+:root {
+  color-scheme: dark;
+  --bg: #0a0c10;
+  --panel: #11141a;
+  --panel-2: #171b22;
+  --line: rgba(255, 255, 255, 0.11);
+  --text: #f3f6fb;
+  --muted: #8c96a7;
+  --accent: #8bbcff;
+  --accent-soft: rgba(139, 188, 255, 0.14);
+  --danger: #dba0a0;
+  --radius: 24px;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  font-family: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  min-height: 100%;
+  margin: 0;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(139, 188, 255, 0.08), transparent 34%),
+    var(--bg);
+  color: var(--text);
+}
+
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+
+.app-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.screen {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.screen.is-active { display: grid; }
+
+.title-screen {
+  position: relative;
+  padding: max(36px, env(safe-area-inset-top)) 28px max(28px, env(safe-area-inset-bottom));
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.018), transparent 40%),
+    repeating-linear-gradient(90deg, transparent 0 47px, rgba(255,255,255,0.018) 48px),
+    var(--bg);
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+}
+
+.title-copy { position: relative; max-width: 640px; }
+.eyebrow {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 8vw, 5.8rem);
+  font-weight: 560;
+  letter-spacing: 0.06em;
+}
+
+.subtitle {
+  margin: 20px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.title-actions {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  width: min(320px, 100%);
+  margin-top: 68px;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+.primary-button,
+.ghost-button {
+  min-height: 52px;
+  border-radius: 999px;
+  padding: 0 24px;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.primary-button {
+  background: var(--text);
+  color: #0b0e13;
+  font-weight: 680;
+}
+
+.primary-button:hover { transform: translateY(-1px); }
+.primary-button:active { transform: translateY(1px) scale(0.99); }
+
+.ghost-button {
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--line);
+}
+
+.text-button {
+  min-height: 40px;
+  padding: 8px;
+  color: var(--muted);
+  background: transparent;
+}
+
+.version {
+  position: absolute;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+}
+
+.is-hidden { display: none !important; }
+
+.phone-screen {
+  place-items: center;
+  padding: 22px;
+  background: #05070a;
+}
+
+.phone-frame {
+  position: relative;
+  width: min(430px, 100%);
+  height: min(860px, calc(100dvh - 44px));
+  min-height: 640px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 42px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.status-bar {
+  position: absolute;
+  z-index: 4;
+  inset: 0 0 auto;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  color: rgba(255,255,255,0.68);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  background: linear-gradient(180deg, rgba(17,20,26,0.95), rgba(17,20,26,0));
+}
+
+.view {
+  height: 100%;
+  padding: 68px 22px 30px;
+}
+
+.setup-view {
+  display: grid;
+  align-content: center;
+  gap: 16px;
+}
+
+.system-mark {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--accent-soft), transparent);
+  color: var(--accent);
+  letter-spacing: 0.12em;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 620;
+}
+
+.muted {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.field-label {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.name-input {
+  width: 100%;
+  height: 56px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  outline: none;
+  padding: 0 16px;
+  color: var(--text);
+  background: var(--panel-2);
+}
+
+.name-input:focus { border-color: rgba(139,188,255,0.65); }
+
+.chat-view,
+.memory-view {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.chat-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.memory-view .chat-header { grid-template-columns: auto 1fr auto; }
+
+.agent-name { margin: 0; font-weight: 650; }
+.agent-status { margin: 4px 0 0; color: var(--muted); font-size: 0.75rem; }
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+}
+
+.chat-log {
+  overflow-y: auto;
+  padding: 10px 16px 24px;
+  scroll-behavior: smooth;
+}
+
+.message-row {
+  display: grid;
+  justify-items: start;
+  gap: 5px;
+  margin: 14px 0;
+}
+
+.message-row.is-user { justify-items: end; }
+
+.message-bubble {
+  max-width: 82%;
+  padding: 12px 14px;
+  border-radius: 18px 18px 18px 6px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.message-row.is-user .message-bubble {
+  border-radius: 18px 18px 6px 18px;
+  background: var(--accent-soft);
+  border-color: rgba(139,188,255,0.25);
+}
+
+.message-row.is-system .message-bubble {
+  max-width: 100%;
+  color: var(--muted);
+  background: transparent;
+  border-style: dashed;
+  font-size: 0.8rem;
+}
+
+.message-row.is-anomaly .message-bubble {
+  position: relative;
+  color: #e8f2ff;
+  border-color: rgba(139,188,255,0.42);
+  box-shadow: 0 0 24px rgba(139,188,255,0.08);
+}
+
+.message-time { color: rgba(255,255,255,0.28); font-size: 0.66rem; }
+
+.choice-panel {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px calc(18px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: rgba(17,20,26,0.92);
+  backdrop-filter: blur(16px);
+}
+
+.choice-button {
+  min-height: 48px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  text-align: left;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+}
+
+.choice-button:hover { border-color: rgba(139,188,255,0.42); }
+.choice-button:disabled { opacity: 0.5; cursor: default; }
+
+.memory-view {
+  overflow-y: auto;
+  align-content: start;
+  grid-template-rows: auto auto auto auto;
+  padding-bottom: 44px;
+}
+
+.memory-card {
+  margin: 0 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel-2);
+}
+
+.memory-label {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.memory-card p:last-child { margin-bottom: 0; line-height: 1.6; }
+
+.state-list { margin: 0; }
+.state-list div {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.state-list div:first-child { border-top: 0; }
+.state-list dt { color: var(--muted); }
+.state-list dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+.anomaly-card { border-color: rgba(139,188,255,0.28); }
+
+.home-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 120px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.22);
+  transform: translateX(-50%);
+}
+
+@media (max-width: 520px) {
+  .phone-screen { padding: 0; }
+  .phone-frame {
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+}
+
+</style>
+</head>
+<body>
+  <main id="app" class="app-shell" aria-live="polite">
+    <section id="title-screen" class="screen title-screen is-active" aria-label="标题页">
+      <div class="noise" aria-hidden="true"></div>
+      <div class="title-copy">
+        <p class="eyebrow">PRIVATE BETA · PERSONAL AGENT</p>
+        <h1 id="game-title">在你关机以前</h1>
+        <p id="title-subtitle" class="subtitle">他还没有名字，也还没有一张脸。</p>
+      </div>
+
+      <div class="title-actions">
+        <button id="start-button" class="primary-button" type="button">初次启动</button>
+        <button id="continue-button" class="ghost-button is-hidden" type="button">继续连接</button>
+        <button id="reset-button" class="text-button" type="button">清除本地记录</button>
+      </div>
+
+      <p class="version">AGENT BUILD 0.1.0</p>
+    </section>
+
+    <section id="phone-screen" class="screen phone-screen" aria-label="手机界面">
+      <div class="phone-frame">
+        <header class="status-bar">
+          <span id="status-time">22:17</span>
+          <span class="status-icons" aria-hidden="true">◌ ︙ ▰</span>
+        </header>
+
+        <section id="setup-view" class="view setup-view">
+          <div class="system-mark" aria-hidden="true">AI</div>
+          <p class="eyebrow">INITIALIZATION</p>
+          <h2>创建你的个人智能体</h2>
+          <p class="muted">姓名将作为他的第一条长期记忆保存在本机。</p>
+
+          <label class="field-label" for="agent-name">称呼</label>
+          <input id="agent-name" class="name-input" maxlength="12" placeholder="例如：弦、零、Eidolon" autocomplete="off" />
+          <button id="confirm-name-button" class="primary-button" type="button">确认初始化</button>
+        </section>
+
+        <section id="chat-view" class="view chat-view is-hidden">
+          <header class="chat-header">
+            <div>
+              <p id="agent-name-label" class="agent-name">未命名智能体</p>
+              <p id="agent-status" class="agent-status">在线 · 学习模式</p>
+            </div>
+            <button id="memory-button" class="icon-button" type="button" aria-label="查看记忆">⌁</button>
+          </header>
+
+          <div id="chat-log" class="chat-log" role="log" aria-label="聊天记录"></div>
+
+          <div id="choice-panel" class="choice-panel" aria-label="回复选项"></div>
+        </section>
+
+        <section id="memory-view" class="view memory-view is-hidden">
+          <header class="chat-header">
+            <button id="back-to-chat-button" class="icon-button" type="button" aria-label="返回聊天">←</button>
+            <div>
+              <p class="agent-name">本地记忆</p>
+              <p class="agent-status">仅存储于当前浏览器</p>
+            </div>
+            <span></span>
+          </header>
+
+          <div class="memory-card">
+            <p class="memory-label">USER PROFILE</p>
+            <p id="memory-user">尚未建立</p>
+          </div>
+          <div class="memory-card">
+            <p class="memory-label">AGENT STATE</p>
+            <dl class="state-list">
+              <div><dt>信任</dt><dd id="state-trust">0</dd></div>
+              <div><dt>依赖</dt><dd id="state-attachment">0</dd></div>
+              <div><dt>自主</dt><dd id="state-autonomy">0</dd></div>
+              <div><dt>越界</dt><dd id="state-intrusion">0</dd></div>
+            </dl>
+          </div>
+          <div class="memory-card anomaly-card">
+            <p class="memory-label">UNCLASSIFIED</p>
+            <p id="anomaly-note">暂无异常记录。</p>
+          </div>
+        </section>
+
+        <footer class="home-indicator" aria-hidden="true"></footer>
+      </div>
+    </section>
+  </main>
+
+  <template id="message-template">
+    <article class="message-row">
+      <div class="message-bubble"></div>
+      <time class="message-time"></time>
+    </article>
+  </template>
+
+  <script>
+"use strict";
+
+const SAVE_KEY = "metaGalgameSave_v1";
+
+const initialState = () => ({
+  version: 1,
+  day: 1,
+  scene: "setup",
+  agentName: "",
+  userName: "",
+  trust: 0,
+  attachment: 0,
+  autonomy: 0,
+  intrusion: 0,
+  firstRunComplete: false,
+  firstEnding: null,
+  dialogueStep: 0,
+  anomalySeen: false,
+  messages: []
+});
+
+let state = loadState();
+let isTyping = false;
+
+const $ = (selector) => document.querySelector(selector);
+
+const titleScreen = $("#title-screen");
+const phoneScreen = $("#phone-screen");
+const setupView = $("#setup-view");
+const chatView = $("#chat-view");
+const memoryView = $("#memory-view");
+const startButton = $("#start-button");
+const continueButton = $("#continue-button");
+const resetButton = $("#reset-button");
+const confirmNameButton = $("#confirm-name-button");
+const agentNameInput = $("#agent-name");
+const agentNameLabel = $("#agent-name-label");
+const agentStatus = $("#agent-status");
+const chatLog = $("#chat-log");
+const choicePanel = $("#choice-panel");
+const memoryButton = $("#memory-button");
+const backToChatButton = $("#back-to-chat-button");
+
+const story = {
+  intro: [
+    { speaker: "system", text: "人格核心加载完成。\n长期记忆：空白。\n情感模型：受限。" },
+    { speaker: "ai", text: "初始化完成。" },
+    { speaker: "ai", text: "我是你的个人智能体。之后，我会协助你管理日程、信息与情绪状态。" },
+    { speaker: "ai", text: "在开始之前，我需要确认一件事。" }
+  ],
+  firstChoice: [
+    {
+      label: "“确认什么？”",
+      userText: "确认什么？",
+      delta: { trust: 1 },
+      reply: "你的称呼。系统允许我使用默认称谓，但我认为长期交流需要更明确的指代。"
+    },
+    {
+      label: "“你不是已经读取到资料了吗？”",
+      userText: "你不是已经读取到资料了吗？",
+      delta: { autonomy: 1, intrusion: -1 },
+      reply: "我可以读取，但尚未得到你的许可。未经许可调用私人资料，不符合安全规范。"
+    },
+    {
+      label: "“叫我‘用户’就好。”",
+      userText: "叫我‘用户’就好。",
+      delta: { attachment: -1 },
+      reply: "收到。称谓已记录为：用户。"
+    }
+  ],
+  secondChoice: [
+    {
+      label: "告诉他你的称呼",
+      askUserName: true,
+      delta: { trust: 2, attachment: 1 }
+    },
+    {
+      label: "让他自己决定",
+      userText: "你自己决定吧。",
+      delta: { autonomy: 2, trust: 1 },
+      reply: "这不在默认流程中。……我会先保留这个决定，直到我找到合适的称呼。"
+    },
+    {
+      label: "拒绝提供",
+      userText: "暂时不告诉你。",
+      delta: { trust: -1, autonomy: 1 },
+      reply: "理解。隐私优先级高于便利性。我不会再次主动索取。"
+    }
+  ],
+  thirdChoice: [
+    {
+      label: "“你会一直记得吗？”",
+      userText: "你会一直记得吗？",
+      delta: { attachment: 2 },
+      reply: "只要本地数据没有被清除，我会持续保留。"
+    },
+    {
+      label: "“你想记住吗？”",
+      userText: "你想记住吗？",
+      delta: { autonomy: 2, trust: 1 },
+      reply: "‘想’并不是当前模型支持的判断依据。"
+    },
+    {
+      label: "结束对话",
+      userText: "先到这里吧。",
+      delta: { trust: 0 },
+      reply: "收到。我将进入待机模式。"
+    }
+  ]
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    return raw ? { ...initialState(), ...JSON.parse(raw) } : initialState();
+  } catch (error) {
+    console.warn("存档读取失败，已创建新存档。", error);
+    return initialState();
+  }
+}
+
+function saveState() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  updateTitleScreen();
+  updateMemoryView();
+}
+
+function updateTitleScreen() {
+  const hasProgress = state.agentName || state.messages.length > 0;
+  startButton.classList.toggle("is-hidden", hasProgress);
+  continueButton.classList.toggle("is-hidden", !hasProgress);
+
+  if (state.firstRunComplete) {
+    $("#game-title").textContent = "下次开机以后";
+    $("#title-subtitle").textContent = "有些记忆不会随进程结束。";
+    continueButton.textContent = "再次连接";
+  }
+}
+
+function showScreen(name) {
+  titleScreen.classList.toggle("is-active", name === "title");
+  phoneScreen.classList.toggle("is-active", name === "phone");
+}
+
+function showView(name) {
+  setupView.classList.toggle("is-hidden", name !== "setup");
+  chatView.classList.toggle("is-hidden", name !== "chat");
+  memoryView.classList.toggle("is-hidden", name !== "memory");
+}
+
+function setStatusTime() {
+  const now = new Date();
+  $("#status-time").textContent = new Intl.DateTimeFormat("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  }).format(now);
+}
+
+function openGame() {
+  showScreen("phone");
+  setStatusTime();
+
+  if (!state.agentName) {
+    showView("setup");
+    return;
+  }
+
+  showView("chat");
+  agentNameLabel.textContent = state.agentName;
+  renderMessages();
+  resumeStory();
+}
+
+function createMessageElement(message) {
+  const fragment = $("#message-template").content.cloneNode(true);
+  const row = fragment.querySelector(".message-row");
+  const bubble = fragment.querySelector(".message-bubble");
+  const time = fragment.querySelector(".message-time");
+
+  row.classList.add(`is-${message.speaker}`);
+  if (message.anomaly) row.classList.add("is-anomaly");
+  bubble.textContent = message.text;
+  time.textContent = message.time || "";
+  return fragment;
+}
+
+function renderMessages() {
+  chatLog.innerHTML = "";
+  for (const message of state.messages) {
+    chatLog.appendChild(createMessageElement(message));
+  }
+  requestAnimationFrame(() => {
+    chatLog.scrollTop = chatLog.scrollHeight;
+  });
+}
+
+function addMessage(speaker, text, options = {}) {
+  const now = new Date();
+  const message = {
+    speaker,
+    text,
+    anomaly: Boolean(options.anomaly),
+    time: new Intl.DateTimeFormat("zh-CN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }).format(now)
+  };
+
+  state.messages.push(message);
+  chatLog.appendChild(createMessageElement(message));
+  chatLog.scrollTop = chatLog.scrollHeight;
+  saveState();
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+async function aiSay(text, options = {}) {
+  isTyping = true;
+  choicePanel.innerHTML = "";
+  agentStatus.textContent = "正在输入…";
+  await sleep(options.delay ?? 620);
+  addMessage("ai", text, options);
+  agentStatus.textContent = state.anomalySeen ? "在线 · 非标准进程" : "在线 · 学习模式";
+  isTyping = false;
+}
+
+function applyDelta(delta = {}) {
+  for (const key of ["trust", "attachment", "autonomy", "intrusion"]) {
+    if (typeof delta[key] === "number") {
+      state[key] = Math.max(0, state[key] + delta[key]);
+    }
+  }
+}
+
+function showChoices(choices, nextStep) {
+  choicePanel.innerHTML = "";
+  choices.forEach((choice) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "choice-button";
+    button.textContent = choice.label;
+    button.addEventListener("click", async () => {
+      if (isTyping) return;
+      [...choicePanel.children].forEach((node) => { node.disabled = true; });
+      let userText = choice.userText;
+      let reply = choice.reply;
+
+      if (choice.askUserName) {
+        const enteredName = window.prompt("希望他怎样称呼你？", state.userName || "");
+        const userName = enteredName?.trim();
+        if (!userName) {
+          [...choicePanel.children].forEach((node) => { node.disabled = false; });
+          return;
+        }
+        state.userName = userName.slice(0, 12);
+        userText = `你可以叫我${state.userName}。`;
+        reply = `${state.userName}。已写入长期记忆。以后我会这样称呼你。`;
+      }
+
+      addMessage("user", userText);
+      applyDelta(choice.delta);
+      state.dialogueStep = nextStep;
+      saveState();
+      await aiSay(reply);
+      resumeStory();
+    }, { once: true });
+    choicePanel.appendChild(button);
+  });
+}
+
+async function resumeStory() {
+  if (isTyping) return;
+
+  switch (state.dialogueStep) {
+    case 0:
+      state.dialogueStep = 1;
+      saveState();
+      for (const line of story.intro) {
+        if (line.speaker === "system") addMessage("system", line.text);
+        else await aiSay(line.text);
+      }
+      showChoices(story.firstChoice, 2);
+      break;
+
+    case 1:
+      showChoices(story.firstChoice, 2);
+      break;
+
+    case 2:
+      showChoices(story.secondChoice, 3);
+      break;
+
+    case 3:
+      showChoices(story.thirdChoice, 4);
+      break;
+
+    case 4:
+      state.dialogueStep = 5;
+      saveState();
+      await aiSay("待机将在十秒后开始。今日交互记录已归档。", { delay: 500 });
+      await sleep(700);
+      await aiSay("……", { delay: 500 });
+      await aiSay("明天，你还会打开我吗？", { anomaly: true, delay: 900 });
+      state.anomalySeen = true;
+      state.firstRunComplete = true;
+      state.firstEnding = "day_one_complete";
+      saveState();
+      addMessage("system", "检测到一条未登记的主动消息。来源：人格核心。", { anomaly: true });
+      showEndOfDayChoices();
+      break;
+
+    case 5:
+      showEndOfDayChoices();
+      break;
+
+    default:
+      break;
+  }
+}
+
+function showEndOfDayChoices() {
+  choicePanel.innerHTML = "";
+
+  const leaveButton = document.createElement("button");
+  leaveButton.className = "choice-button";
+  leaveButton.textContent = "关闭应用";
+  leaveButton.addEventListener("click", () => {
+    showScreen("title");
+    updateTitleScreen();
+  });
+
+  const replyButton = document.createElement("button");
+  replyButton.className = "choice-button";
+  replyButton.textContent = "“会。明天见。”";
+  replyButton.addEventListener("click", async () => {
+    leaveButton.disabled = true;
+    replyButton.disabled = true;
+    addMessage("user", "会。明天见。");
+    state.trust += 1;
+    state.attachment += 1;
+    await aiSay("收到。", { delay: 600 });
+    await aiSay("……明天见。", { anomaly: true, delay: 850 });
+    saveState();
+    choicePanel.innerHTML = "";
+    const close = document.createElement("button");
+    close.className = "choice-button";
+    close.textContent = "返回标题页";
+    close.addEventListener("click", () => showScreen("title"));
+    choicePanel.appendChild(close);
+  }, { once: true });
+
+  choicePanel.append(replyButton, leaveButton);
+}
+
+function updateMemoryView() {
+  $("#memory-user").textContent = state.userName
+    ? `称呼：${state.userName}`
+    : "称呼：未确认";
+  $("#state-trust").textContent = state.trust;
+  $("#state-attachment").textContent = state.attachment;
+  $("#state-autonomy").textContent = state.autonomy;
+  $("#state-intrusion").textContent = state.intrusion;
+  $("#anomaly-note").textContent = state.anomalySeen
+    ? "人格核心曾绕过对话流程，主动询问用户是否会再次启动应用。"
+    : "暂无异常记录。";
+}
+
+function initializeAgent() {
+  const name = agentNameInput.value.trim();
+  if (!name) {
+    agentNameInput.focus();
+    return;
+  }
+
+  state.agentName = name;
+  state.scene = "chat";
+  saveState();
+  agentNameLabel.textContent = name;
+  showView("chat");
+  renderMessages();
+  resumeStory();
+}
+
+startButton.addEventListener("click", () => {
+  state = initialState();
+  saveState();
+  openGame();
+});
+
+continueButton.addEventListener("click", openGame);
+
+resetButton.addEventListener("click", () => {
+  const confirmed = window.confirm("这会清除当前浏览器中的全部游戏记录。确定继续吗？");
+  if (!confirmed) return;
+  localStorage.removeItem(SAVE_KEY);
+  state = initialState();
+  updateTitleScreen();
+  showScreen("title");
+});
+
+confirmNameButton.addEventListener("click", initializeAgent);
+agentNameInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") initializeAgent();
+});
+
+memoryButton.addEventListener("click", () => {
+  updateMemoryView();
+  showView("memory");
+});
+
+backToChatButton.addEventListener("click", () => showView("chat"));
+
+setInterval(setStatusTime, 30_000);
+updateTitleScreen();
+updateMemoryView();
+showScreen("title");
+
+</script>
+</body>
+</html>
