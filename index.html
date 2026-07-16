@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eef2f6">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>在你关机以前 · 关系与房间原型 0.6</title>
 <style>
 :root{
@@ -233,13 +236,192 @@ html,body{overflow-x:hidden}
 .second-run-badge{display:inline-flex;padding:5px 8px;border-radius:999px;background:rgba(var(--accent-rgb),.11);color:var(--accent);font-size:10px;margin-top:7px}
 .post-day{display:inline-flex;margin-left:auto;padding:4px 7px;border-radius:999px;background:rgba(var(--accent-rgb),.09);font-size:9px;color:var(--accent)}
 
+
+/* 0.8.2 update transition */
+.update-entry{
+  display:flex!important;flex-direction:column;gap:5px;
+  background:linear-gradient(145deg,#202936,#3b4858)!important;
+  color:#fff!important;border:0!important;padding:14px 16px!important;
+  box-shadow:0 13px 32px rgba(31,42,55,.2)
+}
+.update-entry b{font-size:15px}.update-entry span{font-size:11px;color:#cbd4de;line-height:1.45}
+
+
+/* ===== REAL PIXEL ROOM 1.0 ===== */
+html,body{height:100%;overflow:hidden!important}
+#app,.shell{height:100dvh!important;overflow:hidden!important}
+.page{
+  position:absolute!important;
+  left:0;right:0;
+  top:0;
+  bottom:calc(78px + env(safe-area-inset-bottom));
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.chat-page{overflow:hidden!important}
+.messages{
+  position:absolute!important;
+  left:0;right:0;
+  top:calc(122px + env(safe-area-inset-top));
+  bottom:0;
+  max-height:none!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.messages::-webkit-scrollbar{display:none}
+
+.pixel-room-page{
+  background:#d9e1e8!important;
+  padding:calc(76px + env(safe-area-inset-top)) 12px 110px!important;
+}
+.pixel-room-shell{
+  background:#26374b;
+  border:4px solid #182536;
+  box-shadow:0 0 0 4px #eef4f8,0 0 0 8px #6f8298,0 12px 0 rgba(27,39,54,.16);
+  padding:8px;
+}
+.pixel-room-hud{
+  height:34px;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:8px;
+  padding:0 7px;
+  background:#e8eef3;
+  border:4px solid #7a8da2;
+  color:#26374b;
+  font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  image-rendering:pixelated;
+}
+.pixel-room-hud span:last-child{text-align:right}
+.pixel-room-label{letter-spacing:.12em;color:#6b7f95}
+.pixel-room-scene{
+  position:relative;
+  margin-top:8px;
+  aspect-ratio:360/300;
+  overflow:hidden;
+  background:#c7d3df;
+  border:4px solid #182536;
+  image-rendering:pixelated;
+}
+.pixel-room-base{display:block;width:100%;height:100%;image-rendering:pixelated}
+.pixel-room-status{
+  margin-top:8px;
+  min-height:36px;
+  display:flex;
+  align-items:center;
+  padding:8px 10px;
+  color:#26374b;
+  background:#e8eef3;
+  border:4px solid #7a8da2;
+  font:700 11px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.pixel-char{
+  position:absolute;
+  left:49%;
+  top:47%;
+  width:39px;
+  height:76px;
+  transform:translate(-50%,-50%);
+  background:transparent!important;
+  image-rendering:pixelated;
+  z-index:6;
+}
+.pixel-char-hair{
+  position:absolute;left:5px;top:0;width:29px;height:20px;background:#303544;
+  box-shadow:-4px 4px 0 #303544,4px 4px 0 #303544,0 -4px 0 #303544;
+}
+.pixel-char-face{
+  position:absolute;left:8px;top:16px;width:23px;height:21px;background:#d5bba6;
+  box-shadow:0 0 0 4px #9f8371;
+}
+.pixel-char-face i{position:absolute;top:8px;width:4px;height:4px;background:#f7fbff}
+.pixel-char-face i:first-child{left:4px}.pixel-char-face i:nth-child(2){right:4px}
+.pixel-char-face b{position:absolute;left:9px;bottom:4px;width:6px;height:3px;background:#8d645e}
+.pixel-char-body{
+  position:absolute;left:5px;top:41px;width:29px;height:25px;background:#536b87;
+  box-shadow:0 0 0 4px #34485f;
+}
+.pixel-char-leg{position:absolute;top:68px;width:9px;height:8px;background:#28384b}
+.pixel-char-leg.left{left:7px}.pixel-char-leg.right{right:7px}
+.pixel-char:active{transform:translate(-50%,-50%) scale(.96)}
+.pixel-thought{
+  position:absolute;
+  left:18px;right:18px;bottom:18px;
+  z-index:12;
+  padding:10px 12px;
+  background:#fffdf4;
+  color:#26374b;
+  border:4px solid #26374b;
+  box-shadow:4px 4px 0 #8092a7;
+  border-radius:0!important;
+  font-size:12px;
+  line-height:1.6;
+}
+.pixel-decor-layer{position:absolute;inset:0;pointer-events:none;z-index:5}
+.pixel-object{position:absolute;display:block;image-rendering:pixelated}
+
+/* player and char furniture, all drawn without emoji */
+.pixel-lamp{left:43%;top:39%;width:12px;height:18px;background:#d7b85e;box-shadow:0 0 0 3px #7a6338,0 18px 0 -2px #594532}
+.pixel-lamp:before{content:"";position:absolute;left:-5px;top:-8px;width:22px;height:8px;background:#f1d987;box-shadow:0 0 0 3px #7a6338}
+.pixel-plant{right:8%;top:41%;width:16px;height:12px;background:#9a684c;box-shadow:0 0 0 3px #5e4030}
+.pixel-plant:before{content:"";position:absolute;left:3px;top:-18px;width:8px;height:18px;background:#5b8b62;box-shadow:-7px 5px 0 #6fa36f,7px 1px 0 #4f7d58}
+.pixel-moon{right:35%;top:15%;width:18px;height:18px;background:#f1e3a2;box-shadow:0 0 0 3px #8f8357}
+.pixel-moon:after{content:"";position:absolute;left:7px;top:-2px;width:14px;height:14px;background:#c7d3df}
+.pixel-cushion{right:11%;top:59%;width:28px;height:17px;background:#b48796;box-shadow:0 0 0 3px #765764}
+.pixel-musicbox{left:28%;top:42%;width:20px;height:14px;background:#8098b5;box-shadow:0 0 0 3px #4e6178}
+.pixel-musicbox:before{content:"♪";position:absolute;left:5px;top:-5px;color:#f4e6a8;font:700 13px monospace}
+.pixel-rug{left:37%;bottom:9%;width:58px;height:20px;background:#b5c5d5;box-shadow:0 0 0 3px #5d7187}
+.pixel-poster{left:51%;top:13%;width:25px;height:31px;background:#d7c7ad;box-shadow:0 0 0 4px #66798e}
+.pixel-teacup{left:37%;top:44%;width:12px;height:10px;background:#f1f4f5;box-shadow:0 0 0 3px #77899c}
+.pixel-teacup:after{content:"";position:absolute;right:-7px;top:1px;width:6px;height:6px;border:3px solid #77899c}
+.pixel-books{right:13%;top:29%;width:27px;height:5px;background:#b46d6c;box-shadow:0 7px 0 #6f89a7,0 14px 0 #d2aa64,0 0 0 2px #4b5e73}
+.pixel-blanket{right:5%;top:60%;width:55px;height:20px;background:#8ca2ba;box-shadow:0 0 0 3px #566b82}
+.pixel-clock{left:58%;top:12%;width:18px;height:18px;background:#edf2f5;box-shadow:0 0 0 4px #6b7f94}
+.pixel-clock:before{content:"";position:absolute;left:8px;top:3px;width:2px;height:7px;background:#485b70}
+.pixel-clock:after{content:"";position:absolute;left:8px;top:8px;width:6px;height:2px;background:#485b70}
+.pixel-star{left:62%;top:31%;width:8px;height:8px;background:#f1d56c;box-shadow:8px 0 0 #f1d56c,4px -8px 0 #f1d56c,4px 8px 0 #f1d56c}
+.pixel-note,.pixel-nameplate,.pixel-oldname{left:29%;top:29%;width:21px;height:16px;background:#f0df86;box-shadow:0 0 0 3px #85763e}
+.pixel-nameplate{top:33%;background:#d9e2ea;box-shadow:0 0 0 3px #64778d}
+.pixel-book{left:24%;top:44%;width:23px;height:9px;background:#6e87a5;box-shadow:0 0 0 3px #42576f}
+.pixel-photo{right:27%;top:31%;width:22px;height:25px;background:#dbe3e8;box-shadow:0 0 0 4px #6b7e92}
+.pixel-photo:after{content:"";position:absolute;left:5px;top:6px;width:12px;height:10px;background:#9fb2c6}
+.pixel-oldname{left:36%;top:28%;background:#d1b6a6;box-shadow:0 0 0 3px #765d50}
+.pixel-cupmark{right:12%;top:18%;width:12px;height:10px;background:#f1f4f5;box-shadow:0 0 0 3px #65788d}
+.pixel-cupmark:after{content:"";position:absolute;right:-7px;top:1px;width:6px;height:6px;border:3px solid #65788d}
+.pixel-archive{left:15%;bottom:8%;width:29px;height:21px;background:#9a6d49;box-shadow:0 0 0 4px #5b402e}
+.pixel-archive:before{content:"";position:absolute;left:8px;top:7px;width:13px;height:4px;background:#d9bd72}
+
+.activity-strip{display:flex!important;flex-direction:column!important;overflow:visible!important;gap:10px!important}
+.activity-open-card{
+  min-width:0!important;
+  width:100%!important;
+  margin:0!important;
+  display:grid!important;
+  grid-template-columns:38px 1fr auto 16px!important;
+  gap:10px!important;
+  align-items:center!important;
+  border-radius:0!important;
+  background:#f2f6f9!important;
+  border:4px solid #8da0b4!important;
+  box-shadow:4px 4px 0 #d1dbe4!important;
+  pointer-events:auto!important;
+}
+.activity-copy{display:flex;flex-direction:column;min-width:0}
+.activity-chevron{font-size:22px;color:#6f8297}
+.activity-open-card:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #d1dbe4!important}
+
 </style>
 </head>
 <body data-mood="neutral">
 <div id="app">
 
 <section id="title" class="title">
-  <div class="statusline"><span>PRIVATE BETA · 0.8.1</span><span id="clock">00:00</span></div>
+  <div class="statusline"><span>PRIVATE BETA · 1.0</span><span id="clock">00:00</span></div>
   <div>
     <div class="eyebrow">A QUIET ROMANCE</div>
     <h1 id="gameTitle" class="game-title">在你关机以前</h1>
@@ -286,22 +468,106 @@ html,body{overflow-x:hidden}
     <button id="settingsBtn" class="icon">⚙︎</button>
   </header>
 
-  <section id="roomPage" class="page active">
-    <div class="room">
-      <div class="wall-glow"></div>
-      <div id="roomDay" class="room-day">DAY 00</div>
-      <div id="roomWeather" class="room-weather">☂︎ 小雨</div>
-      <div class="room-window"><span class="window-moon">◌</span></div>
-      <div class="wall-memory memory-frame-a">第一次命名</div>
-      <div class="wall-memory memory-frame-b">尚未解锁</div>
-      <div class="room-rug"></div><div class="room-bed"></div><div class="desk"></div><div class="shelf"></div>
-      <button id="chibiBtn" class="chibi" aria-label="点击查看他的心声">
-        <div class="chibi-head"><div class="chibi-hair"></div><i class="chibi-eye left"></i><i class="chibi-eye right"></i><i class="chibi-mouth"></i></div>
-        <div class="chibi-body"></div>
-      </button>
-      <div id="decorLayer"></div>
-      <div id="roomStatus" class="room-status">等待初始化</div>
-      <div id="thoughtBubble" class="thought-bubble hidden"></div>
+  <section id="roomPage" class="page active pixel-room-page">
+    <div class="pixel-room-shell">
+      <div class="pixel-room-hud">
+        <span id="roomDay">DAY 00</span>
+        <span class="pixel-room-label">PIXEL ROOM</span>
+        <span id="roomWeather">☂︎ 小雨</span>
+      </div>
+
+      <div class="pixel-room-scene">
+        <svg class="pixel-room-base" viewBox="0 0 360 300" role="img" aria-label="像素风手机房间" shape-rendering="crispEdges">
+          <!-- wall and floor -->
+          <rect x="0" y="0" width="360" height="188" fill="#c7d3df"/>
+          <rect x="0" y="188" width="360" height="112" fill="#9a7e69"/>
+          <rect x="0" y="184" width="360" height="8" fill="#6d5a4d"/>
+          <path d="M0 210H360M0 238H360M0 266H360" stroke="#856b58" stroke-width="4"/>
+          <path d="M40 188V300M92 188V300M144 188V300M196 188V300M248 188V300M300 188V300" stroke="#ad927b" stroke-width="3"/>
+
+          <!-- left door -->
+          <rect x="12" y="62" width="62" height="126" fill="#816b5d" stroke="#56483e" stroke-width="6"/>
+          <rect x="23" y="75" width="40" height="99" fill="#a08772"/>
+          <rect x="55" y="123" width="7" height="7" fill="#e5c56b"/>
+
+          <!-- window -->
+          <rect x="244" y="23" width="92" height="84" fill="#53677d" stroke="#415267" stroke-width="7"/>
+          <rect x="253" y="32" width="74" height="66" fill="#86a8c7"/>
+          <rect x="288" y="32" width="5" height="66" fill="#dbe8f2"/>
+          <rect x="253" y="63" width="74" height="5" fill="#dbe8f2"/>
+          <rect x="307" y="40" width="11" height="11" fill="#f2e6a8"/>
+          <rect x="263" y="78" width="10" height="4" fill="#dce8f1"/>
+          <rect x="277" y="84" width="13" height="4" fill="#dce8f1"/>
+
+          <!-- curtains -->
+          <rect x="234" y="18" width="11" height="96" fill="#7185a0"/>
+          <rect x="336" y="18" width="11" height="96" fill="#7185a0"/>
+          <rect x="229" y="17" width="123" height="7" fill="#4f6075"/>
+
+          <!-- desk -->
+          <rect x="82" y="143" width="126" height="14" fill="#725642" stroke="#4d3a2e" stroke-width="5"/>
+          <rect x="91" y="157" width="10" height="65" fill="#5b4536"/>
+          <rect x="190" y="157" width="10" height="65" fill="#5b4536"/>
+          <rect x="116" y="104" width="59" height="39" fill="#34465c" stroke="#233246" stroke-width="5"/>
+          <rect x="123" y="111" width="45" height="25" fill="#a9c6db"/>
+          <rect x="140" y="143" width="11" height="12" fill="#334358"/>
+          <rect x="128" y="153" width="36" height="5" fill="#334358"/>
+          <rect x="182" y="122" width="14" height="21" fill="#d3b66f"/>
+          <rect x="180" y="118" width="18" height="5" fill="#f0d890"/>
+
+          <!-- chair -->
+          <rect x="118" y="174" width="47" height="10" fill="#52677f"/>
+          <rect x="125" y="184" width="8" height="38" fill="#405269"/>
+          <rect x="152" y="184" width="8" height="38" fill="#405269"/>
+          <rect x="121" y="151" width="42" height="27" fill="#647c96" stroke="#405269" stroke-width="5"/>
+
+          <!-- shelf -->
+          <rect x="91" y="36" width="112" height="10" fill="#725642" stroke="#4d3a2e" stroke-width="4"/>
+          <rect x="91" y="76" width="112" height="10" fill="#725642" stroke="#4d3a2e" stroke-width="4"/>
+          <rect x="97" y="46" width="12" height="27" fill="#b46e68"/>
+          <rect x="112" y="51" width="10" height="22" fill="#6d89a6"/>
+          <rect x="125" y="43" width="14" height="30" fill="#d0aa62"/>
+          <rect x="145" y="53" width="22" height="20" fill="#7ca07c"/>
+          <rect x="175" y="48" width="18" height="25" fill="#9a7ea2"/>
+
+          <!-- bed -->
+          <rect x="225" y="169" width="116" height="60" fill="#e8edf3" stroke="#596b7d" stroke-width="6"/>
+          <rect x="225" y="197" width="116" height="32" fill="#7188a4"/>
+          <rect x="235" y="178" width="41" height="17" fill="#ffffff" stroke="#b8c5d2" stroke-width="4"/>
+          <rect x="330" y="169" width="11" height="77" fill="#596b7d"/>
+          <rect x="225" y="229" width="10" height="25" fill="#596b7d"/>
+          <rect x="331" y="229" width="10" height="25" fill="#596b7d"/>
+
+          <!-- rug -->
+          <rect x="98" y="238" width="147" height="45" fill="#a9b7c7" stroke="#596b7d" stroke-width="6"/>
+          <rect x="111" y="249" width="121" height="23" fill="#c7d3df"/>
+          <path d="M111 260H232M150 249V272M192 249V272" stroke="#8fa1b5" stroke-width="4"/>
+
+          <!-- wall frames -->
+          <rect x="89" y="92" width="34" height="28" fill="#f0eadf" stroke="#6f8092" stroke-width="5"/>
+          <rect x="184" y="92" width="29" height="35" fill="#f0eadf" stroke="#6f8092" stroke-width="5"/>
+          <rect x="96" y="99" width="20" height="14" fill="#c0ad96"/>
+          <rect x="190" y="99" width="17" height="22" fill="#9eb2c5"/>
+
+          <!-- tiny floor pixels -->
+          <rect x="28" y="246" width="8" height="8" fill="#715b4b"/>
+          <rect x="56" y="216" width="7" height="7" fill="#b6977f"/>
+          <rect x="284" y="266" width="8" height="8" fill="#715b4b"/>
+        </svg>
+
+        <button id="chibiBtn" class="pixel-char" aria-label="点击查看他的心声">
+          <span class="pixel-char-hair"></span>
+          <span class="pixel-char-face"><i></i><i></i><b></b></span>
+          <span class="pixel-char-body"></span>
+          <span class="pixel-char-leg left"></span>
+          <span class="pixel-char-leg right"></span>
+        </button>
+
+        <div id="decorLayer" class="pixel-decor-layer"></div>
+        <div id="thoughtBubble" class="pixel-thought hidden"></div>
+      </div>
+
+      <div id="roomStatus" class="pixel-room-status">等待初始化</div>
     </div>
 
     <div class="room-summary">
@@ -386,7 +652,7 @@ html,body{overflow-x:hidden}
   <div class="setting-label">版本状态</div>
   <div class="setting-card"><div class="setting-row"><div><div id="versionTitle">初次运行进行中</div><div id="versionDesc" class="setting-desc">第二次运行会从系统更新后继续，目前只保留入口。</div></div></div></div>
   <button id="resetBtn" class="danger">删除本机记录并重新开始</button>
-  <div class="version">BEFORE POWER OFF · PROTOTYPE 0.8.1</div>
+  <div class="version">BEFORE POWER OFF · PROTOTYPE 1.0</div>
 </section>
 
 <section id="relationSheet" class="sheet hidden">
@@ -541,12 +807,12 @@ function render(){
  renderRoom();renderActivities();renderApps();renderMessages();renderChoices();renderPosts();renderMemories();renderSettings();renderRelation();renderDecor()
 }
 function renderRoom(){
- const all=[...new Set([...(S.room.decor||[]),...(S.room.charDecor||[])])];E.decorLayer.innerHTML=all.filter(id=>decorCatalog[id]).map(id=>`<span class="decor ${decorCatalog[id].cls}" title="${esc(decorCatalog[id].name)}">${decorCatalog[id].icon}</span>`).join("")
+ const all=[...new Set([...(S.room.decor||[]),...(S.room.charDecor||[])])];
+ E.decorLayer.innerHTML=all.filter(id=>decorCatalog[id]).map(id=>`<span class="pixel-object pixel-${id}" title="${esc(decorCatalog[id].name)}"></span>`).join("")
 }
 function renderActivities(){
  if(!S.activities.length){E.activity.innerHTML='<div class="empty">今天还没有留下活动轨迹。</div>';return}
- E.activity.innerHTML=S.activities.map(a=>`<button class="activity-card" data-activity="${a.id}"><span class="activity-icon">${a.icon}</span><span><span class="activity-main">${esc(a.title)}</span><span class="activity-sub">${esc(a.subtitle)}</span></span><span class="activity-time">${esc(a.time)}</span></button>`).join("");
- document.querySelectorAll("[data-activity]").forEach(b=>b.onclick=()=>openActivity(b.dataset.activity))
+ E.activity.innerHTML=S.activities.map(a=>`<button type="button" class="activity-card activity-open-card" data-activity="${a.id}"><span class="activity-icon">${a.icon}</span><span class="activity-copy"><span class="activity-main">${esc(a.title)}</span><span class="activity-sub">${esc(a.subtitle)}</span></span><span class="activity-time">${esc(a.time)}</span><span class="activity-chevron">›</span></button>`).join("")
 }
 function appPreview(key){
  const records=S.activities.filter(a=>a.permission===key);
@@ -575,7 +841,16 @@ function renderMessages(){
  })
 }
 function renderChoices(){
- E.choiceInner.innerHTML="";if(!S.choice){E.choicePanel.classList.add("hidden");return}
+ E.choiceInner.innerHTML="";
+ if(!S.choice){
+   if(S.completed&&!S.secondStarted){
+     E.choiceInner.innerHTML='<button id="installUpdateBtn" class="choice-btn update-entry"><b>安装版本 2.0</b><span>结束当前版本，从更新后的第二次运行继续</span></button>';
+     E.choicePanel.classList.remove("hidden");
+     setTimeout(()=>{const btn=$("installUpdateBtn");if(btn)btn.onclick=startSecondRun},0);
+     return;
+   }
+   E.choicePanel.classList.add("hidden");return
+ }
  if(S.choice.free){
    E.choiceInner.innerHTML='<input id="freeInput" class="text-input" maxlength="80" placeholder="例如：今天上课好累 / 和朋友吃了饭"><button id="freeSend" class="choice-btn">发送给他</button>';
    E.choicePanel.classList.remove("hidden");
@@ -620,7 +895,12 @@ function renderDecor(){
  E.decorGrid.innerHTML=Object.entries(decorCatalog).filter(([,v])=>!v.char).map(([id,v])=>{const on=S.room.decor.includes(id);return`<button class="decor-option ${on?"on":""}" data-decor="${id}"><b>${v.icon}</b>${v.name}<small>${v.desc}</small></button>`}).join("");
  document.querySelectorAll("[data-decor]").forEach(b=>b.onclick=()=>toggleDecor(b.dataset.decor))
 }
-function scrollChat(){requestAnimationFrame(()=>window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"}))}
+function scrollChat(){
+ requestAnimationFrame(()=>{
+  if(!document.getElementById("chatPage")?.classList.contains("active"))return;
+  E.messages.scrollTo({top:E.messages.scrollHeight,behavior:"smooth"})
+ })
+}
 function showToast(delta){
  const names={trust:"信任",attachment:"依赖",autonomy:"自主",boundary:"边界",disappointment:"失望"};const parts=Object.entries(delta||{}).filter(([,v])=>v).map(([k,v])=>`${names[k]} ${v>0?"+":""}${v}`);
  if(!parts.length)return;E.toast.textContent=parts.join(" · ");E.toast.classList.remove("hidden");setTimeout(()=>E.toast.classList.add("hidden"),2200)
@@ -1029,6 +1309,10 @@ E.cont.onclick=()=>{
 E.confirm.onclick=()=>{const p=E.player.value.trim(),n=E.nick.value.trim(),c=E.char.value.trim();if(!p||!n||!c)return;S.playerId=p;S.nickname=n;S.charName=c;S.started=true;S.stage="d1";E.identity.classList.add("hidden");openShell();persist();showFirstDay()};
 E.dayContinue.onclick=()=>{E.dayOverlay.classList.add("hidden");document.body.style.overflow="";const cb=dayCallback;dayCallback=null;if(cb)cb()};
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>nav(b.dataset.page));
+E.activity.addEventListener("click",e=>{
+ const card=e.target.closest("[data-activity]");
+ if(card)openActivity(card.dataset.activity)
+});
 E.settings.onclick=()=>{renderSettings();E.settingsSheet.classList.remove("hidden")};E.closeSettings.onclick=()=>E.settingsSheet.classList.add("hidden");
 E.saveCharName.onclick=handleRename;
 E.relation.onclick=openRelation;E.relationRoom.onclick=openRelation;E.closeRelation.onclick=()=>E.relationSheet.classList.add("hidden");
