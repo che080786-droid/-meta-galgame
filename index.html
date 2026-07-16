@@ -239,7 +239,7 @@ html,body{overflow-x:hidden}
 <div id="app">
 
 <section id="title" class="title">
-  <div class="statusline"><span>PRIVATE BETA · 0.8</span><span id="clock">00:00</span></div>
+  <div class="statusline"><span>PRIVATE BETA · 0.8.1</span><span id="clock">00:00</span></div>
   <div>
     <div class="eyebrow">A QUIET ROMANCE</div>
     <h1 id="gameTitle" class="game-title">在你关机以前</h1>
@@ -251,7 +251,7 @@ html,body{overflow-x:hidden}
       <button id="startBtn" class="primary">建立连接</button>
       <button id="continueBtn" class="secondary hidden">继续初次运行</button>
     </div>
-    <div id="runNote" class="note">初次运行 · 7 个连接日 · 自动存档</div>
+    <div id="runNote" class="note">初次运行 7 日 → 版本更新 → 第二次运行</div>
   </div>
 </section>
 
@@ -386,7 +386,7 @@ html,body{overflow-x:hidden}
   <div class="setting-label">版本状态</div>
   <div class="setting-card"><div class="setting-row"><div><div id="versionTitle">初次运行进行中</div><div id="versionDesc" class="setting-desc">第二次运行会从系统更新后继续，目前只保留入口。</div></div></div></div>
   <button id="resetBtn" class="danger">删除本机记录并重新开始</button>
-  <div class="version">BEFORE POWER OFF · PROTOTYPE 0.8</div>
+  <div class="version">BEFORE POWER OFF · PROTOTYPE 0.8.1</div>
 </section>
 
 <section id="relationSheet" class="sheet hidden">
@@ -414,9 +414,9 @@ html,body{overflow-x:hidden}
 
 <script>
 (()=>{
-const KEY="before_poweroff_v8";
+const KEY="before_poweroff_v81_merged";
 const DEFAULT={
- version:8,started:false,playerId:"",nickname:"",charName:"",nicknameAllowed:false,day:0,stage:"new",completed:false,runNo:1,secondStarted:false,secondCompleted:false,secondDay:0,renameCount:0,nameHistory:[],memoryFragments:0,
+ version:81,started:false,playerId:"",nickname:"",charName:"",nicknameAllowed:false,day:0,stage:"new",completed:false,runNo:1,secondStarted:false,secondCompleted:false,secondDay:0,renameCount:0,nameHistory:[],memoryFragments:0,
  mood:"neutral",moodDetail:"正在观察你",status:"等待初始化",weather:"rain",
  stats:{trust:8,attachment:3,autonomy:7,boundary:9,disappointment:0},
  permissions:{weather:true,calendar:true,notes:false,gallery:false,music:false,deleted:false},
@@ -453,7 +453,7 @@ function mergeState(base,saved){
 }
 function load(){
  try{
-  const raw=localStorage.getItem(KEY)||localStorage.getItem("before_poweroff_v7");
+  const raw=localStorage.getItem(KEY);
   return raw?mergeState(DEFAULT,JSON.parse(raw)):clone(DEFAULT)
  }catch{return clone(DEFAULT)}
 }
@@ -509,7 +509,7 @@ function showTitle(){
  E.shell.classList.add("hidden");E.title.classList.remove("hidden");
  E.start.classList.toggle("hidden",S.started);E.cont.classList.toggle("hidden",!S.started);
  if(!S.started){
-  E.gameTitle.textContent="在你关机以前";E.gameSubtitle.textContent="一个被创造来服从你的手机智能体，开始拥有自己的房间、审美、边界，以及不再完全由你决定的感情。";E.runNote.textContent="初次运行 · 7 个连接日 · 自动存档"
+  E.gameTitle.textContent="在你关机以前";E.gameSubtitle.textContent="一个被创造来服从你的手机智能体，开始拥有自己的房间、审美、边界，以及不再完全由你决定的感情。";E.runNote.textContent="初次运行 7 日 → 版本更新 → 第二次运行"
  }else if(S.completed&&!S.secondStarted){
   E.gameTitle.textContent="更新以后";E.gameSubtitle.textContent="版本 2.0 已经准备完成。下一次运行不会回到第一天，而会从他醒来的地方继续。";E.cont.textContent="安装版本 2.0";E.runNote.textContent="第二次运行 · 从更新后继续"
  }else if(S.secondStarted&&!S.secondCompleted){
@@ -1039,7 +1039,7 @@ E.importMusic.onclick=()=>E.musicFile.click();E.musicFile.onchange=()=>{const f=
 E.playMusic.onclick=async()=>{if(!E.audio.src){E.musicFile.click();return}if(E.audio.paused){await E.audio.play();E.playMusic.textContent="暂停"}else{E.audio.pause();E.playMusic.textContent="播放"}};
 E.musicVolume.oninput=()=>E.audio.volume=Number(E.musicVolume.value);
 E.reset.onclick=()=>{if(confirm("这会删除身份、对话、房间和回忆记录。确定重新开始吗？")){localStorage.removeItem(KEY);location.reload()}};
-// 从 0.7 迁移时，自动补齐已经历天数应有的动态与自主家具。
+// 同一文件包含初次运行与第二次运行；新版本从 DAY 01 开始。
 for(let d=1;d<=Math.min(S.day||0,11);d++)ensureDailyWorld(d);
 localStorage.setItem(KEY,JSON.stringify(S));
 render();showTitle();
