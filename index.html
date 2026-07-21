@@ -415,13 +415,164 @@ html,body{height:100%;overflow:hidden!important}
 .activity-chevron{font-size:22px;color:#6f8297}
 .activity-open-card:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #d1dbe4!important}
 
+
+/* ===== 1.1 pink interactive furniture room ===== */
+.pixel-room-page{
+  background:#f5e7ed!important;
+}
+.pixel-room-shell{
+  background:#bc8298!important;
+  border:3px solid #8d5f73!important;
+  box-shadow:0 0 0 4px #fff8fb,0 0 0 7px #dfb3c2,0 10px 20px rgba(113,67,87,.14)!important;
+  padding:7px!important;
+}
+.pixel-room-hud,.pixel-room-status{
+  background:#fff8fb!important;
+  border:3px solid #c98ea3!important;
+  color:#6c4556!important;
+}
+.pixel-room-label{color:#b36f8c!important}
+.pixel-room-scene{
+  background:#f7dce5!important;
+  border:3px solid #8d5f73!important;
+}
+.pixel-room-status{font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important}
+.pixel-char{
+  left:49%!important;
+  top:52%!important;
+  z-index:26!important;
+}
+.pixel-char-hair{background:#292735!important;box-shadow:-4px 4px 0 #292735,4px 4px 0 #292735,0 -4px 0 #292735!important}
+.pixel-char-face{background:#e6c8bb!important;box-shadow:0 0 0 3px #b38a7c!important}
+.pixel-char-body{background:#fff8fb!important;box-shadow:0 0 0 3px #c58da1!important}
+.pixel-char-leg{background:#55505e!important}
+.pixel-thought{
+  background:#fffafb!important;
+  color:#694657!important;
+  border:3px solid #a66f84!important;
+  box-shadow:4px 4px 0 #e5bdca!important;
+}
+.pixel-decor-layer{position:absolute;inset:0;pointer-events:none;z-index:5}
+.furniture{
+  position:absolute;
+  display:block;
+  border:0;
+  padding:0;
+  margin:0;
+  background:transparent;
+  pointer-events:auto;
+  image-rendering:pixelated;
+  z-index:10;
+}
+.furniture:active{filter:brightness(.94);transform:translateY(1px)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* window area */
+.furniture-curtains{left:236px;top:15px;width:111px;height:112px;z-index:12}
+.furniture-curtains:before,.furniture-curtains:after{
+  content:"";position:absolute;top:0;width:31px;height:105px;
+  background:repeating-linear-gradient(90deg,#f7b9cb 0 5px,#ffdce6 5px 9px);
+  border:3px solid #c47f98;
+}
+.furniture-curtains:before{left:0;clip-path:polygon(0 0,100% 0,78% 55%,100% 100%,0 100%,20% 55%)}
+.furniture-curtains:after{right:0;clip-path:polygon(0 0,100% 0,80% 55%,100% 100%,0 100%,22% 55%)}
+.furniture-curtains{background:linear-gradient(#d884a2,#d884a2) 0 2px/100% 5px no-repeat}
+.furniture-curtains span{display:none}
+
+/* desk zone */
+.furniture-computer{left:75px;top:111px;width:63px;height:43px;z-index:16;background:#443a4b;border:3px solid #7b6070}
+.furniture-computer:before{content:"♥";position:absolute;inset:5px;background:#231f28;color:#ff9dbb;font:700 20px/28px monospace;text-align:center}
+.furniture-computer:after{content:"";position:absolute;left:27px;bottom:-12px;width:10px;height:12px;background:#7b6070;box-shadow:-13px 10px 0 10px #efd3dd}
+.furniture-chair{left:84px;top:171px;width:48px;height:64px;z-index:18}
+.furniture-chair:before{content:"";position:absolute;left:5px;top:0;width:39px;height:38px;background:#efa9bf;border:3px solid #b8718d;border-radius:8px 8px 4px 4px}
+.furniture-chair:after{content:"⋈";position:absolute;left:10px;top:1px;width:29px;color:#fff4f8;font:700 24px/32px serif;text-align:center;text-shadow:0 2px #b8718d}
+.furniture-chair{background:linear-gradient(#c8889e,#c8889e) 21px 37px/7px 19px no-repeat}
+.furniture-shelf{left:5px;top:73px;width:58px;height:116px;z-index:13;background:#fff8fa;border:3px solid #b7798c}
+.furniture-shelf:before{content:"";position:absolute;left:5px;right:5px;top:31px;height:3px;background:#d69aae;box-shadow:0 35px #d69aae,0 70px #d69aae}
+.furniture-books{left:12px;top:83px;width:42px;height:22px;z-index:15;background:linear-gradient(90deg,#df879f 0 8px,#f3bdcb 8px 16px,#b58aac 16px 24px,#f1d08e 24px 32px,#d998b0 32px 42px);border-bottom:3px solid #aa6c82}
+.furniture-teacup{left:129px;top:137px;width:15px;height:12px;z-index:20;background:#fff;border:3px solid #b98297;border-radius:0 0 5px 5px}
+.furniture-teacup:after{content:"";position:absolute;right:-9px;top:1px;width:7px;height:7px;border:3px solid #b98297}
+.furniture-tinyplant{left:35px;top:116px;width:18px;height:13px;z-index:17;background:#f2b7c8;border:3px solid #aa7085}
+.furniture-tinyplant:before{content:"";position:absolute;left:5px;top:-18px;width:6px;height:18px;background:#66936b;box-shadow:-7px 5px 0 #7ba97b,7px 2px 0 #5f8b66}
+
+/* wall objects */
+.furniture-heartlight{left:174px;top:26px;width:41px;height:34px;z-index:15}
+.furniture-heartlight:before{content:"♥";position:absolute;inset:0;color:#ff96b4;font:700 40px/34px serif;text-align:center;text-shadow:0 0 0 #fff,2px 0 #fff,-2px 0 #fff,0 2px #fff,0 -2px #fff,3px 3px #bc718d}
+.furniture-mirror{left:185px;top:70px;width:49px;height:57px;z-index:14;border:4px solid #fff8fb;border-radius:50%;background:linear-gradient(135deg,#e7edf5,#b9c7d8);box-shadow:0 0 0 3px #ca8da4}
+.furniture-mirror:before{content:"⋈";position:absolute;left:8px;top:-19px;width:28px;color:#e989aa;font:700 27px/24px serif}
+.furniture-poster{left:116px;top:37px;width:45px;height:48px;z-index:13;background:#fff8fa;border:3px solid #b77d92;box-shadow:inset 0 0 0 4px #f4c8d5}
+.furniture-poster:before{content:"♥";position:absolute;inset:5px;color:#e884a4;font:700 28px/34px serif;text-align:center}
+.furniture-bow{left:220px;top:122px;width:34px;height:25px;z-index:12}
+.furniture-bow:before{content:"⋈";position:absolute;inset:0;color:#df83a2;font:700 34px/23px serif}
+.furniture-clock{left:218px;top:130px;width:20px;height:20px;z-index:16;background:#fff;border:3px solid #bd8197;border-radius:50%}
+.furniture-clock:before{content:"";position:absolute;left:8px;top:3px;width:2px;height:7px;background:#895b6d}
+.furniture-clock:after{content:"";position:absolute;left:8px;top:8px;width:6px;height:2px;background:#895b6d}
+
+/* bed area */
+.furniture-lamp{left:192px;top:145px;width:22px;height:32px;z-index:19}
+.furniture-lamp:before{content:"";position:absolute;left:1px;top:0;width:20px;height:16px;background:#ffe7aa;border:3px solid #c78798;clip-path:polygon(20% 0,80% 0,100% 100%,0 100%)}
+.furniture-lamp:after{content:"";position:absolute;left:9px;top:16px;width:4px;height:14px;background:#b7798c;box-shadow:-5px 13px 0 5px #fff6f8}
+.furniture-plush{left:264px;top:166px;width:33px;height:35px;z-index:22;background:#fff9f5;border:3px solid #c78d9d;border-radius:45%}
+.furniture-plush:before{content:"";position:absolute;left:2px;top:-10px;width:9px;height:15px;background:#fff9f5;border:3px solid #c78d9d;border-radius:50%;box-shadow:16px 0 0 -3px #fff9f5,16px 0 0 0 #c78d9d}
+.furniture-plush:after{content:"••";position:absolute;left:8px;top:8px;color:#6a5360;font:700 10px monospace;letter-spacing:4px}
+.furniture-cushion{left:296px;top:176px;width:37px;height:30px;z-index:21}
+.furniture-cushion:before{content:"♥";position:absolute;inset:0;color:#ef91ae;font:700 39px/30px serif;text-shadow:2px 2px #b96f8b}
+.furniture-blanket{left:245px;top:205px;width:93px;height:23px;z-index:20;background:#f7b9cb;border:3px solid #c47f98}
+.furniture-bunnylamp{left:319px;top:225px;width:24px;height:28px;z-index:18;background:#fff7f7;border:3px solid #c78d9d;border-radius:45%}
+.furniture-bunnylamp:before{content:"";position:absolute;left:2px;top:-10px;width:7px;height:14px;background:#fff7f7;border:3px solid #c78d9d;border-radius:50%;box-shadow:12px 0 0 -3px #fff7f7,12px 0 0 0 #c78d9d}
+
+/* floor and lounge */
+.furniture-rug{left:66px;top:225px;width:226px;height:66px;z-index:7;background:#f4bfd0;border:4px solid #fff7fa;box-shadow:0 0 0 3px #c98aa1}
+.furniture-rug:before{content:"";position:absolute;left:12px;right:12px;top:11px;bottom:11px;border:3px dashed #fff5f8}
+.furniture-rug:after{content:"⋈";position:absolute;left:92px;top:10px;color:#e68ba9;font:700 40px/35px serif}
+.furniture-sofa{left:14px;top:205px;width:91px;height:58px;z-index:17;background:#eca9bf;border:4px solid #b8738e;border-radius:14px 14px 5px 5px;box-shadow:inset 0 15px #f6c6d4}
+.furniture-sofa:before{content:"";position:absolute;left:8px;top:15px;width:31px;height:27px;background:#f7cfda;border:3px solid #c48299;border-radius:8px;box-shadow:39px 0 0 -3px #f4becf,39px 0 0 0 #c48299}
+.furniture-sofa:after{content:"";position:absolute;left:5px;bottom:-13px;width:8px;height:13px;background:#9b6378;box-shadow:69px 0 #9b6378}
+.furniture-ottoman{left:274px;top:241px;width:49px;height:39px;z-index:18;background:#e99db6;border:4px solid #b8738e;border-radius:50%}
+.furniture-ottoman:after{content:"⋈";position:absolute;left:9px;top:4px;color:#fff2f6;font:700 30px/25px serif}
+.furniture-plant{left:324px;top:190px;width:25px;height:21px;z-index:17;background:#fff8fa;border:3px solid #b7798c}
+.furniture-plant:before{content:"";position:absolute;left:8px;top:-30px;width:8px;height:31px;background:#5d8d62;box-shadow:-11px 7px 0 #78a878,11px 4px 0 #6d9c70,-7px -4px 0 #88b488,8px -7px 0 #4f8058}
+.furniture-flowers{left:157px;top:205px;width:29px;height:29px;z-index:23;background:#fff8fa;border:3px solid #b7798c}
+.furniture-flowers:before{content:"✿✿";position:absolute;left:-8px;top:-23px;width:45px;color:#e8769c;font:700 24px/20px serif;letter-spacing:-6px;text-shadow:11px 4px #f2a2ba,-8px 6px #d95f8a}
+.furniture-storage{left:304px;top:216px;width:43px;height:27px;z-index:16;background:#e9a6bc;border:3px solid #b8738e}
+.furniture-storage:before{content:"⋈";position:absolute;left:8px;top:-4px;color:#fff3f7;font:700 27px/26px serif}
+.furniture-musicbox{left:180px;top:246px;width:27px;height:20px;z-index:24;background:#f2a8bf;border:3px solid #a96b82}
+.furniture-musicbox:before{content:"♥";position:absolute;left:4px;top:-4px;color:#fff6f8;font:700 18px/20px serif}
+
+/* char-created items, still independent furniture */
+.furniture-star{left:211px;top:104px;width:11px;height:11px;z-index:18;background:#ffd968;box-shadow:11px 0 #ffd968,5px -10px #ffd968,5px 10px #ffd968}
+.furniture-note,.furniture-nameplate,.furniture-oldname{left:91px;top:92px;width:24px;height:18px;z-index:18;background:#fff0a5;border:3px solid #b88e46}
+.furniture-nameplate{left:147px;top:92px;background:#fff8fa;border-color:#b77f94}
+.furniture-book{left:23px;top:151px;width:28px;height:10px;z-index:18;background:#bd8eaf;border:3px solid #805f79}
+.furniture-photo{left:199px;top:82px;width:25px;height:29px;z-index:17;background:#fff;border:4px solid #c5889f}
+.furniture-photo:after{content:"";position:absolute;left:4px;top:5px;width:13px;height:12px;background:#efb8c9}
+.furniture-oldname{left:120px;top:94px;background:#e6b5b2;border-color:#9d6f70}
+.furniture-cupmark{left:309px;top:91px;width:14px;height:12px;z-index:17;background:#fff;border:3px solid #b77f94}
+.furniture-cupmark:after{content:"";position:absolute;right:-8px;top:0;width:7px;height:7px;border:3px solid #b77f94}
+.furniture-archive{left:17px;top:262px;width:34px;height:24px;z-index:18;background:#d99caf;border:4px solid #966579}
+.furniture-archive:before{content:"";position:absolute;left:9px;top:8px;width:12px;height:4px;background:#fff2b6}
+
+/* make furniture selector easier to scan */
+.decor-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+.decor-option{
+  min-height:92px!important;
+  border-radius:16px!important;
+  background:#fff8fb!important;
+  border-color:#e8c4d0!important;
+}
+.decor-option.on{
+  background:#f9dce7!important;
+  border-color:#cb88a2!important;
+}
+.decor-option b{color:#b86f8c!important}
+
 </style>
 </head>
 <body data-mood="neutral">
 <div id="app">
 
 <section id="title" class="title">
-  <div class="statusline"><span>PRIVATE BETA · 1.0</span><span id="clock">00:00</span></div>
+  <div class="statusline"><span>PRIVATE BETA · 1.1</span><span id="clock">00:00</span></div>
   <div>
     <div class="eyebrow">A QUIET ROMANCE</div>
     <h1 id="gameTitle" class="game-title">在你关机以前</h1>
@@ -472,87 +623,72 @@ html,body{height:100%;overflow:hidden!important}
     <div class="pixel-room-shell">
       <div class="pixel-room-hud">
         <span id="roomDay">DAY 00</span>
-        <span class="pixel-room-label">PIXEL ROOM</span>
+        <span class="pixel-room-label">PINK ROOM</span>
         <span id="roomWeather">☂︎ 小雨</span>
       </div>
 
       <div class="pixel-room-scene">
-        <svg class="pixel-room-base" viewBox="0 0 360 300" role="img" aria-label="像素风手机房间" shape-rendering="crispEdges">
-          <!-- wall and floor -->
-          <rect x="0" y="0" width="360" height="188" fill="#c7d3df"/>
-          <rect x="0" y="188" width="360" height="112" fill="#9a7e69"/>
-          <rect x="0" y="184" width="360" height="8" fill="#6d5a4d"/>
-          <path d="M0 210H360M0 238H360M0 266H360" stroke="#856b58" stroke-width="4"/>
-          <path d="M40 188V300M92 188V300M144 188V300M196 188V300M248 188V300M300 188V300" stroke="#ad927b" stroke-width="3"/>
+        <svg class="pixel-room-base" viewBox="0 0 360 300" role="img" aria-label="粉白色像素房间固定结构" shape-rendering="crispEdges">
+          <!-- architecture -->
+          <rect x="0" y="0" width="360" height="190" fill="#f7dce5"/>
+          <rect x="0" y="0" width="360" height="10" fill="#e8bcca"/>
+          <rect x="0" y="180" width="360" height="12" fill="#fff7f8"/>
+          <rect x="0" y="192" width="360" height="108" fill="#c9977c"/>
+          <path d="M0 216H360M0 244H360M0 272H360" stroke="#b9856c" stroke-width="3"/>
+          <path d="M38 192V300M91 192V300M144 192V300M197 192V300M250 192V300M303 192V300" stroke="#d5aa91" stroke-width="2"/>
 
-          <!-- left door -->
-          <rect x="12" y="62" width="62" height="126" fill="#816b5d" stroke="#56483e" stroke-width="6"/>
-          <rect x="23" y="75" width="40" height="99" fill="#a08772"/>
-          <rect x="55" y="123" width="7" height="7" fill="#e5c56b"/>
+          <!-- subtle wall panels -->
+          <rect x="7" y="18" width="346" height="156" fill="none" stroke="#efc8d4" stroke-width="3"/>
+          <path d="M8 126H352" stroke="#f4d4dd" stroke-width="2"/>
+
+          <!-- door -->
+          <rect x="12" y="61" width="55" height="128" fill="#fff7f8" stroke="#bd8294" stroke-width="4"/>
+          <rect x="20" y="70" width="39" height="107" fill="#efc9d5"/>
+          <rect x="50" y="124" width="6" height="6" fill="#d5a950"/>
 
           <!-- window -->
-          <rect x="244" y="23" width="92" height="84" fill="#53677d" stroke="#415267" stroke-width="7"/>
-          <rect x="253" y="32" width="74" height="66" fill="#86a8c7"/>
-          <rect x="288" y="32" width="5" height="66" fill="#dbe8f2"/>
-          <rect x="253" y="63" width="74" height="5" fill="#dbe8f2"/>
-          <rect x="307" y="40" width="11" height="11" fill="#f2e6a8"/>
-          <rect x="263" y="78" width="10" height="4" fill="#dce8f1"/>
-          <rect x="277" y="84" width="13" height="4" fill="#dce8f1"/>
+          <rect x="248" y="24" width="91" height="91" fill="#fff8fa" stroke="#b77f94" stroke-width="4"/>
+          <rect x="255" y="31" width="77" height="77" fill="#9eb5dc"/>
+          <rect x="292" y="31" width="4" height="77" fill="#fff8fa"/>
+          <rect x="255" y="67" width="77" height="4" fill="#fff8fa"/>
+          <rect x="312" y="41" width="11" height="11" fill="#fff0a8"/>
+          <rect x="263" y="87" width="16" height="3" fill="#dfe9f5"/>
+          <rect x="284" y="94" width="19" height="3" fill="#dfe9f5"/>
 
-          <!-- curtains -->
-          <rect x="234" y="18" width="11" height="96" fill="#7185a0"/>
-          <rect x="336" y="18" width="11" height="96" fill="#7185a0"/>
-          <rect x="229" y="17" width="123" height="7" fill="#4f6075"/>
+          <!-- fixed computer desk -->
+          <rect x="20" y="152" width="136" height="14" fill="#fff7f8" stroke="#b7798c" stroke-width="4"/>
+          <rect x="27" y="166" width="9" height="68" fill="#dca5b5"/>
+          <rect x="141" y="166" width="9" height="68" fill="#dca5b5"/>
+          <rect x="37" y="166" width="103" height="16" fill="#f0c8d3"/>
 
-          <!-- desk -->
-          <rect x="82" y="143" width="126" height="14" fill="#725642" stroke="#4d3a2e" stroke-width="5"/>
-          <rect x="91" y="157" width="10" height="65" fill="#5b4536"/>
-          <rect x="190" y="157" width="10" height="65" fill="#5b4536"/>
-          <rect x="116" y="104" width="59" height="39" fill="#34465c" stroke="#233246" stroke-width="5"/>
-          <rect x="123" y="111" width="45" height="25" fill="#a9c6db"/>
-          <rect x="140" y="143" width="11" height="12" fill="#334358"/>
-          <rect x="128" y="153" width="36" height="5" fill="#334358"/>
-          <rect x="182" y="122" width="14" height="21" fill="#d3b66f"/>
-          <rect x="180" y="118" width="18" height="5" fill="#f0d890"/>
+          <!-- fixed bedside table -->
+          <rect x="180" y="174" width="47" height="47" fill="#fff8fa" stroke="#b7798c" stroke-width="4"/>
+          <rect x="186" y="181" width="35" height="13" fill="#efc8d3"/>
+          <rect x="186" y="199" width="35" height="13" fill="#efc8d3"/>
+          <rect x="201" y="185" width="5" height="3" fill="#c99d43"/>
+          <rect x="201" y="203" width="5" height="3" fill="#c99d43"/>
+          <rect x="184" y="221" width="7" height="13" fill="#b7798c"/>
+          <rect x="216" y="221" width="7" height="13" fill="#b7798c"/>
 
-          <!-- chair -->
-          <rect x="118" y="174" width="47" height="10" fill="#52677f"/>
-          <rect x="125" y="184" width="8" height="38" fill="#405269"/>
-          <rect x="152" y="184" width="8" height="38" fill="#405269"/>
-          <rect x="121" y="151" width="42" height="27" fill="#647c96" stroke="#405269" stroke-width="5"/>
+          <!-- fixed bed -->
+          <rect x="225" y="155" width="124" height="76" fill="#fffafb" stroke="#b7798c" stroke-width="4"/>
+          <rect x="225" y="187" width="124" height="44" fill="#efafc3"/>
+          <rect x="234" y="164" width="44" height="20" fill="#ffffff" stroke="#e7bdc8" stroke-width="3"/>
+          <rect x="282" y="164" width="57" height="20" fill="#f8d8e2" stroke="#e7bdc8" stroke-width="3"/>
+          <path d="M225 211H349" stroke="#fff7f9" stroke-width="5"/>
+          <rect x="225" y="231" width="9" height="22" fill="#b7798c"/>
+          <rect x="340" y="231" width="9" height="22" fill="#b7798c"/>
 
-          <!-- shelf -->
-          <rect x="91" y="36" width="112" height="10" fill="#725642" stroke="#4d3a2e" stroke-width="4"/>
-          <rect x="91" y="76" width="112" height="10" fill="#725642" stroke="#4d3a2e" stroke-width="4"/>
-          <rect x="97" y="46" width="12" height="27" fill="#b46e68"/>
-          <rect x="112" y="51" width="10" height="22" fill="#6d89a6"/>
-          <rect x="125" y="43" width="14" height="30" fill="#d0aa62"/>
-          <rect x="145" y="53" width="22" height="20" fill="#7ca07c"/>
-          <rect x="175" y="48" width="18" height="25" fill="#9a7ea2"/>
+          <!-- fixed coffee table -->
+          <rect x="130" y="240" width="104" height="38" fill="#fffaf9" stroke="#b7798c" stroke-width="4"/>
+          <rect x="141" y="278" width="8" height="18" fill="#cf93a6"/>
+          <rect x="215" y="278" width="8" height="18" fill="#cf93a6"/>
+          <path d="M146 253H218" stroke="#edc7d2" stroke-width="3"/>
 
-          <!-- bed -->
-          <rect x="225" y="169" width="116" height="60" fill="#e8edf3" stroke="#596b7d" stroke-width="6"/>
-          <rect x="225" y="197" width="116" height="32" fill="#7188a4"/>
-          <rect x="235" y="178" width="41" height="17" fill="#ffffff" stroke="#b8c5d2" stroke-width="4"/>
-          <rect x="330" y="169" width="11" height="77" fill="#596b7d"/>
-          <rect x="225" y="229" width="10" height="25" fill="#596b7d"/>
-          <rect x="331" y="229" width="10" height="25" fill="#596b7d"/>
-
-          <!-- rug -->
-          <rect x="98" y="238" width="147" height="45" fill="#a9b7c7" stroke="#596b7d" stroke-width="6"/>
-          <rect x="111" y="249" width="121" height="23" fill="#c7d3df"/>
-          <path d="M111 260H232M150 249V272M192 249V272" stroke="#8fa1b5" stroke-width="4"/>
-
-          <!-- wall frames -->
-          <rect x="89" y="92" width="34" height="28" fill="#f0eadf" stroke="#6f8092" stroke-width="5"/>
-          <rect x="184" y="92" width="29" height="35" fill="#f0eadf" stroke="#6f8092" stroke-width="5"/>
-          <rect x="96" y="99" width="20" height="14" fill="#c0ad96"/>
-          <rect x="190" y="99" width="17" height="22" fill="#9eb2c5"/>
-
-          <!-- tiny floor pixels -->
-          <rect x="28" y="246" width="8" height="8" fill="#715b4b"/>
-          <rect x="56" y="216" width="7" height="7" fill="#b6977f"/>
-          <rect x="284" y="266" width="8" height="8" fill="#715b4b"/>
+          <!-- small fixed side table -->
+          <rect x="302" y="236" width="48" height="38" fill="#fff8fa" stroke="#b7798c" stroke-width="4"/>
+          <rect x="308" y="274" width="7" height="20" fill="#cf93a6"/>
+          <rect x="338" y="274" width="7" height="20" fill="#cf93a6"/>
         </svg>
 
         <button id="chibiBtn" class="pixel-char" aria-label="点击查看他的心声">
@@ -652,7 +788,7 @@ html,body{height:100%;overflow:hidden!important}
   <div class="setting-label">版本状态</div>
   <div class="setting-card"><div class="setting-row"><div><div id="versionTitle">初次运行进行中</div><div id="versionDesc" class="setting-desc">第二次运行会从系统更新后继续，目前只保留入口。</div></div></div></div>
   <button id="resetBtn" class="danger">删除本机记录并重新开始</button>
-  <div class="version">BEFORE POWER OFF · PROTOTYPE 1.0</div>
+  <div class="version">BEFORE POWER OFF · PROTOTYPE 1.1</div>
 </section>
 
 <section id="relationSheet" class="sheet hidden">
@@ -743,25 +879,37 @@ const apps={
  weather:["天气","☂︎"],calendar:["日历","▦"],notes:["备忘录","▤"],gallery:["相册","▧"],music:["音乐记录","♫"],deleted:["最近删除","⌫"]
 };
 const decorCatalog={
- lamp:{icon:"💡",name:"暖色台灯",desc:"你放下的灯。开心时他会主动打开。",cls:"decor-lamp"},
- plant:{icon:"🌿",name:"小盆栽",desc:"让房间看起来不那么像系统空间。",cls:"decor-plant"},
- moon:{icon:"🌙",name:"月亮灯",desc:"适合在夜里陪伴一个不会睡觉的人。",cls:"decor-moon"},
- cushion:{icon:"🛋️",name:"软垫",desc:"他不需要坐，但承认看起来很舒服。",cls:"decor-cushion"},
- musicbox:{icon:"🎵",name:"音乐盒",desc:"导入音乐后，他可能会自己留下。",cls:"decor-musicbox"},
- rug:{icon:"🟫",name:"软绒地毯",desc:"让系统房间第一次有了温度。",cls:"decor-rug"},
- poster:{icon:"🖼️",name:"极简挂画",desc:"玩家选择的墙面装饰。",cls:"decor-poster"},
- teacup:{icon:"☕",name:"白色杯子",desc:"他不需要喝水，却喜欢它像真实生活。",cls:"decor-cup"},
- books:{icon:"📚",name:"一摞书",desc:"可以看见他最近在理解什么。",cls:"decor-books"},
- blanket:{icon:"▰",name:"灰蓝毛毯",desc:"他认为这是“休息”的视觉符号。",cls:"decor-blanket"},
- clock:{icon:"🕰️",name:"小钟",desc:"等待以后，他开始在意时间。",cls:"decor-clock"},
- star:{icon:"⭐",name:"纸星星",desc:"这是他自己折出来的，不属于商店。",cls:"decor-star",char:true},
- note:{icon:"📝",name:"名字便签",desc:"写着你第一次给他的名字。",cls:"decor-note",char:true},
- nameplate:{icon:"▰",name:"空白名牌",desc:"初始化前留下的默认物品。",cls:"decor-note",char:true},
- book:{icon:"📖",name:"边界笔记",desc:"他在理解“允许进入”与“愿意被看见”的区别。",cls:"decor-book",char:true},
- photo:{icon:"▧",name:"空白相框",desc:"他希望未来能拥有一张共同照片。",cls:"decor-photo",char:true},
- oldname:{icon:"⌁",name:"旧名字牌",desc:"被更改以后，他仍然没有把旧名字删掉。",cls:"decor-oldname",char:true},
- cupmark:{icon:"☕",name:"窗边杯子",desc:"第二次运行中，他用位置判断时间线是否被覆盖。",cls:"decor-cupmark",char:true},
- archive:{icon:"▣",name:"记忆匣",desc:"更新以后，房间替他保留了无法归类的过去。",cls:"decor-archive",char:true}
+ curtains:{icon:"▥",name:"蝴蝶结窗帘",desc:"粉白渐层窗帘，阳光会从两层薄纱之间漏进来。"},
+ computer:{icon:"▣",name:"心形桌面终端",desc:"放在书桌上的小型终端，屏幕待机时显示一颗像素心。"},
+ chair:{icon:"▰",name:"粉色转椅",desc:"带蝴蝶结靠背的转椅，属于书桌区域。"},
+ shelf:{icon:"▤",name:"白色书架",desc:"书本、盆栽与小摆件可以错落放在每一层。"},
+ heartlight:{icon:"♡",name:"心形壁灯",desc:"会在夜晚亮起的暖粉色壁灯。"},
+ mirror:{icon:"◇",name:"蝴蝶结镜子",desc:"白色蕾丝边框的墙镜，顶部有一个小蝴蝶结。"},
+ rug:{icon:"▭",name:"蕾丝地毯",desc:"粉白渐层的大地毯，让房间不再像冷冰冰的系统空间。"},
+ sofa:{icon:"▱",name:"粉色小沙发",desc:"双人尺寸的小沙发，配有两个软垫。"},
+ ottoman:{icon:"○",name:"圆形坐垫",desc:"放在茶几旁的圆形软垫，上面可以摆一只小玩偶。"},
+ plant:{icon:"♧",name:"白盆绿植",desc:"他不需要氧气，但喜欢植物缓慢生长的样子。"},
+ flowers:{icon:"✿",name:"玫瑰花束",desc:"放在茶几上的花束，颜色会让房间显得更柔软。"},
+ plush:{icon:"♙",name:"白兔玩偶",desc:"最初只是装饰，后来被他挪到了床边。"},
+ lamp:{icon:"♢",name:"蕾丝台灯",desc:"暖色灯罩的小台灯，适合放在床头柜上。"},
+ cushion:{icon:"♥",name:"心形抱枕",desc:"粉色心形抱枕，与白色床品形成对比。"},
+ books:{icon:"▥",name:"粉色书本",desc:"一摞颜色深浅不同的书，可以放进书架。"},
+ storage:{icon:"▣",name:"蝴蝶结收纳箱",desc:"床尾的小收纳箱，里面保存尚未分类的物品。"},
+ musicbox:{icon:"♫",name:"心形音乐盒",desc:"摆在茶几上，播放你导入过的音乐。"},
+ poster:{icon:"▧",name:"像素爱心挂画",desc:"墙上的粉色像素爱心，像一段被保存下来的信号。"},
+ teacup:{icon:"□",name:"白色杯子",desc:"放在书桌边缘的杯子，他并不需要喝水。"},
+ clock:{icon:"◷",name:"粉白小钟",desc:"等待以后，他开始在意每一分钟。"},
+ bow:{icon:"⋈",name:"墙面蝴蝶结",desc:"一枚纯装饰的粉色蝴蝶结，让墙面不那么空。"},
+ tinyplant:{icon:"♧",name:"桌面小盆栽",desc:"适合摆在书桌或床头柜上的迷你植物。"},
+ bunnylamp:{icon:"♧",name:"兔子夜灯",desc:"一盏很小的白兔夜灯，亮起时不会刺眼。"},
+ star:{icon:"★",name:"纸星星",desc:"这是他自己折出来的，不属于商店。",char:true},
+ note:{icon:"▱",name:"名字便签",desc:"写着你第一次给他的名字。",char:true},
+ nameplate:{icon:"▰",name:"空白名牌",desc:"初始化前留下的默认物品。",char:true},
+ book:{icon:"▤",name:"边界笔记",desc:"他在理解“允许进入”与“愿意被看见”的区别。",char:true},
+ photo:{icon:"▧",name:"空白相框",desc:"他希望未来能拥有一张共同照片。",char:true},
+ oldname:{icon:"⌁",name:"旧名字牌",desc:"被更改以后，他仍然没有把旧名字删掉。",char:true},
+ cupmark:{icon:"□",name:"窗边杯子",desc:"第二次运行中，他用位置判断时间线是否被覆盖。",char:true},
+ archive:{icon:"▣",name:"记忆匣",desc:"更新以后，房间替他保留了无法归类的过去。",char:true}
 };
 
 function setMood(mood,detail=""){S.mood=mood;S.moodDetail=detail||moodMap[mood][1];document.body.dataset.mood=mood}
@@ -807,8 +955,12 @@ function render(){
  renderRoom();renderActivities();renderApps();renderMessages();renderChoices();renderPosts();renderMemories();renderSettings();renderRelation();renderDecor()
 }
 function renderRoom(){
- const all=[...new Set([...(S.room.decor||[]),...(S.room.charDecor||[])])];
- E.decorLayer.innerHTML=all.filter(id=>decorCatalog[id]).map(id=>`<span class="pixel-object pixel-${id}" title="${esc(decorCatalog[id].name)}"></span>`).join("")
+ const player=new Set(S.room.decor||[]),char=new Set(S.room.charDecor||[]);
+ const all=[...new Set([...player,...char])];
+ E.decorLayer.innerHTML=all.filter(id=>decorCatalog[id]).map(id=>{
+  const source=char.has(id)&&!player.has(id)?"他添置的":"你放置的";
+  return `<button type="button" class="furniture furniture-${id}" data-furniture="${id}" aria-label="${esc(decorCatalog[id].name)}" title="${esc(decorCatalog[id].name)}"><span class="sr-only">${source}</span></button>`
+ }).join("")
 }
 function renderActivities(){
  if(!S.activities.length){E.activity.innerHTML='<div class="empty">今天还没有留下活动轨迹。</div>';return}
@@ -942,6 +1094,18 @@ function ensureDailyWorld(day){
 function toggleDecor(id){S.room.decor=S.room.decor.includes(id)?S.room.decor.filter(x=>x!==id):[...S.room.decor,id];persist()}
 function showDay(day,meta,recap,whisper,callback){
  E.dayNum.textContent="CONNECTION DAY";E.dayTitle.textContent=`DAY ${String(day).padStart(2,"0")}`;E.dayMeta.textContent=meta;E.dayRecap.innerHTML=recap.map(x=>`<div class="recap-line">${esc(x)}</div>`).join("");E.dayWhisper.textContent=whisper;dayCallback=callback;E.dayOverlay.classList.remove("hidden");document.body.style.overflow="hidden"
+}
+function openFurniture(id){
+ const item=decorCatalog[id];if(!item)return;
+ const byChar=(S.room.charDecor||[]).includes(id)&&!(S.room.decor||[]).includes(id);
+ currentDetailPermission=null;
+ E.detailHeader.textContent="家具档案";
+ E.detailApp.textContent=byChar?"他主动添置":"玩家布置";
+ E.detailTitle.textContent=item.name;
+ E.detailBody.textContent=item.desc;
+ E.detailThought.innerHTML=`<small>房间记录</small>${byChar?"这件东西的位置由他决定。":"你可以在“房间布置”中随时收起或重新放置。"}`
+ E.detailPermission.classList.add("hidden");
+ E.detailSheet.classList.remove("hidden")
 }
 function openActivity(id){const a=S.activities.find(x=>x.id===id);if(!a)return;currentDetailPermission=null;E.detailHeader.textContent="活动详情";E.detailApp.textContent=a.app;E.detailTitle.textContent=a.title;E.detailBody.textContent=a.body||a.subtitle;E.detailThought.innerHTML=`<small>他没有直接告诉你的想法</small>${esc(a.thought||"没有留下可读取的心声。")}`;E.detailPermission.classList.add("hidden");E.detailSheet.classList.remove("hidden")}
 function openApp(key){
@@ -1313,6 +1477,10 @@ E.activity.addEventListener("click",e=>{
  const card=e.target.closest("[data-activity]");
  if(card)openActivity(card.dataset.activity)
 });
+E.decorLayer.addEventListener("click",e=>{
+ const item=e.target.closest("[data-furniture]");
+ if(item)openFurniture(item.dataset.furniture)
+});
 E.settings.onclick=()=>{renderSettings();E.settingsSheet.classList.remove("hidden")};E.closeSettings.onclick=()=>E.settingsSheet.classList.add("hidden");
 E.saveCharName.onclick=handleRename;
 E.relation.onclick=openRelation;E.relationRoom.onclick=openRelation;E.closeRelation.onclick=()=>E.relationSheet.classList.add("hidden");
@@ -1324,6 +1492,11 @@ E.playMusic.onclick=async()=>{if(!E.audio.src){E.musicFile.click();return}if(E.a
 E.musicVolume.oninput=()=>E.audio.volume=Number(E.musicVolume.value);
 E.reset.onclick=()=>{if(confirm("这会删除身份、对话、房间和回忆记录。确定重新开始吗？")){localStorage.removeItem(KEY);location.reload()}};
 // 同一文件包含初次运行与第二次运行；新版本从 DAY 01 开始。
+if(!S.flags.pinkFurnitureV11){
+ const starter=["curtains","computer","chair","shelf","heartlight","mirror","rug","sofa","ottoman","plant","flowers","plush","lamp","cushion","books","storage","musicbox","poster","tinyplant","bunnylamp"];
+ S.room.decor=[...new Set([...(S.room.decor||[]),...starter])];
+ S.flags.pinkFurnitureV11=true
+}
 for(let d=1;d<=Math.min(S.day||0,11);d++)ensureDailyWorld(d);
 localStorage.setItem(KEY,JSON.stringify(S));
 render();showTitle();
